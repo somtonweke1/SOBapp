@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import WarRoomMap from '@/components/war-room/war-room-map';
 import WarRoomFeed from '@/components/war-room/war-room-feed';
@@ -10,10 +12,32 @@ import WarRoomSnapshot from '@/components/war-room/war-room-snapshot';
 export default function DashboardPage() {
   const { data: session } = useSession();
   const isSubscribed = Boolean(session?.user?.isSubscribed);
+  const searchParams = useSearchParams();
+  const fromSuccess = searchParams.get('from') === 'success';
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [isRevealing, setIsRevealing] = useState(false);
+
+  useEffect(() => {
+    if (!fromSuccess || !isSubscribed) return;
+    setShowWelcome(true);
+    setIsRevealing(true);
+    const revealTimer = setTimeout(() => setIsRevealing(false), 1200);
+    const toastTimer = setTimeout(() => setShowWelcome(false), 4500);
+    return () => {
+      clearTimeout(revealTimer);
+      clearTimeout(toastTimer);
+    };
+  }, [fromSuccess, isSubscribed]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 text-zinc-900">
       <div className="mx-auto max-w-7xl px-6 py-10">
+        {showWelcome && (
+          <div className="fixed top-6 right-6 z-50 rounded-2xl border border-emerald-200/60 bg-white/95 px-5 py-3 shadow-2xl">
+            <p className="text-xs uppercase tracking-[0.3em] text-emerald-600">War Room Unlocked</p>
+            <p className="mt-2 text-sm text-zinc-700">Welcome to the front lines.</p>
+          </div>
+        )}
         <header className="flex flex-col gap-6 border-b border-zinc-200/50 pb-8 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.4em] text-zinc-500">SOBapp War Room</p>
@@ -56,7 +80,7 @@ export default function DashboardPage() {
               </span>
             </div>
             <div className="relative mt-6 h-[420px] overflow-hidden rounded-xl border border-zinc-200/50">
-              <div className={isSubscribed ? '' : 'blur-sm'}>
+              <div className={`${isSubscribed ? 'transition-all duration-1000' : ''} ${isSubscribed && isRevealing ? 'blur-md' : ''}`}>
                 <WarRoomMap />
               </div>
               {!isSubscribed && (
