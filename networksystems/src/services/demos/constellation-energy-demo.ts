@@ -463,7 +463,7 @@ export function generateDemoVisualization(demo: ConstellationEnergyDemo) {
         {
           time: 24,
           event: 'Pipeline capacity constraint detected',
-          impact: 'MIAR alert triggered',
+          impact: 'SOBapp alert triggered',
         },
         {
           time: 48,

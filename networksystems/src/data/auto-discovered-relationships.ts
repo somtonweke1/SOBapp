@@ -496,7 +496,7 @@ export const AUTO_DISCOVERED_RELATIONSHIPS: AutoDiscoveredRelationships = {
     ],
 
     'Cnnc': [
-      'Baotou Guanghua Chemical Industrial Corporation (Parent Organization: China National Nuclear Group Corporation (CNNC))',
+      'Baotou Guanghua Industrial Corporation (Parent Organization: China National Nuclear Group Corporation (CNNC))',
     ],
 
     'Cnooc': [

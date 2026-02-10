@@ -4,7 +4,7 @@
  * Continuously monitors external data sources for constraint changes
  * and triggers automatic scenario reruns when thresholds are breached.
  *
- * This is the "nervous system" that makes MIAR indispensable.
+ * This is the "nervous system" that makes SOBapp indispensable.
  */
 
 import { ConstraintModel, ConstraintAlert } from './constraint-engine/types';

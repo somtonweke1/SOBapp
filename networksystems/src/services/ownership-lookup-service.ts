@@ -167,7 +167,7 @@ class OwnershipLookupService {
   private async enhanceWithSECData(ownership: CompanyOwnership): Promise<CompanyOwnership> {
     try {
       // SEC EDGAR requires User-Agent header
-      const userAgent = 'MIAR Platform contact@miar.platform';
+      const userAgent = 'SOBapp Platform contact@miar.platform';
 
       console.log(`🔍 SEC EDGAR lookup: "${ownership.companyName}"`);
 

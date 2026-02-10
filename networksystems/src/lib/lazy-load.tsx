@@ -189,7 +189,6 @@ export const LazyComponents = {
 
   // Large UI Components
   PlatformGuide: lazyLoad(() => import('@/components/guide/platform-guide')),
-  ProfessionalLanding: lazyLoad(() => import('@/components/landing/professional-landing-page')),
   MiningInsights: lazyLoad(() => import('@/components/insights/mining-insights')),
 
   // Analysis Tools

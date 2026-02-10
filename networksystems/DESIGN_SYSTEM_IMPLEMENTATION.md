@@ -1,4 +1,4 @@
-# MIAR Design System Implementation Summary
+# SOBapp Design System Implementation Summary
 
 ## ✅ Successfully Deployed to Production
 
@@ -11,7 +11,7 @@
 
 ## 🎨 Design System Overview
 
-The MIAR platform now features a comprehensive **Swiss-inspired premium enterprise design system** that conveys trust, precision, and advanced analytics capabilities for mining intelligence and African research.
+The SOBapp platform now features a comprehensive **Swiss-inspired premium enterprise design system** that conveys trust, precision, and advanced analytics capabilities for mining intelligence and African research.
 
 ### Design Philosophy
 - **Swiss Minimalism**: Clean, precise, functional design with strategic whitespace
@@ -487,7 +487,7 @@ xl: 1280px  /* Large Desktop */
 
 ## 🎉 Conclusion
 
-The MIAR platform now features a **world-class Swiss-inspired design system** that positions it as a premium enterprise solution for strategic mining intelligence. Every component maintains:
+The SOBapp platform now features a **world-class Swiss-inspired design system** that positions it as a premium enterprise solution for strategic mining intelligence. Every component maintains:
 
 ✅ **Visual Consistency** - Zinc neutrals, emerald accents, glassmorphism
 ✅ **Typographic Hierarchy** - Font-extralight headlines, font-light body

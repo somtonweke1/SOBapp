@@ -48,7 +48,7 @@ export default function LoginForm() {
               onClick={handleBackToHome}
               className="bg-zinc-900 text-white px-6 py-3 text-lg font-light tracking-wide rounded hover:bg-emerald-600 transition-colors cursor-pointer"
             >
-              MIAR
+              SOBapp
             </button>
             <Shield className="w-8 h-8 text-zinc-600" />
           </div>
@@ -123,7 +123,7 @@ export default function LoginForm() {
           <div className="mt-8 pt-6 border-t border-zinc-200">
             <div className="text-center">
               <p className="text-sm text-zinc-500 font-light mb-3">
-                Need access to the MIAR platform?
+                Need access to the SOBapp platform?
               </p>
               <div className="space-y-2 text-sm">
                 <p className="text-zinc-600 font-light">

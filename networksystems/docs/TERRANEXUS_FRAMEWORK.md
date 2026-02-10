@@ -909,7 +909,7 @@ Customer 100 joins: 1,000 mines → industry standard, impossible to replicate
 
 ## Conclusion: The Path Forward
 
-TerraNexus transforms the MIAR platform from a general analytics tool into a strategic weapon for capital-intensive industries. By focusing on:
+TerraNexus transforms the SOBapp platform from a general analytics tool into a strategic weapon for capital-intensive industries. By focusing on:
 
 1. **Deep Industry Specialization** (mining, energy, industrials)
 2. **Constraint-Based Optimization** (not just visibility)

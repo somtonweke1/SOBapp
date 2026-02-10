@@ -151,7 +151,7 @@ const NetworkDashboard: React.FC = () => {
     <div className="min-h-screen bg-zinc-50 p-6">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-zinc-900 mb-8">
-          MIAR - Unified Dashboard
+          SOBapp - Unified Dashboard
         </h1>
 
         {error && (

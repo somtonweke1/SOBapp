@@ -276,7 +276,7 @@ export function Logo({
   return (
     <OptimizedImage
       src={src}
-      alt="MIAR Platform Logo"
+      alt="SOBapp Platform Logo"
       width={dimensions.width}
       height={dimensions.height}
       priority={true}

@@ -61,7 +61,7 @@ export default function DataIntegrationPage() {
           </div>
           <h1 className="text-4xl font-bold mb-2">Connect Your Data in Minutes</h1>
           <p className="text-xl text-blue-100 max-w-2xl">
-            Upload your facility, asset, or materials data to run MIAR's constraint intelligence engine on your real operations
+            Upload your facility, asset, or materials data to run SOBapp's constraint intelligence engine on your real operations
           </p>
         </div>
       </section>
@@ -162,7 +162,7 @@ export default function DataIntegrationPage() {
                   Analysis Complete
                 </h3>
                 <p className="text-sm text-emerald-700 mb-4">
-                  MIAR analyzed {uploadedData?.length} facilities and identified 12 potential constraints with a combined risk exposure of $47.3M.
+                  SOBapp analyzed {uploadedData?.length} facilities and identified 12 potential constraints with a combined risk exposure of $47.3M.
                 </p>
                 <div className="grid grid-cols-3 gap-4 mb-4">
                   <div className="bg-white rounded-lg p-4">

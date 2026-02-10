@@ -1,6 +1,6 @@
 /**
  * WCAG AA Compliant Color System
- * Based on MIAR design system with validated contrast ratios
+ * Based on SOBapp design system with validated contrast ratios
  */
 
 import { ColorContrast } from './accessibility';

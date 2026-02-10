@@ -150,7 +150,7 @@ class ComplianceReportGenerator {
 <body>
   <div class="container">
     <div class="header">
-      <div class="logo">MIAR</div>
+      <div class="logo">SOBapp</div>
       <h1>BIS Entity List Compliance Report</h1>
       <div class="meta">${report.companyName} • ${new Date(report.scanDate).toLocaleDateString()}</div>
       <div class="risk-badge">Overall Risk: ${report.summary.overallRiskLevel.toUpperCase()}</div>
@@ -249,7 +249,7 @@ class ComplianceReportGenerator {
     </div>
 
     <div class="footer">
-      <p><strong>MIAR - Supply Chain Risk Intelligence</strong></p>
+      <p><strong>SOBapp - Supply Chain Risk Intelligence</strong></p>
       <p>Johns Hopkins University Supply Chain Intelligence Lab</p>
       <p style="margin-top: 10px;">Report ID: ${report.scanId}</p>
     </div>

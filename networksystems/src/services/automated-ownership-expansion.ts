@@ -360,7 +360,7 @@ export class AutomatedOwnershipExpansion {
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'MIAR-SupplyChain/1.0 (https://networksystems.vercel.app; somton@jhu.edu)'
+            'User-Agent': 'SOBapp-SupplyChain/1.0 (https://networksystems.vercel.app; somton@jhu.edu)'
           },
           body: `query=${encodeURIComponent(sparqlQuery)}`
         });

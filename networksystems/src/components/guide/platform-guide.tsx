@@ -10,7 +10,7 @@ interface PlatformGuideProps {
 
 const guideSteps = [
   {
-    title: "Welcome to MIAR Platform",
+    title: "Welcome to SOBapp Platform",
     icon: Network,
     content: (
       <div className="space-y-4">
@@ -167,7 +167,7 @@ const guideSteps = [
     content: (
       <div className="space-y-4">
         <p className="text-zinc-600 leading-relaxed">
-          Here are some tips to help you get the most out of the MIAR platform:
+          Here are some tips to help you get the most out of the SOBapp platform:
         </p>
         <div className="space-y-4">
           <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-4">

@@ -314,7 +314,7 @@ class MarketIntelligenceService {
         affectedRegions: [regions[Math.floor(Math.random() * regions.length)]],
         impactScore: Math.floor(Math.random() * 100),
         duration: '1-3 months',
-        source: 'MIAR Intelligence',
+        source: 'SOBapp Intelligence',
         timestamp: new Date(),
         isActive: true
       };

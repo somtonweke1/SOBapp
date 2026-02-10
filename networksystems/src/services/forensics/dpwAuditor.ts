@@ -271,7 +271,7 @@ export interface DPWInversionResult {
 
 /**
  * Invert DPW bill to calculate what usage would justify it
- * This is the "PFAS Inversion" pattern applied to water billing
+ * This is the "Billing Inversion" pattern applied to water audits
  */
 export const invertDPWBill = (input: DPWInversionInput): DPWInversionResult => {
   const {
@@ -418,4 +418,3 @@ export const invertDPWBill = (input: DPWInversionInput): DPWInversionResult => {
     recommendation,
   };
 };
-

@@ -96,7 +96,7 @@ export class RealCommodityPriceService {
       const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&limit=1&sort_order=desc&file_type=json&api_key=DEMO_KEY`;
 
       const response = await fetch(url, {
-        headers: { 'User-Agent': 'MIAR-SupplyChain/1.0' }
+        headers: { 'User-Agent': 'SOBapp-SupplyChain/1.0' }
       });
 
       if (!response.ok) return null;
@@ -137,7 +137,7 @@ export class RealCommodityPriceService {
       const url = `https://api.worldbank.org/v2/country/all/indicator/${indicator}?format=json&per_page=1&date=2020:2025&mrv=1`;
 
       const response = await fetch(url, {
-        headers: { 'User-Agent': 'MIAR-SupplyChain/1.0' }
+        headers: { 'User-Agent': 'SOBapp-SupplyChain/1.0' }
       });
 
       if (!response.ok) return null;

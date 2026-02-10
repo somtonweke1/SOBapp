@@ -314,7 +314,7 @@ const ScenarioComparison: React.FC = () => {
       );
 
       // Download with timestamp
-      const filename = `MIAR-Scenario-Analysis-${format(new Date(), 'yyyy-MM-dd-HHmm')}.pdf`;
+      const filename = `SOBapp-Scenario-Analysis-${format(new Date(), 'yyyy-MM-dd-HHmm')}.pdf`;
       doc.save(filename);
 
       // Success message

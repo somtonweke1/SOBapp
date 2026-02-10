@@ -1,11 +1,11 @@
-# MIAR - Mining Intelligence & African Network Analysis
+# SOBapp - Mining Intelligence & African Network Analysis
 
  **A mining intelligence platform providing real-time analysis of African mining operations, supply chains, and global critical mineral flows.**
 
 
 ---
 
-# MIAR Mining Intelligence Platform - Value Proposition Analysis
+# SOBapp Mining Intelligence Platform - Value Proposition Analysis
 
 ## Target User/Enterprise
 
@@ -87,15 +87,15 @@ We're not selling software - we're providing strategic intelligence that directl
 
 ---
 
-# MIAR - Mining Intelligence & Analytics Platform
+# SOBapp - Mining Intelligence & Analytics Platform
 
 ## Overview
 
-**MIAR (Mining Intelligence & Analytics Platform)** is a comprehensive network intelligence platform specifically designed for the mining industry, with a focus on African mining operations. It combines advanced graph analytics, AI-powered insights, and real-time visualization to optimize mining operations, materials discovery, and supply chain management across the African continent.
+**SOBapp (Mining Intelligence & Analytics Platform)** is a comprehensive network intelligence platform specifically designed for the mining industry, with a focus on African mining operations. It combines advanced graph analytics, AI-powered insights, and real-time visualization to optimize mining operations, materials discovery, and supply chain management across the African continent.
 
 ###  What This Platform Does
 
-**MIAR transforms complex mining network data into actionable intelligence for:**
+**SOBapp transforms complex mining network data into actionable intelligence for:**
 - **Mining Operations Optimization**: Analyze extraction processes, identify bottlenecks, and optimize resource allocation
 - **Materials Discovery**: AI-powered discovery of new materials and synthesis protocols for mining applications
 - **Tailings Analysis**: Advanced analysis of mining waste to identify valuable materials and reprocessing opportunities
@@ -572,9 +572,9 @@ POST /api/mining/database
 
 ##  Platform Value Proposition
 
-### Why MIAR is Unique
+### Why SOBapp is Unique
 
-**MIAR is the first comprehensive mining intelligence platform that combines:**
+**SOBapp is the first comprehensive mining intelligence platform that combines:**
 - **African Mining Focus**: Specialized for African mining operations and supply chains
 - **AI-Powered Materials Discovery**: Automated discovery of new materials and synthesis protocols
 - **Network Intelligence**: Advanced graph analytics for mining operations optimization

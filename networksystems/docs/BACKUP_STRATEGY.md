@@ -1,6 +1,6 @@
 # Database Backup & Restore Strategy
 
-Comprehensive database backup and restoration procedures for the MIAR platform.
+Comprehensive database backup and restoration procedures for the SOBapp platform.
 
 ## Table of Contents
 
@@ -15,7 +15,7 @@ Comprehensive database backup and restoration procedures for the MIAR platform.
 
 ## Overview
 
-The MIAR platform implements a comprehensive backup strategy to ensure data integrity and business continuity. Our backup system supports both PostgreSQL (production) and SQLite (development) databases.
+The SOBapp platform implements a comprehensive backup strategy to ensure data integrity and business continuity. Our backup system supports both PostgreSQL (production) and SQLite (development) databases.
 
 ### Key Features
 

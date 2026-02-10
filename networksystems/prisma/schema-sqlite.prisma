@@ -1,4 +1,4 @@
-// MIAR Platform Database Schema - SQLite (Development Only)
+// SOBapp Platform Database Schema - SQLite (Development Only)
 // This is a backup of the SQLite schema for local development
 
 generator client {

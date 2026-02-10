@@ -71,7 +71,7 @@ export class FreeOwnershipSources {
         {
           headers: {
             'Accept': 'application/json',
-            'User-Agent': 'MIAR Platform/1.0 (contact@miar.platform)'
+            'User-Agent': 'SOBapp Platform/1.0 (contact@miar.platform)'
           }
         }
       );
@@ -200,7 +200,7 @@ export class FreeOwnershipSources {
    */
   private async searchSECEdgar(entityName: string): Promise<FreeSourceResult | null> {
     try {
-      const userAgent = 'MIAR Platform contact@miar.platform';
+      const userAgent = 'SOBapp Platform contact@miar.platform';
 
       // Search for company
       const searchUrl = `https://www.sec.gov/cgi-bin/browse-edgar?company=${encodeURIComponent(entityName)}&owner=exclude&action=getcompany&count=1&output=atom`;

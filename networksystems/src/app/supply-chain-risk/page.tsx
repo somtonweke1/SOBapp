@@ -3,21 +3,20 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-// DEPRECATED: Critical Minerals Supply Chain Risk
-// This product has been sunset. Focus is now 100% on PFAS Intelligence Platform.
-// All traffic redirects to /pfas-flow-intelligence
+// DEPRECATED: Legacy supply chain module
+// All traffic redirects to SOBapp Deal Shield
 
 export default function SupplyChainRiskRedirect() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace('/pfas-flow-intelligence');
+    router.replace('/deal-shield');
   }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-50">
+    <div className="min-h-screen flex items-center justify-center bg-slate-900">
       <div className="text-center">
-        <p className="text-zinc-600">Redirecting to PFAS Intelligence Platform...</p>
+        <p className="text-slate-400">Redirecting to SOBapp Deal Shield...</p>
       </div>
     </div>
   );

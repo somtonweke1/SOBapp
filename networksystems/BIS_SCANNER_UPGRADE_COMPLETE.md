@@ -101,7 +101,7 @@ SMTP_PASSWORD=your-app-password
 
 **API details:**
 - Free public API (no key required)
-- User-Agent: 'MIAR Platform contact@miar.platform'
+- User-Agent: 'SOBapp Platform contact@miar.platform'
 - Supports CIK lookup and filings search
 
 **Test status:** ✅ API integration working

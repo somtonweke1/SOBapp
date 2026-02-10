@@ -1,7 +1,7 @@
-# MIAR Platform Design System - UI/UX Replication Prompt
+# SOBapp Platform Design System - UI/UX Replication Prompt
 
 ## **Overview**
-Create a sophisticated, enterprise-grade platform for Mining Intelligence & African Research (MIAR) with a premium Swiss-inspired design aesthetic that conveys trust, precision, and advanced analytics capabilities.
+Create a sophisticated, enterprise-grade platform for Mining Intelligence & African Research (SOBapp) with a premium Swiss-inspired design aesthetic that conveys trust, precision, and advanced analytics capabilities.
 
 ## **Design Philosophy**
 - **Swiss Minimalism**: Clean, precise, functional design with strategic use of whitespace

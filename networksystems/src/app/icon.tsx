@@ -13,8 +13,8 @@ export default function Icon() {
     (
       <div
         style={{
-          fontSize: 18,
-          background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+          fontSize: 16,
+          background: 'linear-gradient(135deg, #0f172a 0%, #020617 100%)',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -22,11 +22,11 @@ export default function Icon() {
           justifyContent: 'center',
           color: 'white',
           fontFamily: 'system-ui, -apple-system, sans-serif',
-          fontWeight: 300,
-          letterSpacing: '-0.5px',
+          fontWeight: 700,
+          letterSpacing: '1px',
         }}
       >
-        M
+        SOB
       </div>
     ),
     {

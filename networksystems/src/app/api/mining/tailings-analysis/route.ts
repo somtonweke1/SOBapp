@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
       metadata: {
         processingTimeMs: Math.floor(Math.random() * 2000) + 500,
         dataPoints: data.network.sites.length * 1247,
-        algorithmVersion: 'MIAR-AI-v2.1',
+        algorithmVersion: 'SOBapp-AI-v2.1',
         lastUpdated: new Date().toISOString()
       }
     });
@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   return NextResponse.json({
-    service: 'MIAR Tailings Analysis API',
+    service: 'SOBapp Tailings Analysis API',
     status: 'operational',
     endpoints: {
       'POST /api/mining/tailings-analysis': 'Run comprehensive tailings analysis',

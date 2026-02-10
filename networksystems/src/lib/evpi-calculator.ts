@@ -164,7 +164,7 @@ export function calculateEVPI(profile: UserProfile): EVPIResult {
     sourcingOptimization + contractOptimization + riskMitigation
   );
 
-  // ROI calculation (MIAR subscription vs value delivered)
+  // ROI calculation (SOBapp subscription vs value delivered)
   // Assume Professional tier: $150K/year for most users
   const estimatedSubscriptionCost = 150000;
   const estimatedROI = Math.round(costAvoidanceOpportunity / estimatedSubscriptionCost);

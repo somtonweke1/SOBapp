@@ -3,7 +3,7 @@
 import React from 'react';
 import { MapPin, Droplet, Network, Waves, TrendingUp, Activity, ChevronRight } from 'lucide-react';
 
-type PathwayStep = 'sources' | 'flow' | 'food-supply' | 'model' | 'remediation' | 'monitoring';
+type PathwayStep = 'sources' | 'flow' | 'portfolio' | 'model' | 'remediation' | 'monitoring';
 
 interface PathwayIndicatorProps {
   currentStep: PathwayStep;
@@ -14,45 +14,45 @@ interface PathwayIndicatorProps {
 const PATHWAY_STEPS = [
   {
     id: 'sources' as const,
-    label: 'Sources',
+    label: 'Signals',
     icon: MapPin,
     color: 'rose',
-    description: 'Identify contamination sources'
+    description: 'Detect property distress signals'
   },
   {
     id: 'flow' as const,
-    label: 'Flow',
+    label: 'Audit Flow',
     icon: Droplet,
     color: 'blue',
-    description: 'Track contamination pathway'
+    description: 'Trace water bill discrepancies'
   },
   {
-    id: 'food-supply' as const,
-    label: 'Food Supply',
+    id: 'portfolio' as const,
+    label: 'Portfolio',
     icon: Network,
     color: 'amber',
-    description: 'Assess food supply exposure'
+    description: 'Assess portfolio exposure'
   },
   {
     id: 'model' as const,
-    label: 'Model',
+    label: 'Stress Model',
     icon: Waves,
     color: 'cyan',
-    description: 'Model intervention points'
+    description: 'Model DSCR sensitivity'
   },
   {
     id: 'remediation' as const,
-    label: 'Treatment',
+    label: 'Deal Shield',
     icon: TrendingUp,
     color: 'emerald',
-    description: 'Calculate treatment ROI'
+    description: 'Structure fundable deals'
   },
   {
     id: 'monitoring' as const,
     label: 'Monitor',
     icon: Activity,
     color: 'purple',
-    description: 'Monitor real-time performance'
+    description: 'Track ongoing performance'
   }
 ];
 
@@ -92,7 +92,7 @@ const colorClasses = {
 
 /**
  * Pathway Indicator Component
- * Shows user's current position in the 6-step PFAS contamination analysis pathway
+ * Shows user's current position in the 6-step infrastructure audit pathway
  * Interactive - click on any step to navigate to that dashboard
  */
 export default function PathwayIndicator({ currentStep, className = '', onStepChange }: PathwayIndicatorProps) {

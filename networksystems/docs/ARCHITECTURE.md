@@ -1,6 +1,6 @@
-# MIAR Platform Architecture
+# SOBapp Platform Architecture
 
-Comprehensive architecture documentation for the Mining Intelligence & Analytics (MIAR) platform.
+Comprehensive architecture documentation for the Mining Intelligence & Analytics (SOBapp) platform.
 
 ## Table of Contents
 
@@ -16,7 +16,7 @@ Comprehensive architecture documentation for the Mining Intelligence & Analytics
 
 ## System Overview
 
-The MIAR platform is a modern, cloud-native web application built with Next.js 14, providing supply chain analytics, mining intelligence, and market data insights.
+The SOBapp platform is a modern, cloud-native web application built with Next.js 14, providing supply chain analytics, mining intelligence, and market data insights.
 
 ### High-Level Architecture
 
@@ -1043,7 +1043,7 @@ Alerts:
 
 ## Conclusion
 
-The MIAR platform is built on modern, scalable architecture principles:
+The SOBapp platform is built on modern, scalable architecture principles:
 
 - **Performance**: Edge-first deployment, multi-tier caching, optimized bundles
 - **Security**: Defense in depth, encryption, authentication, authorization

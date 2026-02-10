@@ -2,11 +2,11 @@
 
 **Baltimore Real Estate Forensics Platform**
 
-Transform your MIAR network intelligence engine into a powerful Baltimore real estate deal analysis and DPW billing auditor.
+Transform your SOBapp network intelligence engine into a powerful Baltimore real estate deal analysis and DPW billing auditor.
 
 ## Overview
 
-Deal-Shield repurposes the MIAR mining intelligence platform for Baltimore real estate forensics:
+Deal-Shield repurposes the SOBapp mining intelligence platform for Baltimore real estate forensics:
 
 - **DPW Water Bill Auditor**: Detect Baltimore City water billing discrepancies and overcharges
 - **DSCR Stress Test**: Analyze real estate deals for fundability and lender requirements
@@ -167,7 +167,7 @@ Navigate to: `http://localhost:3000/deal-shield`
 
 ### The "Spill" in GroupMe
 
-> "I've repurposed my MIAR network engine to track **Baltimore City DPW billing anomalies.** I just ran a sweep of the 21223 zip code and found 14 properties being overcharged based on the CCF-Gallon discrepancy.
+> "I've repurposed my SOBapp network engine to track **Baltimore City DPW billing anomalies.** I just ran a sweep of the 21223 zip code and found 14 properties being overcharged based on the CCF-Gallon discrepancy.
 >
 > I'm opening up the **Deal-Shield Dashboard** for $32. You get the DPW Auditor and the DSCR Stress-Test tool built in. Who wants in?"
 
@@ -205,7 +205,7 @@ Navigate to: `http://localhost:3000/deal-shield`
 
 For questions or issues:
 - Email: support@deal-shield.com
-- GitHub Issues: [Create an issue](https://github.com/somtonweke1/MIAR/issues)
+- GitHub Issues: [Create an issue](https://github.com/somtonweke1/SOBapp/issues)
 
 ## License
 
@@ -215,5 +215,5 @@ This project is proprietary. Unauthorized use or reproduction is prohibited.
 
 **Deal-Shield - Where Network Intelligence Meets Real Estate Forensics**
 
-Built on the MIAR Mining Intelligence Platform
+Built on the SOBapp Mining Intelligence Platform
 

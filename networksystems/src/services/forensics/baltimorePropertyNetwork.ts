@@ -1,6 +1,6 @@
 /**
  * Baltimore Property Network Service
- * Transforms MIAR's network systems for Baltimore Real Estate
+ * Transforms SOBapp's network systems for Baltimore Real Estate
  * Replaces Mineral Nodes with Property Nodes
  * Replaces Trade Routes with Billing Tiers
  */

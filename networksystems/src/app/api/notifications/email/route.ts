@@ -54,7 +54,7 @@ function generateEmailHTML(message: string, metadata: any): string {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MIAR Alert</title>
+  <title>SOBapp Alert</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -111,7 +111,7 @@ function generateEmailHTML(message: string, metadata: any): string {
 </head>
 <body>
   <div class="header">
-    <h2 style="margin: 0;">MIAR Platform Alert</h2>
+    <h2 style="margin: 0;">SOBapp Platform Alert</h2>
   </div>
   <div class="content">
     <div class="message">
@@ -130,7 +130,7 @@ function generateEmailHTML(message: string, metadata: any): string {
     <a href="https://miar.ai" class="button">View Dashboard</a>
   </div>
   <div class="footer">
-    <p>MIAR - Mining Intelligence & Analytics Platform</p>
+    <p>SOBapp - Mining Intelligence & Analytics Platform</p>
     <p>You're receiving this email because you've enabled alerts for your account.</p>
     <p><a href="https://miar.ai/settings" style="color: #059669;">Manage notification preferences</a></p>
   </div>

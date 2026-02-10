@@ -1,5 +1,5 @@
 /**
- * MIAR - Database API for Vercel (Node.js)
+ * SOBapp - Database API for Vercel (Node.js)
  * Implements persistent data storage and retrieval
  */
 

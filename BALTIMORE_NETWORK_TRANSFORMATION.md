@@ -2,7 +2,7 @@
 
 ## ✅ Complete Implementation
 
-The MIAR network systems have been successfully transformed into a **Baltimore Real Estate Network** instance.
+The SOBapp network systems have been successfully transformed into a **Baltimore Real Estate Network** instance.
 
 ---
 
@@ -273,7 +273,7 @@ Body: {
 
 **Same Network Science. Different Domain.**
 
-The MIAR network intelligence engine now powers Baltimore real estate forensics with:
+The SOBapp network intelligence engine now powers Baltimore real estate forensics with:
 - Property network visualization
 - Distress score calculation
 - DPW audit integration

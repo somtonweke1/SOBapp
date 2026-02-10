@@ -6,7 +6,7 @@
 ## Version 1: Short & Direct (Recommended for Fast-Moving Chats)
 
 ```
-This BIS entity list expansion is exactly why we built our supply chain risk intelligence platform at MIAR.
+This BIS entity list expansion is exactly why we built our supply chain risk intelligence platform at SOBapp.
 
 We automatically map supplier ownership trees and flag entity list exposure in real-time.
 
@@ -24,7 +24,7 @@ https://networksystems.vercel.app/entity-list-scanner
 ```
 Saw this update about the BIS entity list expansion. The affiliate coverage is going to catch a lot of companies by surprise.
 
-The challenge isn't just checking the list - it's mapping ownership structures to see which of your suppliers are affected. We've been tracking this at MIAR.
+The challenge isn't just checking the list - it's mapping ownership structures to see which of your suppliers are affected. We've been tracking this at SOBapp.
 
 We built a scanner that:
 - Maps supplier ownership trees automatically
@@ -54,7 +54,7 @@ Most companies are checking supplier names against the list. But with the new ru
 
 One listed entity can affect dozens of suppliers through ownership structures.
 
-At MIAR, we're solving this with automated ownership tree mapping + real-time entity list monitoring. Built on network analysis algorithms we developed at Johns Hopkins.
+At SOBapp, we're solving this with automated ownership tree mapping + real-time entity list monitoring. Built on network analysis algorithms we developed at Johns Hopkins.
 
 We're offering free compliance checks (48-hour turnaround) for the first 10 companies. Want to validate this is a real problem worth solving vs. just interesting technically.
 
@@ -77,7 +77,7 @@ How are you currently tracking which of your suppliers might be affected by the 
 
 The ownership structure mapping seems like it would be impossibly manual at scale - especially for companies with 100+ suppliers.
 
-Curious what approaches people are taking. We're experimenting with automated ownership tree mapping at MIAR, but want to understand how the industry is handling this today.
+Curious what approaches people are taking. We're experimenting with automated ownership tree mapping at SOBapp, but want to understand how the industry is handling this today.
 
 [Wait for responses]
 

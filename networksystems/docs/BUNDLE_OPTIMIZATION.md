@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide covers strategies for optimizing bundle sizes in the MIAR platform, from analysis to implementation.
+This guide covers strategies for optimizing bundle sizes in the SOBapp platform, from analysis to implementation.
 
 ## Quick Start: Analyze Your Bundle
 

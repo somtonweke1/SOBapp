@@ -1,8 +1,8 @@
-# MIAR - Executive Summary
+# SOBapp - Executive Summary
 
 ## 🎯 **The Opportunity**
 
-**MIAR democratizes advanced graph analytics for business users, turning complex network data into actionable insights in minutes, not months.**
+**SOBapp democratizes advanced graph analytics for business users, turning complex network data into actionable insights in minutes, not months.**
 
 ---
 
@@ -24,7 +24,7 @@
 
 ## 🚀 **Our Solution**
 
-### **MIAR Platform**
+### **SOBapp Platform**
 - **No-Code Interface**: Business users can analyze networks without technical expertise
 - **15+ Advanced Algorithms**: Degree, Betweenness, Closeness, Eigenvector, PageRank, Katz, HITS, Harmonic, and more
 - **Real-Time Analytics**: Live insights with interactive visualizations
@@ -56,29 +56,29 @@
 
 ### **1. Financial Services - Fraud Detection**
 **Challenge**: Regional Bank losing $2M annually to undetected fraud
-**Solution**: MIAR identified fraud networks through transaction pattern analysis
+**Solution**: SOBapp identified fraud networks through transaction pattern analysis
 **Result**: 35% reduction in fraud losses, 50% faster detection
 
 ### **2. E-commerce - Customer Intelligence**
 **Challenge**: Online retailer with 67% cart abandonment rate
-**Solution**: MIAR analyzed customer behavior networks for personalization
+**Solution**: SOBapp analyzed customer behavior networks for personalization
 **Result**: 28% increase in average order value, 45% improvement in retention
 
 ### **3. Healthcare - Patient Care Optimization**
 **Challenge**: Hospital system with high readmission rates and resource inefficiencies
-**Solution**: MIAR modeled patient networks and treatment pathways
+**Solution**: SOBapp modeled patient networks and treatment pathways
 **Result**: 22% reduction in readmissions, 35% improvement in outcomes
 
 ### **4. Supply Chain - Risk Management**
 **Challenge**: Manufacturer experiencing $5M annual disruption costs
-**Solution**: MIAR mapped supplier networks and identified vulnerabilities
+**Solution**: SOBapp mapped supplier networks and identified vulnerabilities
 **Result**: 45% reduction in disruptions, 30% improvement in delivery reliability
 
 ---
 
 ## 📊 **Competitive Advantage**
 
-| Feature | MIAR | Traditional BI | Graph Databases | Specialized Tools |
+| Feature | SOBapp | Traditional BI | Graph Databases | Specialized Tools |
 |---------|------------------|----------------|-----------------|-------------------|
 | **Setup Time** | 5 minutes | 3 months | 6 months | 12 months |
 | **Technical Skill** | None required | Medium | High | Very High |
@@ -156,10 +156,10 @@
 ## 🎯 **Call to Action**
 
 ### **For Enterprise Clients**
-"Transform your data into competitive advantage. MIAR delivers enterprise-grade network analytics in minutes, not months."
+"Transform your data into competitive advantage. SOBapp delivers enterprise-grade network analytics in minutes, not months."
 
 **Next Steps**:
-1. **Schedule Demo**: See MIAR in action with your data
+1. **Schedule Demo**: See SOBapp in action with your data
 2. **Pilot Program**: 30-day proof of concept with guaranteed ROI
 3. **Enterprise Deployment**: Full implementation with dedicated support
 
@@ -172,11 +172,11 @@
 
 ---
 
-*MIAR - Where Data Meets Intelligence*
+*SOBapp - Where Data Meets Intelligence*
 
 **Ready to transform your network data into competitive advantage?**
 
-# MIAR - Client Presentation Outline
+# SOBapp - Client Presentation Outline
 
 ## 🎯 **Presentation Structure (30-45 minutes)**
 
@@ -219,7 +219,7 @@
 
 ---
 
-## 🚀 **Slide 3: Our Solution - MIAR**
+## 🚀 **Slide 3: Our Solution - SOBapp**
 
 ### **Visual**: Platform screenshot showing the interface
 **"Enterprise-grade network analytics in minutes, not months."**
@@ -244,19 +244,19 @@
 ### **Use Case 1: Fraud Detection**
 **Customer**: Regional Bank
 **Challenge**: Losing $2M annually to undetected fraud
-**Solution**: MIAR identified fraud networks
+**Solution**: SOBapp identified fraud networks
 **Result**: 35% reduction in fraud losses
 
 ### **Use Case 2: Customer Intelligence**
 **Customer**: E-commerce Platform
 **Challenge**: 67% cart abandonment rate
-**Solution**: MIAR analyzed customer behavior
+**Solution**: SOBapp analyzed customer behavior
 **Result**: 28% increase in average order value
 
 ### **Use Case 3: Supply Chain Optimization**
 **Customer**: Manufacturing Company
 **Challenge**: $5M annual disruption costs
-**Solution**: MIAR mapped supplier networks
+**Solution**: SOBapp mapped supplier networks
 **Result**: 45% reduction in disruptions
 
 ---
@@ -284,9 +284,9 @@
 ## 🏆 **Slide 6: Competitive Advantage**
 
 ### **Visual**: Comparison table
-**"Why MIAR vs. alternatives?"**
+**"Why SOBapp vs. alternatives?"**
 
-| Feature | MIAR | Traditional BI | Graph Databases | Specialized Tools |
+| Feature | SOBapp | Traditional BI | Graph Databases | Specialized Tools |
 |---------|------------------|----------------|-----------------|-------------------|
 | **Setup Time** | 5 minutes | 3 months | 6 months | 12 months |
 | **Technical Skill** | None required | Medium | High | Very High |
@@ -341,7 +341,7 @@
 ## 📞 **Slide 10: Contact & Q&A**
 
 ### **Visual**: Contact information and next steps
-**"Questions? Let's discuss how MIAR can solve your specific challenges."**
+**"Questions? Let's discuss how SOBapp can solve your specific challenges."**
 
 ### **Contact Information**:
 - **Demo Request**: [Schedule link]
@@ -377,13 +377,13 @@
 ## 🎯 **Common Objections & Responses**
 
 ### **"We already have analytics tools."**
-**Response**: "Traditional analytics tools look at individual data points. MIAR understands the relationships between your data, revealing insights you can't see with standard tools."
+**Response**: "Traditional analytics tools look at individual data points. SOBapp understands the relationships between your data, revealing insights you can't see with standard tools."
 
 ### **"This seems too technical."**
-**Response**: "That's exactly why we built MIAR. Our no-code interface means business users can analyze networks without technical expertise. Let me show you."
+**Response**: "That's exactly why we built SOBapp. Our no-code interface means business users can analyze networks without technical expertise. Let me show you."
 
 ### **"What about security and compliance?"**
-**Response**: "MIAR is built for enterprise security. We're SOC2 Type II compliant, GDPR ready, and offer on-premise deployment options."
+**Response**: "SOBapp is built for enterprise security. We're SOC2 Type II compliant, GDPR ready, and offer on-premise deployment options."
 
 ### **"How do we know it will work for our data?"**
 **Response**: "That's why we offer a 30-day pilot program. We'll connect to your data, run analysis, and show you real results before you commit."
@@ -396,10 +396,10 @@
 ## 🎯 **Demo Script**
 
 ### **Opening (2 minutes)**:
-"Let me show you MIAR in action. I'll use sample data that's similar to what you might have."
+"Let me show you SOBapp in action. I'll use sample data that's similar to what you might have."
 
 ### **Data Loading (1 minute)**:
-"First, we connect to your data source. MIAR supports 50+ connectors including databases, APIs, and file formats."
+"First, we connect to your data source. SOBapp supports 50+ connectors including databases, APIs, and file formats."
 
 ### **Analysis Setup (2 minutes)**:
 "Now I'll run a centrality analysis to identify the most important nodes in your network. This takes just a few clicks."
@@ -411,7 +411,7 @@
 "Let me show you how you can explore the data interactively. You can filter, drill down, and export results."
 
 ### **Closing (1 minute)**:
-"This is just one example. MIAR includes 15+ algorithms and can handle millions of nodes and edges."
+"This is just one example. SOBapp includes 15+ algorithms and can handle millions of nodes and edges."
 
 ---
 
@@ -431,5 +431,5 @@
 
 ---
 
-*MIAR - Where Data Meets Intelligence*
+*SOBapp - Where Data Meets Intelligence*
 

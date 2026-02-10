@@ -419,7 +419,7 @@ export default function ConstellationDemoLivePage() {
 
               <div className="mt-4 flex items-center gap-2 text-sm text-zinc-600">
                 <Activity className="w-4 h-4 text-blue-600" />
-                <span>Impact recalculates in real-time as you adjust parameters • This demonstrates MIAR's constraint modeling engine</span>
+                <span>Impact recalculates in real-time as you adjust parameters • This demonstrates SOBapp's constraint modeling engine</span>
               </div>
             </div>
           </div>
@@ -659,7 +659,7 @@ export default function ConstellationDemoLivePage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Zap className="w-16 h-16 mx-auto mb-4 text-emerald-200" />
           <h2 className="text-3xl font-bold mb-4">
-            This is How MIAR Constraint Intelligence Works
+            This is How SOBapp Constraint Intelligence Works
           </h2>
           <p className="text-xl text-emerald-100 mb-8">
             Real-time constraint detection • Multi-dimensional impact analysis • AI-optimized mitigation strategies •

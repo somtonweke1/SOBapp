@@ -1,8 +1,8 @@
-# 🚀 MIAR - Vercel Deployment Guide
+# 🚀 SOBapp - Vercel Deployment Guide
 
 ## 🌟 **Deployment Status**
 
-Your MIAR application is ready for deployment with all advanced features:
+Your SOBapp application is ready for deployment with all advanced features:
 - ✅ **ML & AI Features** - Predictive analytics with OpenAI GPT-4
 - ✅ **3D Visualization** - Interactive WebGL-powered networks
 - ✅ **Temporal Analysis** - Time-based network evolution
@@ -217,7 +217,7 @@ npm install --legacy-peer-deps --force
 
 ## 🚀 **Ready to Deploy!**
 
-Your MIAR application is production-ready with:
+Your SOBapp application is production-ready with:
 - **Advanced ML & AI capabilities**
 - **Stunning 3D visualizations**
 - **Real-time temporal analysis**

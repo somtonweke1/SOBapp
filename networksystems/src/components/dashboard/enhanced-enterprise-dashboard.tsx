@@ -144,7 +144,7 @@ export default function EnhancedEnterpriseDashboard() {
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-3">
                 <Building2 className="h-6 w-6 text-zinc-900" />
-                <h1 className="text-xl font-light tracking-wide text-zinc-900">MIAR Enterprise</h1>
+                <h1 className="text-xl font-light tracking-wide text-zinc-900">SOBapp Enterprise</h1>
               </div>
               <div className="hidden md:block text-sm text-zinc-500 font-light">
                 {user?.company} • {user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'User'}
@@ -598,7 +598,7 @@ export default function EnhancedEnterpriseDashboard() {
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-emerald-600">425%</div>
-                    <div className="text-zinc-600">ROI on MIAR Platform</div>
+                    <div className="text-zinc-600">ROI on SOBapp Platform</div>
                     <div className="text-sm text-emerald-600 mt-1">Based on 12-month period</div>
                   </div>
                 </div>

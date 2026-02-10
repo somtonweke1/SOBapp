@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Successfully transformed MIAR from a general mining intelligence platform into a **defensible, constraint-focused supply chain intelligence platform** with a strong competitive moat.
+Successfully transformed SOBapp from a general mining intelligence platform into a **defensible, constraint-focused supply chain intelligence platform** with a strong competitive moat.
 
 **Core Value Proposition:**
 > "Strategic Supply Chain Intelligence: Transform Constraints from Surprises into Strategic Advantages"
@@ -190,7 +190,7 @@ RESTful API endpoint: `GET /api/demos/constellation`
 // Generic tool thinks:
 "Pipeline delayed → shipment delayed"
 
-// MIAR understands:
+// SOBapp understands:
 "Pipeline capacity 95% → LNG export surge →
   → Spot price +45% →
   → Switch to dual-fuel (oil) →
@@ -358,7 +358,7 @@ const crusherConstraint: ConstraintModel = {
 ## Technical Architecture Summary
 
 ```
-MIAR Platform
+SOBapp Platform
 ├── Constraint Engine (Core MOAT)
 │   ├── types.ts (350 lines)
 │   ├── constraint-modeler.ts (550 lines)
@@ -400,7 +400,7 @@ Subject: Strategic fuel supply intelligence for Constellation
 
 Hi [Contact Name],
 
-I'm [Your Name] from MIAR. We work with capital-intensive operators
+I'm [Your Name] from SOBapp. We work with capital-intensive operators
 to transform supply chain constraints into strategic advantages.
 
 I noticed Constellation's recent focus on fuel cost management and
@@ -445,4 +445,4 @@ Try the demo: [Your Demo URL]/api/demos/constellation?format=markdown
 
 ---
 
-*"When a mining executive asks 'What's the NPV impact?', the answer automatically comes from MIAR"*
+*"When a mining executive asks 'What's the NPV impact?', the answer automatically comes from SOBapp"*

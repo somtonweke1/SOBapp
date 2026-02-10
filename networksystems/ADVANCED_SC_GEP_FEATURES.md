@@ -805,4 +805,4 @@ Yao, Bernstein, Dvorkin (2025). "Integrating Upstream Supply Chains into Generat
 **v3.0.0 - Advanced Analytics & Optimization Platform**
 
 Generated: October 2025
-Platform: MIAR SC-GEP Analytics
+Platform: SOBapp SC-GEP Analytics

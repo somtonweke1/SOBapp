@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
 function getPricingTiers() {
   return {
     starter: {
-      name: 'MIAR Starter',
+      name: 'SOBapp Starter',
       monthlyPrice: 15000,
       annualPrice: 150000, // 2 months free
       maxSites: 1,
@@ -96,7 +96,7 @@ function getPricingTiers() {
     },
     
     professional: {
-      name: 'MIAR Professional',
+      name: 'SOBapp Professional',
       monthlyPrice: 45000,
       annualPrice: 450000, // 2 months free
       maxSites: 5,
@@ -126,7 +126,7 @@ function getPricingTiers() {
     },
     
     enterprise: {
-      name: 'MIAR Enterprise',
+      name: 'SOBapp Enterprise',
       monthlyPrice: 125000,
       annualPrice: 1250000, // 2 months free
       maxSites: 'Unlimited',

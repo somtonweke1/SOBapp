@@ -1,4 +1,4 @@
-# MIAR Platform - Complete Feature Breakdown
+# SOBapp Platform - Complete Feature Breakdown
 
 **Production URL**: https://networksystems.vercel.app
 
@@ -6,7 +6,7 @@
 
 ## Platform Overview
 
-MIAR is a **dual-beachhead supply chain risk intelligence platform** combining:
+SOBapp is a **dual-beachhead supply chain risk intelligence platform** combining:
 1. **BIS Entity List Compliance** (URGENT) - Export control compliance scanner
 2. **Critical Minerals Risk** (STRATEGIC) - Supply chain risk intelligence
 3. **SC-GEP Optimization** (TECHNICAL) - Supply chain optimization engine
@@ -384,7 +384,7 @@ Central hub for:
 
 Quantifies the value of better intelligence:
 
-| Decision Type | Without MIAR | With MIAR | EVPI | Cost | Net Benefit | ROI |
+| Decision Type | Without SOBapp | With SOBapp | EVPI | Cost | Net Benefit | ROI |
 |---------------|--------------|-----------|------|------|-------------|-----|
 | Compliance | -$8.6M | +$1.2M | $9.8M | $85K | $9.72M | 115x |
 | Sourcing Timing | -$47M | +$28M | $75M | $120K | $74.88M | 624x |
@@ -752,5 +752,5 @@ Platform for:
 **This is what we shipped. This is what works. This is the value.**
 
 Generated: 2025-11-02
-Platform: MIAR - Supply Chain Risk Intelligence
+Platform: SOBapp - Supply Chain Risk Intelligence
 Status: PRODUCTION LIVE ✅

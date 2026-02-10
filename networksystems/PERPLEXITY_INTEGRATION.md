@@ -2,7 +2,7 @@
 
 ## Overview
 
-Your MIAR platform now has a comprehensive Perplexity AI integration structure that provides real-time mining industry intelligence, news analysis, and market insights.
+Your SOBapp platform now has a comprehensive Perplexity AI integration structure that provides real-time mining industry intelligence, news analysis, and market insights.
 
 ## What's New
 

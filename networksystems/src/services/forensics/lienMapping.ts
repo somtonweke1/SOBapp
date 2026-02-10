@@ -2,7 +2,7 @@
 /**
  * Baltimore Property Lien Mapping Service
  * Maps DPW liens, tax liens, and property relationships for network visualization
- * Transforms MIAR's network intelligence for urban real estate forensics
+ * Transforms SOBapp's network intelligence for urban real estate forensics
  */
 
 export interface PropertyLien {

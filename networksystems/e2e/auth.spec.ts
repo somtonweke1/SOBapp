@@ -37,7 +37,7 @@ test.describe('Authentication Flow', () => {
     expect(page.url()).toContain('/dashboard');
 
     // Verify user name is displayed in header
-    await expect(page.getByText(/MIAR Admin/i)).toBeVisible();
+    await expect(page.getByText(/SOBapp Admin/i)).toBeVisible();
   });
 
   test('should show error for invalid credentials', async ({ page }) => {

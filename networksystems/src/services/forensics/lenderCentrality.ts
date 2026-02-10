@@ -1,6 +1,6 @@
 /**
  * Lender & Zip Code Centrality Analysis
- * Uses MIAR's network science algorithms to identify "Power Lenders" and "Power Zip Codes"
+ * Uses SOBapp's network science algorithms to identify "Power Lenders" and "Power Zip Codes"
  * Shows where money is flowing in Baltimore real estate
  */
 

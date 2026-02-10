@@ -2,7 +2,7 @@
 
 ## ✅ Completed Implementation
 
-The MIAR repository has been successfully transformed into the **Baltimore Deal-Shield & DPW Auditor** platform.
+The SOBapp repository has been successfully transformed into the **Baltimore Deal-Shield & DPW Auditor** platform.
 
 ### 1. Core Forensics Modules ✅
 
@@ -147,7 +147,7 @@ Navigate to: `http://localhost:3000/deal-shield`
 
 The platform is ready for the "GroupMe spill":
 
-> "I've repurposed my MIAR network engine to track **Baltimore City DPW billing anomalies.** I just ran a sweep of the 21223 zip code and found 14 properties being overcharged based on the CCF-Gallon discrepancy.
+> "I've repurposed my SOBapp network engine to track **Baltimore City DPW billing anomalies.** I just ran a sweep of the 21223 zip code and found 14 properties being overcharged based on the CCF-Gallon discrepancy.
 >
 > I'm opening up the **Deal-Shield Dashboard** for $32. You get the DPW Auditor and the DSCR Stress-Test tool built in. Who wants in?"
 
@@ -161,7 +161,7 @@ The platform is ready for the "GroupMe spill":
 
 ## ✨ What Makes This Powerful
 
-1. **Built on MIAR Engine**: Leverages network intelligence platform
+1. **Built on SOBapp Engine**: Leverages network intelligence platform
 2. **Professional UI**: Looks like $10,000 software
 3. **Accurate Calculations**: Uses official Baltimore City rates
 4. **Actionable Insights**: Provides dispute guidance and recommendations

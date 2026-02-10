@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
           <div style="background-color: #e5e7eb; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <p style="margin: 0; color: #6b7280; font-size: 14px;">
-              <strong>Source:</strong> MIAR Platform Landing Page<br>
+              <strong>Source:</strong> SOBapp Platform Landing Page<br>
               <strong>Submitted:</strong> ${new Date().toLocaleString()}<br>
               <strong>Next Steps:</strong> Contact within 24 hours to schedule strategic briefing
             </p>
@@ -58,7 +58,7 @@ Phone: ${phone || 'Not provided'}
 
 ${message ? `Mining Challenges & Message:\n${message}\n` : ''}
 
-Submitted from MIAR Platform on ${new Date().toLocaleString()}
+Submitted from SOBapp Platform on ${new Date().toLocaleString()}
 Contact within 24 hours to schedule strategic briefing.
       `
     };

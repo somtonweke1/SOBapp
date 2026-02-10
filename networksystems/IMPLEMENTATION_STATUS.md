@@ -1,4 +1,4 @@
-# MIAR Platform - Implementation Status
+# SOBapp Platform - Implementation Status
 
 ## ✅ COMPLETED FEATURES
 
@@ -205,7 +205,7 @@ const chartData = HistoricalDataService.getChartData('commodity_gold', 100);
 
 **What You Can Pitch Today**:
 
-> "MIAR is a real-time supply chain intelligence platform for critical minerals. We consolidate commodity prices, economic indicators, and geopolitical risks into a single dashboard - with automated alerts when things change and executive reports you can share with your team."
+> "SOBapp is a real-time supply chain intelligence platform for critical minerals. We consolidate commodity prices, economic indicators, and geopolitical risks into a single dashboard - with automated alerts when things change and executive reports you can share with your team."
 
 **Differentiation**:
 - ✅ Real-time data from multiple sources (Yahoo, FRED, World Bank)

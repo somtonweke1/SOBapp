@@ -102,7 +102,7 @@ export default function ThreeDNetworkMap({
     {
       id: 'pretoria-lab',
       type: 'research_lab',
-      name: 'MIAR Research Center',
+      name: 'SOBapp Research Center',
       position: { lat: -25.7479, lng: 28.2293, elevation: 1339 },
       data: {
         production: 0,

@@ -8,7 +8,7 @@ export function WelcomeCard() {
     <Card className="p-8 bg-gradient-to-br from-blue-50 to-indigo-100 border-0">
       <div className="text-center">
         <h1 className="text-4xl font-bold text-zinc-900 mb-4">
-          Welcome to MIAR
+          Welcome to SOBapp
         </h1>
         <p className="text-xl text-zinc-700 mb-6">
           Mining Intelligence & Analytics Platform

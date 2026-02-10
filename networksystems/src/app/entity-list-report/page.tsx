@@ -130,7 +130,7 @@ export default function EntityListReportPage() {
           <div className="flex justify-between items-center">
             <div>
               <div className="bg-zinc-900 text-white px-4 py-2 text-sm font-light tracking-wide rounded inline-block mb-3">
-                MIAR
+                SOBapp
               </div>
               <h1 className="text-2xl font-extralight text-zinc-900">BIS Entity List Compliance Report</h1>
               <p className="text-sm text-zinc-500 font-light mt-1">

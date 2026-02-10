@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       name: 'Sarah Chen',
       email: 'admin@miar.com',
       role: 'admin',
-      company: 'MIAR Platform',
+      company: 'SOBapp Platform',
       permissions: ['view_all', 'manage_users', 'configure_system', 'export_data', 'ai_insights'],
       subscription: 'enterprise'
     },

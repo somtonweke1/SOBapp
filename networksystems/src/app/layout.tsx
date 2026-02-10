@@ -6,8 +6,8 @@ import { Providers } from '@/components/providers'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'MIAR - PFAS Intelligence Platform',
-  description: 'Track PFAS contamination from water systems through agricultural irrigation to food supply chains. Protect AI infrastructure and public health with real-time intelligence.',
+  title: 'SOBapp | Baltimore Real Estate Forensics',
+  description: 'SOBapp is the Sons of Baltimore Forensics Engine for DPW water bill audits, DSCR stress-testing, and property-level risk intelligence.',
 }
 
 export default function RootLayout({
@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-slate-900 text-slate-100`}>
         <Providers>
           {children}
         </Providers>

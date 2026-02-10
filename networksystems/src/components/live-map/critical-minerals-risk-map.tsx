@@ -612,7 +612,7 @@ const CriticalMineralsRiskMap: React.FC = () => {
             <div className="flex items-center space-x-12">
               <div className="flex items-center space-x-6">
                 <div className="bg-zinc-900 text-white px-6 py-3 text-sm font-light tracking-wide rounded">
-                  MIAR
+                  SOBapp
                 </div>
                 <div>
                   <h1 className="text-2xl font-extralight text-zinc-900 tracking-tight">Critical Minerals Risk</h1>

@@ -127,7 +127,7 @@ const response = await fetch(searchUrl, {
 
 ```bash
 $ grep "SMTP_" .env.example
-SMTP_FROM=MIAR Platform <noreply@miar.platform>
+SMTP_FROM=SOBapp Platform <noreply@miar.platform>
 SMTP_REPLY_TO=support@miar.platform
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587

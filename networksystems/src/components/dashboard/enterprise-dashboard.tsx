@@ -103,7 +103,7 @@ const EnterpriseDashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
-              <h1 className="text-2xl font-bold text-zinc-900">MIAR Enterprise</h1>
+              <h1 className="text-2xl font-bold text-zinc-900">SOBapp Enterprise</h1>
               <div className="flex items-center space-x-4">
                 <span className="text-sm text-zinc-500">Client:</span>
                 <span className="font-semibold text-zinc-900">{currentClient.name}</span>

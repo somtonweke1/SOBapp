@@ -1,6 +1,6 @@
 # Security Scanning & Best Practices
 
-Comprehensive security documentation for the MIAR platform, including automated scanning, vulnerability management, and security best practices.
+Comprehensive security documentation for the SOBapp platform, including automated scanning, vulnerability management, and security best practices.
 
 ## Table of Contents
 
@@ -14,7 +14,7 @@ Comprehensive security documentation for the MIAR platform, including automated 
 
 ## Overview
 
-The MIAR platform implements multiple layers of security scanning and monitoring to ensure the safety and integrity of our application and user data.
+The SOBapp platform implements multiple layers of security scanning and monitoring to ensure the safety and integrity of our application and user data.
 
 ### Security Goals
 
@@ -168,7 +168,7 @@ Identifies project dependencies with known CVE vulnerabilities.
 - name: OWASP Dependency Check
   uses: dependency-check/Dependency-Check_Action@main
   with:
-    project: 'MIAR Platform'
+    project: 'SOBapp Platform'
     path: '.'
     format: 'HTML'
 ```
@@ -305,7 +305,7 @@ security:
     - name: OWASP Dependency Check
       uses: dependency-check/Dependency-Check_Action@main
       with:
-        project: 'MIAR Platform'
+        project: 'SOBapp Platform'
         path: '.'
         format: 'HTML'
       continue-on-error: true

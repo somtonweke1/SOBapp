@@ -105,11 +105,11 @@ export class ScenarioComparisonPDFService {
     doc.setFillColor(...this.BRAND_COLOR);
     doc.rect(0, 0, 210, 80, 'F');
 
-    // MIAR Branding
+    // SOBapp Branding
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(32);
     doc.setFont('helvetica', 'bold');
-    doc.text('MIAR', 20, 35);
+    doc.text('SOBapp', 20, 35);
 
     doc.setFontSize(14);
     doc.setFont('helvetica', 'normal');
@@ -1380,7 +1380,7 @@ export class ScenarioComparisonPDFService {
       doc.text(`Page ${i} of ${pageCount}`, 105, 285, { align: 'center' });
 
       // Confidentiality notice
-      doc.text('CONFIDENTIAL - MIAR Platform', 20, 285);
+      doc.text('CONFIDENTIAL - SOBapp Platform', 20, 285);
       doc.text(format(new Date(), 'MMM dd, yyyy'), 190, 285, { align: 'right' });
     }
   }

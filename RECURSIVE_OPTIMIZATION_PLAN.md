@@ -1,4 +1,4 @@
-# MIAR: Recursive Self-Optimization to 100% First-Contact Economic Value
+# SOBapp: Recursive Self-Optimization to 100% First-Contact Economic Value
 
 ## Mission
 Achieve 100% probability that every first-time user receives measurable, tangible economic value within their initial platform interaction.
@@ -41,7 +41,7 @@ Step 5 (20 sec): Algorithm runs + Results display
 💰 Annual Cost Avoidance Opportunity: $4.8M
    Through: Optimized sourcing ($2.1M) + Risk mitigation ($2.7M)
 
-📈 ROI with MIAR Intelligence: 32:1
+📈 ROI with SOBapp Intelligence: 32:1
    Investment: $150K/year | Value: $4.8M savings + $8.2M risk avoided
 
 [Download 2-Page Executive Summary PDF] ← Email capture
@@ -251,7 +251,7 @@ Tomorrow: Live geopolitical risk update
 
 **Conversion trigger at Day 7:**
 ```
-Subject: Your Complete MIAR Value Summary - $18.2M Opportunity
+Subject: Your Complete SOBapp Value Summary - $18.2M Opportunity
 
 Over the past week, you've received:
 
@@ -262,7 +262,7 @@ Over the past week, you've received:
 ✓ Strategic intelligence: 14 actionable insights
 
 TOTAL VALUE DELIVERED: $18.2M in decision-relevant intelligence
-MIAR COST TO YOU: $0
+SOBapp COST TO YOU: $0
 
 Ready to capture these opportunities?
 
@@ -282,7 +282,7 @@ Your ROI: 121:1 ($18.2M value / $150K cost)
 
 ```
 ═══════════════════════════════════════════════
-  YOUR MIAR VALUE SCORECARD
+  YOUR SOBapp VALUE SCORECARD
 ═══════════════════════════════════════════════
 
 Account Created: 7 days ago
@@ -665,7 +665,7 @@ LEARNING INSIGHTS (AI-Generated)
 
 ```
 ═══════════════════════════════════════════════════
-  MIAR GLOBAL VALUE LEDGER (Last 90 Days)
+  SOBapp GLOBAL VALUE LEDGER (Last 90 Days)
 ═══════════════════════════════════════════════════
 
 Total Economic Intelligence Delivered: $847M
@@ -732,7 +732,7 @@ Challenge: Secure 50,000 tons of critical minerals amid
 
 ───────────────────────────────────────────────────
 
-INITIAL STATE (Before MIAR):
+INITIAL STATE (Before SOBapp):
 
 Supply Chain Structure:
 - 70% cobalt dependency on DRC → China processing
@@ -748,7 +748,7 @@ Risk Profile:
 
 ───────────────────────────────────────────────────
 
-MIAR ANALYSIS (Week 1):
+SOBapp ANALYSIS (Week 1):
 
 Network Bottleneck Identification:
 1. Cobalt processing capacity (China)
@@ -763,7 +763,7 @@ Network Bottleneck Identification:
 
 EVPI Calculation:
 - Value of perfect supply chain information: $47M
-- MIAR subscription cost: $500K/year
+- SOBapp subscription cost: $500K/year
 - ROI: 94:1
 
 ───────────────────────────────────────────────────
@@ -797,7 +797,7 @@ Actions Taken:
 ✓ Secured 18-month lithium contract (Australian source)
 ✓ Established backup supplier relationships (3 materials)
 ✓ Implemented real-time risk monitoring system
-✓ Quarterly strategic reviews with MIAR analysts
+✓ Quarterly strategic reviews with SOBapp analysts
 
 ───────────────────────────────────────────────────
 
@@ -809,7 +809,7 @@ Realized Savings:
 ✓ Price volatility hedging: $9.2M (vs $8.6M projected)
 
 Total Realized Value: $16.4M
-MIAR Investment: $500K
+SOBapp Investment: $500K
 Actual ROI: 32.8:1
 
 Risk Reduction:
@@ -826,7 +826,7 @@ Strategic Benefits:
 
 CUSTOMER TESTIMONIAL:
 
-"MIAR's network analysis revealed bottlenecks we didn't
+"SOBapp's network analysis revealed bottlenecks we didn't
 know existed. Within 2 weeks, we had a complete supply
 chain optimization strategy. The $16.4M in savings paid
 for the platform 33 times over. More importantly, we now
@@ -931,7 +931,7 @@ https://miar.ai/methodology
 
 ```
 ═══════════════════════════════════════════════════
-  MIAR VALUE GUARANTEE
+  SOBapp VALUE GUARANTEE
 ═══════════════════════════════════════════════════
 
 90-DAY PILOT PROGRAM
@@ -1251,7 +1251,7 @@ EVPI = 0.40 × $2M + 0.35 × $0 + 0.25 × $10M
      = $3.3M
 
 Interpretation: Perfect information about DRC political stability
-is worth $3.3M. MIAR's intelligence reduces uncertainty by ~70%,
+is worth $3.3M. SOBapp's intelligence reduces uncertainty by ~70%,
 thus delivers ~$2.3M in value for this decision alone.
 ```
 

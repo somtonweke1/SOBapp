@@ -1,6 +1,6 @@
 /**
  * Comprehensive Network Science Algorithms
- * Implements ALL concepts from network science lectures for MIAR mining intelligence
+ * Implements ALL concepts from network science lectures for SOBapp mining intelligence
  *
  * Coverage:
  * 1. Centrality Measures (Degree, Betweenness, Closeness, Eigenvector, Katz, PageRank)

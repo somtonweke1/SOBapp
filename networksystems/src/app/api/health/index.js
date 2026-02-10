@@ -1,5 +1,5 @@
 /**
- * MIAR - Health Check API for Vercel (Node.js)
+ * SOBapp - Health Check API for Vercel (Node.js)
  */
 
 export default function handler(req, res) {
@@ -16,7 +16,7 @@ export default function handler(req, res) {
   if (req.method === 'GET') {
     const response = {
       status: "healthy",
-      service: "MIAR - Vercel Backend",
+      service: "SOBapp - Vercel Backend",
       version: "1.0.0",
       timestamp: new Date().toISOString(),
       environment: "production",

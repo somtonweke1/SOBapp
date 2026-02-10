@@ -29,7 +29,7 @@ console.log(`   ${testData.message}`);
 console.log('');
 
 console.log('⏰ Submission Details:');
-console.log(`   Source: MIAR Platform Landing Page`);
+console.log(`   Source: SOBapp Platform Landing Page`);
 console.log(`   Timestamp: ${new Date().toLocaleString()}`);
 console.log(`   Next Steps: Contact within 24 hours to schedule strategic briefing`);
 console.log('');

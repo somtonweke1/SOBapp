@@ -1,4 +1,4 @@
-# Strategic Pivot: Building the MOAT for MIAR
+# Strategic Pivot: Building the MOAT for SOBapp
 
 ## Executive Summary
 
@@ -26,7 +26,7 @@
 // Generic tool thinks:
 "Truck delayed → shipment delayed"
 
-// MIAR understands:
+// SOBapp understands:
 "Primary crusher downtime (48hrs) →
   → Process secondary ore stockpile →
   → Lower recovery rate (78% vs 85%) →
@@ -283,7 +283,7 @@ interface MitigationAction {
 ### For Mining Companies (Primary Market)
 
 **Executive Summary:**
-"MIAR delivers 15-25:1 ROI by transforming supply chain constraints from surprises into strategic advantages"
+"SOBapp delivers 15-25:1 ROI by transforming supply chain constraints from surprises into strategic advantages"
 
 **Quantified Value:**
 
@@ -526,12 +526,12 @@ src/
 
 1. ✅ Competitors cannot replicate our constraint models (domain expertise)
 2. ✅ Our predictions are consistently 3x more accurate (proprietary data)
-3. ✅ Customers say "we can't operate without MIAR" (ecosystem lock-in)
+3. ✅ Customers say "we can't operate without SOBapp" (ecosystem lock-in)
 4. ✅ New customers join for the network intelligence (network effects)
 5. ✅ We're invited to shape industry standards (thought leadership)
 
 **The ultimate validation:**
-> "When a mining executive asks 'What's the NPV impact?', the answer automatically comes from MIAR"
+> "When a mining executive asks 'What's the NPV impact?', the answer automatically comes from SOBapp"
 
 ---
 
@@ -542,7 +542,7 @@ Subject: Strategic fuel supply intelligence for Constellation
 
 Hi [Contact Name],
 
-I'm [Your Name] from MIAR. We work with capital-intensive operators like [BHP/Rio Tinto] to transform supply chain constraints into strategic advantages.
+I'm [Your Name] from SOBapp. We work with capital-intensive operators like [BHP/Rio Tinto] to transform supply chain constraints into strategic advantages.
 
 I noticed Constellation's recent focus on [fuel cost management/supply reliability]. Our platform provides live constraint-based analysis across your entire fuel logistics chain:
 
@@ -562,4 +562,4 @@ P.S. I can show you a live simulation of a "Gulf Coast LNG squeeze" scenario spe
 
 ---
 
-*This strategic pivot transforms MIAR from a feature-rich platform into an indispensable, defensible business with a clear MOAT and compelling ROI story.*
+*This strategic pivot transforms SOBapp from a feature-rich platform into an indispensable, defensible business with a clear MOAT and compelling ROI story.*

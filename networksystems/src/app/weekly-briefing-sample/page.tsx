@@ -9,23 +9,23 @@ import Link from 'next/link';
 
 export default function WeeklyBriefingSample() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100">
+    <div className="min-h-screen bg-slate-900 text-slate-100">
       <PublicNav />
       {/* Email Header */}
-      <div className="bg-white border-b border-zinc-200">
+      <div className="bg-slate-950 border-b border-slate-800">
         <div className="max-w-4xl mx-auto px-6 py-8">
           <div className="flex justify-between items-center">
             <div>
-              <div className="bg-zinc-900 text-white px-4 py-2 text-sm font-light tracking-wide rounded inline-block mb-3">
-                MIAR
+              <div className="bg-blue-500 text-white px-4 py-2 text-sm font-semibold tracking-wide rounded inline-block mb-3">
+                SOBapp
               </div>
-              <h1 className="text-2xl font-extralight text-zinc-900">Weekly Critical Minerals Risk Briefing</h1>
-              <p className="text-sm text-zinc-500 font-light mt-1">Week of January 22, 2025 • Delivered to 2,847 procurement and risk professionals</p>
+              <h1 className="text-2xl font-semibold text-slate-100">Weekly Baltimore Property Distress Briefing</h1>
+              <p className="text-sm text-slate-400 font-light mt-1">Week of January 22, 2025 • Delivered to 2,847 Baltimore property operators</p>
             </div>
             <div className="text-right">
-              <div className="text-xs text-zinc-400 uppercase tracking-wider font-light">Overall Risk</div>
-              <div className="text-3xl font-extralight text-amber-600">6.8</div>
-              <div className="text-xs text-amber-500 font-light">↑ +0.3 from last week</div>
+              <div className="text-xs text-slate-400 uppercase tracking-wider font-light">Overall Distress</div>
+              <div className="text-3xl font-semibold text-amber-400">6.8</div>
+              <div className="text-xs text-amber-300 font-light">↑ +0.3 from last week</div>
             </div>
           </div>
         </div>
@@ -33,31 +33,31 @@ export default function WeeklyBriefingSample() {
 
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-8">
         {/* Executive Summary */}
-        <Card className="p-8 bg-gradient-to-br from-rose-50 to-rose-100/50 border-rose-200">
+        <Card className="p-8 bg-black/60 border-slate-800">
           <div className="flex items-start gap-4 mb-6">
-            <div className="p-3 bg-white rounded-xl">
-              <AlertTriangle className="w-6 h-6 text-rose-600" />
+            <div className="p-3 bg-slate-900 rounded-xl">
+              <AlertTriangle className="w-6 h-6 text-amber-400" />
             </div>
             <div>
-              <h2 className="text-xl font-light text-zinc-900 mb-2">Critical Alert: DRC Cobalt Corridor Disruption</h2>
-              <p className="text-sm text-zinc-600 font-light leading-relaxed">
-                Infrastructure delays at Lobito-Benguela rail terminal have created 15% increased delivery risk for cobalt shipments.
-                Estimated financial exposure: <span className="font-medium text-rose-600">$2.3B across affected projects</span>.
+              <h2 className="text-xl font-semibold text-slate-100 mb-2">Critical Alert: DPW Water Billing Anomaly</h2>
+              <p className="text-sm text-slate-300 font-light leading-relaxed">
+                Billing spikes across South Baltimore show 15% elevated exposure vs baseline.
+                Estimated portfolio exposure: <span className="font-medium text-amber-300">$2.3M across affected blocks</span>.
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-4 text-center bg-white/60 rounded-lg p-4">
+          <div className="grid grid-cols-3 gap-4 text-center bg-slate-900/60 rounded-lg p-4">
             <div>
-              <div className="text-lg font-light text-zinc-900">18-25 days</div>
-              <div className="text-xs text-zinc-500 uppercase tracking-wider font-light">Added Delay</div>
+              <div className="text-lg font-light text-slate-100">18-25 days</div>
+              <div className="text-xs text-slate-400 uppercase tracking-wider font-light">Correction Window</div>
             </div>
             <div>
-              <div className="text-lg font-light text-rose-600">HIGH</div>
-              <div className="text-xs text-zinc-500 uppercase tracking-wider font-light">Risk Level</div>
+              <div className="text-lg font-light text-amber-300">HIGH</div>
+              <div className="text-xs text-slate-400 uppercase tracking-wider font-light">Distress Level</div>
             </div>
             <div>
-              <div className="text-lg font-light text-zinc-900">Feb 8-12</div>
-              <div className="text-xs text-zinc-500 uppercase tracking-wider font-light">Resolution Target</div>
+              <div className="text-lg font-light text-slate-100">Feb 8-12</div>
+              <div className="text-xs text-slate-400 uppercase tracking-wider font-light">Resolution Target</div>
             </div>
           </div>
         </Card>
@@ -420,16 +420,16 @@ export default function WeeklyBriefingSample() {
         </Card>
 
         {/* Email Footer */}
-        <div className="text-center pt-8 border-t border-zinc-200">
-          <p className="text-sm text-zinc-500 font-light mb-4">
+        <div className="text-center pt-8 border-t border-slate-800">
+          <p className="text-sm text-slate-400 font-light mb-4">
             You're receiving this briefing because you subscribed at{' '}
-            <Link href="/supply-chain-risk" className="text-emerald-600 hover:underline">
+            <Link href="/supply-chain-risk" className="text-emerald-400 hover:underline">
               networksystems.vercel.app/supply-chain-risk
             </Link>
           </p>
-          <p className="text-xs text-zinc-400 font-light">
-            MIAR - PFAS Intelligence Platform<br />
-            Johns Hopkins University Supply Chain Intelligence Lab<br />
+          <p className="text-xs text-slate-500 font-light">
+            SOBapp - Baltimore Infrastructure Forensics<br />
+            Baltimore Property Intelligence Lab<br />
             Baltimore, MD 21218
           </p>
         </div>

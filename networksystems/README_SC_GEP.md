@@ -1,4 +1,4 @@
-# 🔋 SC-GEP Integration for MIAR Platform
+# 🔋 SC-GEP Integration for SOBapp Platform
 
 > **Supply Chain-Constrained Generation Expansion Planning**
 >
@@ -123,7 +123,7 @@ Total:        $32.0B
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                       MIAR Platform                          │
+│                       SOBapp Platform                          │
 ├─────────────────────────────────────────────────────────────┤
 │                                                               │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌──────────────┐│
@@ -397,7 +397,7 @@ If you use this implementation in academic work, please cite:
 
 ## 🤝 Contributing
 
-This integration is part of the MIAR platform. For questions or contributions:
+This integration is part of the SOBapp platform. For questions or contributions:
 
 1. Review documentation (`SC_GEP_INTEGRATION.md`)
 2. Check existing issues
@@ -417,7 +417,7 @@ This integration is part of the MIAR platform. For questions or contributions:
 
 ## 📜 License
 
-This implementation is part of the MIAR platform. See main project license.
+This implementation is part of the SOBapp platform. See main project license.
 
 The research paper is available under arXiv's license terms.
 

@@ -1,56 +1,195 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
-export default function SOBDashboard() {
+import { SOB_FORENSICS } from '../networksystems/forensics';
+
+type AuditResult = {
+  isValid: boolean;
+  discrepancy: number;
+};
+
+type DSCRResult = {
+  ratio: string;
+  isFundable: boolean;
+};
+
+export default function SOBLandingPage() {
+  const [gallons, setGallons] = useState('');
+  const [totalBill, setTotalBill] = useState('');
+  const [auditResult, setAuditResult] = useState<AuditResult | null>(null);
+
+  const [rent, setRent] = useState('');
+  const [piti, setPiti] = useState('');
+  const [dscrResult, setDscrResult] = useState<DSCRResult | null>(null);
+
+  const moduleSummary = useMemo(() => {
+    return {
+      dpwFormula: 'CCF = gallons / 748; expectedMax = (CCF * 17.64) + 41.43',
+      dscrFormula: 'NOI = rent * 0.90; DSCR = NOI / PITI',
+    };
+  }, []);
+
+  const gallonsValue = Number(gallons);
+  const billValue = Number(totalBill);
+  const rentValue = Number(rent);
+  const pitiValue = Number(piti);
+
+  const auditBreakdown = useMemo(() => {
+    if (!Number.isFinite(gallonsValue)) {
+      return null;
+    }
+    const ccf = gallonsValue / 748;
+    const expectedMax = (ccf * 17.64) + 41.43;
+    return { ccf, expectedMax };
+  }, [gallonsValue]);
+
+  const dscrBreakdown = useMemo(() => {
+    if (!Number.isFinite(rentValue) || !Number.isFinite(pitiValue) || pitiValue === 0) {
+      return null;
+    }
+    const noi = rentValue * 0.9;
+    const dscr = noi / pitiValue;
+    return { noi, dscr };
+  }, [rentValue, pitiValue]);
+
+  useEffect(() => {
+    if (!Number.isFinite(gallonsValue) || !Number.isFinite(billValue)) {
+      setAuditResult(null);
+      return;
+    }
+    setAuditResult(SOB_FORENSICS.auditWaterBill(gallonsValue, billValue));
+  }, [gallonsValue, billValue]);
+
+  useEffect(() => {
+    if (!Number.isFinite(rentValue) || !Number.isFinite(pitiValue) || pitiValue === 0) {
+      setDscrResult(null);
+      return;
+    }
+    setDscrResult(SOB_FORENSICS.stressTestDSCR(rentValue, pitiValue));
+  }, [rentValue, pitiValue]);
+
   return (
-    <div className="min-h-screen bg-slate-900 text-white p-8 font-sans">
-      <header className="max-w-6xl mx-auto mb-12 border-b border-slate-700 pb-6 text-center md:text-left">
-        <h1 className="text-5xl font-black tracking-tighter text-blue-500">SOB<span className="text-white">app</span></h1>
-        <p className="text-slate-400 mt-2 text-lg italic">Baltimore Real Estate Forensics & Infrastructure Audit</p>
-      </header>
+    <div className="min-h-screen bg-slate-900 text-slate-100">
+      <div className="mx-auto max-w-6xl px-6 py-12">
+        <header className="border-b border-slate-800 pb-10">
+          <p className="text-xs uppercase tracking-[0.4em] text-slate-500">Baltimore Real Estate Forensics</p>
+          <h1 className="mt-4 text-6xl font-black tracking-tight text-white">SOBapp</h1>
+          <p className="mt-4 text-xl text-slate-300">The Sons of Baltimore Forensics Engine</p>
+        </header>
 
-      <main className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
-        {/* Module 1: Water Audit */}
-        <section className="bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-2xl hover:border-blue-500 transition-all">
-          <h2 className="text-2xl font-bold mb-4 flex items-center">
-            <span className="mr-3 text-3xl">💧</span> DPW Water Bill Audit
-          </h2>
-          <p className="text-sm text-slate-400 mb-6 font-mono uppercaseracking-widest">Target: $17.64 CCF Logic</p>
-          <div className="space-y-4">
-            <input type="number" placeholder="Total Gallons" className="w-full bg-slate-900 border border-slate-700 p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            <input type="number" placeholder="Total Bill Amount ($)" className="w-full bg-slate-900 border border-slate-700 p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-lg transition-all transform hover:scale-105">
-              RUN FORENSIC AUDIT
-            </button>
-          </div>
-        </section>
+        <main className="mt-10 grid gap-8 lg:grid-cols-2">
+          <section className="rounded-2xl border border-slate-800 bg-black/60 p-8 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-semibold text-white">DPW Water Bill Audit</h2>
+                <p className="mt-2 text-sm text-slate-400">$17.64 CCF math plus fixed service baseline.</p>
+              </div>
+              <span className="rounded-full border border-slate-700 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-slate-500">
+                Module A
+              </span>
+            </div>
 
-        {/* Module 2: DSCR Stress Test */}
-        <section className="bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-2xl hover:border-green-500 transition-all">
-          <h2 className="text-2xl font-bold mb-4 flex items-center">
-            <span className="mr-3 text-3xl">📈</span> DSCR Stress-Test         </h2>
-          <p className="text-sm text-slate-400 mb-6 font-mono uppercase tracking-widest">Lender Floor: 1.25</p>
-          <div className="space-y-4">
-            <input type="number" placeholder="Monthly Rent" className="w-full bg-slate-900 border border-slate-700 p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
-            <input type="number" placeholder="Monthly Debt (PITI)" className="w-full bg-slate-900 border border-slate-700 p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
-            <button className="w-full bg-green-600 hover:bg-green-500 text-white font-black py-4 rounded-lg transition-all transform hover:scale-105">
-              VALIDATE DEAL FLOW
-            </button>
-          </div>
-        </section>
+            <div className="mt-6 grid gap-4">
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="Total Gallons"
+                value={gallons}
+                onChange={(event) => setGallons(event.target.value)}
+                className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+              />
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="Total Bill Amount ($)"
+                value={totalBill}
+                onChange={(event) => setTotalBill(event.target.value)}
+                className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+              />
+              <div className="rounded-lg border border-slate-800 bg-slate-950/60 px-4 py-3 text-xs text-slate-400">
+                Auto-calculating as you type.
+              </div>
+            </div>
 
-        {/* 3D Engine Status */}
-        <section className="md:col-span-2 bg-black h-48 rounded-2xl border border-blue-900/30 flex flex-col items-center justify-center relative overflow-hidden group">
-          <div className="absolute inset-0 bg-blue-500/5 animate-pulse group-hover:bg-blue-500/10 transition-all"></div>
-          <div className="z-10 text-center">
-            <p className="text-blue-400 font-mono text-sm uppercase tracking-widest mb-2">MIAR 3D Network Engine</p>
-            <p className="text-slate-500 text-xs">MAPPING BALTIMORE PROPERTY DISTRESS... [ONLINE]</p>
-          </div>
-        </section>
-      </main>
+            <div className="mt-6 rounded-xl border border-slate-800 bg-slate-950/70 p-4 text-sm text-slate-300">
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Forensics Logic</p>
+              <p className="mt-3 font-mono text-xs text-slate-400">{moduleSummary.dpwFormula}</p>
+              {auditBreakdown && (
+                <div className="mt-3 grid gap-2 text-xs text-slate-400">
+                  <p>Computed CCF: {auditBreakdown.ccf.toFixed(2)}</p>
+                  <p>Expected Max: ${auditBreakdown.expectedMax.toFixed(2)}</p>
+                </div>
+              )}
+              {auditResult && (
+                <div className="mt-4 space-y-2">
+                  <p className={auditResult.isValid ? 'text-emerald-400' : 'text-amber-400'}>
+                    Status: {auditResult.isValid ? 'Within Expected Range' : 'Over Benchmark'}
+                  </p>
+                  <p className="text-slate-400">
+                    Discrepancy: ${auditResult.discrepancy.toFixed(2)}
+                  </p>
+                </div>
+              )}
+            </div>
+          </section>
 
-      <footer className="max-w-6xl mx-auto mt-12 text-slate-600 text-[10px] text-center uppercase tracking-widest border-t border-slate-800 pt-8">
-        <p>© 2026 SOBapp & MIAR Infrastructure. All Rights Reserved. Baltimore, MD.</p>
-      </footer>
+          <section className="rounded-2xl border border-slate-800 bg-black/60 p-8 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-semibold text-white">DSCR Stress-Test</h2>
+                <p className="mt-2 text-sm text-slate-400">$1.25 lender floor with NOI stress.</p>
+              </div>
+              <span className="rounded-full border border-slate-700 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-slate-500">
+                Module B
+              </span>
+            </div>
+
+            <div className="mt-6 grid gap-4">
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="Monthly Rent ($)"
+                value={rent}
+                onChange={(event) => setRent(event.target.value)}
+                className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+              />
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="Monthly Debt Service (PITI)"
+                value={piti}
+                onChange={(event) => setPiti(event.target.value)}
+                className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+              />
+              <div className="rounded-lg border border-slate-800 bg-slate-950/60 px-4 py-3 text-xs text-slate-400">
+                Auto-calculating as you type.
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-xl border border-slate-800 bg-slate-950/70 p-4 text-sm text-slate-300">
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Forensics Logic</p>
+              <p className="mt-3 font-mono text-xs text-slate-400">{moduleSummary.dscrFormula}</p>
+              {dscrBreakdown && (
+                <div className="mt-3 grid gap-2 text-xs text-slate-400">
+                  <p>NOI (90%): ${dscrBreakdown.noi.toFixed(2)}</p>
+                  <p>DSCR: {dscrBreakdown.dscr.toFixed(2)}</p>
+                </div>
+              )}
+              {dscrResult && (
+                <div className="mt-4 space-y-2">
+                  <p className={dscrResult.isFundable ? 'text-emerald-400' : 'text-amber-400'}>
+                    Status: {dscrResult.isFundable ? 'Fundable' : 'Below Lender Floor'}
+                  </p>
+                  <p className="text-slate-400">DSCR Ratio: {dscrResult.ratio}</p>
+                </div>
+              )}
+            </div>
+          </section>
+        </main>
+
+        <footer className="mt-12 border-t border-slate-800 pt-6 text-xs uppercase tracking-[0.3em] text-slate-500">
+          Powered by SOBapp Intelligence
+        </footer>
+      </div>
     </div>
   );
 }

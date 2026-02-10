@@ -273,7 +273,7 @@ export class OwnershipDiscoveryPipeline {
   private async discoverViaSECEdgar(entityName: string): Promise<OwnershipRelationship[]> {
     try {
       // Search SEC EDGAR for company
-      const userAgent = 'MIAR Platform contact@miar.platform';
+      const userAgent = 'SOBapp Platform contact@miar.platform';
       const searchUrl = `https://www.sec.gov/cgi-bin/browse-edgar?company=${encodeURIComponent(entityName)}&owner=exclude&action=getcompany&count=10&output=atom`;
 
       const response = await fetch(searchUrl, {

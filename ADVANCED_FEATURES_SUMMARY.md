@@ -2,7 +2,7 @@
 
 ## 🎯 "Surgical Integration" Complete
 
-The MIAR network intelligence engine has been fully transformed into **"Urban Mining Intelligence"** for Baltimore real estate forensics.
+The SOBapp network intelligence engine has been fully transformed into **"Urban Mining Intelligence"** for Baltimore real estate forensics.
 
 ---
 
@@ -10,7 +10,7 @@ The MIAR network intelligence engine has been fully transformed into **"Urban Mi
 
 ### 1. DPW Inversion Analysis ⚡
 
-**The "PFAS Inversion" Pattern Applied to Water Billing**
+**The "Billing Inversion" Pattern Applied to Water Billing**
 
 Instead of asking "Is my bill right?", we now ask: **"What usage would justify this $900 charge?"**
 
@@ -43,7 +43,7 @@ leak or billing error."
 
 **3D Network Visualization for Property Liens**
 
-Transforms MIAR's 3D network engine to map Baltimore property liens and clusters.
+Transforms SOBapp's 3D network engine to map Baltimore property liens and clusters.
 
 **Implementation:**
 - `buildLienNetwork()` - Creates property nodes and relationship edges
@@ -72,7 +72,7 @@ Transforms MIAR's 3D network engine to map Baltimore property liens and clusters
 
 **"Power Lenders" and "Power Zip Codes" Identification**
 
-Uses MIAR's network science algorithms to identify where money is flowing.
+Uses SOBapp's network science algorithms to identify where money is flowing.
 
 **Implementation:**
 - `buildLenderNetwork()` - Creates bipartite lender-zip code graph
@@ -149,7 +149,7 @@ src/components/deal-shield/
 
 ## 🎨 Network Science Integration
 
-### Leverages MIAR's Algorithms
+### Leverages SOBapp's Algorithms
 
 1. **Centrality Measures**
    - Degree, Betweenness, Eigenvector, PageRank
@@ -169,7 +169,7 @@ src/components/deal-shield/
 ## 💡 Key Innovations
 
 ### 1. Inversion Analysis
-**The "PFAS Inversion" Pattern**
+**The "Billing Inversion" Pattern**
 - Reverse-engineers what must be true to get a result
 - Exposes absurd billing by showing impossible usage requirements
 - No meter readings needed - just bill amount
@@ -259,13 +259,13 @@ const topLenders = liquidityMap.topPowerLenders;
 - **Inversion Logic**: Reverse-engineer billing to expose errors
 - **Centrality Analysis**: Identify "Power Lenders" and "Power Zip Codes"
 
-**This is MIAR's mining intelligence engine, repurposed for Baltimore real estate.**
+**This is SOBapp's mining intelligence engine, repurposed for Baltimore real estate.**
 
 ---
 
 ## 🔥 The $32 "Founder Access" Pitch
 
-> "I spent the last year building a mining intelligence platform (**MIAR**) for continental-scale resource analysis. Tonight, I've pivoted the engine to solve our biggest headache: **Baltimore Due Diligence.**
+> "I spent the last year building a mining intelligence platform (**SOBapp**) for continental-scale resource analysis. Tonight, I've pivoted the engine to solve our biggest headache: **Baltimore Due Diligence.**
 >
 > I've loaded the DPW billing tiers and DSCR lender requirements directly into the system. It doesn't just track data; it **audits** it.
 >

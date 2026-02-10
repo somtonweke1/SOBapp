@@ -3,7 +3,7 @@
 
 **Duration:** 25 minutes
 **Audience:** Constellation Energy procurement, risk management, and C-suite executives
-**Objective:** Demonstrate how MIAR reduces critical mineral supply chain risk for their 5GW battery storage deployment
+**Objective:** Demonstrate how SOBapp reduces critical mineral supply chain risk for their 5GW battery storage deployment
 
 ---
 
@@ -41,7 +41,7 @@
 **The Question:**
 > "One disruption can delay your projects 6-12 months and cost $50M-$200M+. How do you de-risk this?"
 
-**Transition:** "That's exactly what MIAR solves. Let me show you."
+**Transition:** "That's exactly what SOBapp solves. Let me show you."
 
 ---
 

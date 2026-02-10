@@ -1,4 +1,4 @@
-# MIAR - Strategic Positioning Framework
+# SOBapp - Strategic Positioning Framework
 
 **Machine-Intelligence for Autonomous Resilience**
 
@@ -8,7 +8,7 @@ A platform that automates risk visibility from **regulation → materials → ma
 
 ## Core Value Proposition
 
-MIAR transforms supply chain risk from reactive crisis management to **autonomous resilience**:
+SOBapp transforms supply chain risk from reactive crisis management to **autonomous resilience**:
 
 - **Detection without manual audits** - Machine intelligence scans 3,421 BIS entities automatically
 - **Visibility without consulting engagements** - Real-time monitoring of 127 mining operations + 23 trade routes
@@ -38,7 +38,7 @@ MIAR transforms supply chain risk from reactive crisis management to **autonomou
 - Manual compliance checks don't scale
 - Ownership structures hide violations
 
-**MIAR Solution**:
+**SOBapp Solution**:
 - Upload supplier CSV → Get compliance report in 48 hours
 - Automatic ownership mapping (165+ relationships, expanding to 500+)
 - Alternative supplier recommendations
@@ -73,7 +73,7 @@ MIAR transforms supply chain risk from reactive crisis management to **autonomou
 - Single-source risks: 70% cobalt from DRC alone
 - One supply disruption = 6-12 month delay = $50M-$200M+ loss
 
-**MIAR Solution**:
+**SOBapp Solution**:
 - Live risk scores for lithium, cobalt, copper, nickel, rare earths
 - Geopolitical risk assessment (5 factors × country-level scoring)
 - Weekly risk briefings (free tier)
@@ -116,7 +116,7 @@ MIAR transforms supply chain risk from reactive crisis management to **autonomou
 - No visibility into shadow prices (marginal value of capacity expansion)
 - Static planning can't adapt to supply chain disruptions
 
-**MIAR Solution**:
+**SOBapp Solution**:
 - Network modeling reveals binding vs. non-binding constraints
 - Sensitivity analysis shows shadow prices (e.g., $8.2M per unit of cobalt processing capacity)
 - Scenario comparison (baseline vs. high demand vs. constrained supply)
@@ -147,7 +147,7 @@ MIAR transforms supply chain risk from reactive crisis management to **autonomou
 - Revenue loss from export violations
 - Manual checks don't scale
 
-**MIAR Offering**:
+**SOBapp Offering**:
 - Free scanner (first 10 companies)
 - $5K one-time assessment
 - $25K annual monitoring
@@ -165,7 +165,7 @@ MIAR transforms supply chain risk from reactive crisis management to **autonomou
 - 68% dependency on unstable African supply chains
 - Price volatility threatens project economics
 
-**MIAR Offering**:
+**SOBapp Offering**:
 - Weekly risk briefings (free)
 - $5K custom project assessment
 - $25K-$100K annual intelligence
@@ -183,7 +183,7 @@ MIAR transforms supply chain risk from reactive crisis management to **autonomou
 - Rare earth supply chain security
 - National security implications of Chinese dependency
 
-**MIAR Offering**:
+**SOBapp Offering**:
 - Combined compliance + minerals intelligence
 - $50K-$150K annual
 - Custom threat assessments
@@ -201,7 +201,7 @@ MIAR transforms supply chain risk from reactive crisis management to **autonomou
 - Lithium/cobalt/nickel sourcing
 - Production delays from material shortages
 
-**MIAR Offering**:
+**SOBapp Offering**:
 - Battery materials focus
 - Processing facility monitoring
 - Alternative chemistry analysis (LFP vs. NMC)
@@ -221,7 +221,7 @@ MIAR transforms supply chain risk from reactive crisis management to **autonomou
 - Hidden value in tailings reprocessing
 - Network position evaluation
 
-**MIAR Offering**:
+**SOBapp Offering**:
 - Custom M&A intelligence: $150K+ per deal
 - Deep-dive asset analysis
 - Network centrality scoring
@@ -247,7 +247,7 @@ Modern supply chains have three layers of risk:
 
 ---
 
-### The MIAR Solution: Autonomous Resilience
+### The SOBapp Solution: Autonomous Resilience
 
 **Machine-Intelligence** automates what consultants do manually:
 - Scan 3,421 entities vs. manual research
@@ -278,10 +278,10 @@ Modern supply chains have three layers of risk:
 ### vs. Compliance Software (Thomsen Reuters, LexisNexis)
 
 **Their approach**: Static entity list matching
-**MIAR advantage**: Multi-level ownership detection + automatic updates
+**SOBapp advantage**: Multi-level ownership detection + automatic updates
 
 **Their tagline**: "Compliance database"
-**MIAR tagline**: "Regulatory autopilot"
+**SOBapp tagline**: "Regulatory autopilot"
 
 **Difference**: Passive lookup vs. active monitoring
 
@@ -290,10 +290,10 @@ Modern supply chains have three layers of risk:
 ### vs. Supply Chain Consultants (McKinsey, BCG, Accenture)
 
 **Their approach**: 3-6 month engagements, static reports, quarterly reviews
-**MIAR advantage**: Real-time monitoring, 48-hour reports, continuous intelligence
+**SOBapp advantage**: Real-time monitoring, 48-hour reports, continuous intelligence
 
 **Their tagline**: "Strategic advisory"
-**MIAR tagline**: "Supply-chain radar"
+**SOBapp tagline**: "Supply-chain radar"
 
 **Difference**: Point-in-time snapshot vs. continuous surveillance
 
@@ -302,10 +302,10 @@ Modern supply chains have three layers of risk:
 ### vs. Planning Software (PLEXOS, HOMER, Aurora)
 
 **Their approach**: Unconstrained optimization (assumes infinite materials)
-**MIAR advantage**: Supply chain constraints integrated into optimization
+**SOBapp advantage**: Supply chain constraints integrated into optimization
 
 **Their tagline**: "Energy modeling"
-**MIAR tagline**: "Digital twin with supply chains"
+**SOBapp tagline**: "Digital twin with supply chains"
 
 **Difference**: Theoretical optimum vs. real-world feasibility
 
@@ -316,7 +316,7 @@ Modern supply chains have three layers of risk:
 ### For CFOs
 
 **Pain**: Capital misallocation, blocked shipments, project delays
-**Message**: "MIAR prevents $375M+ exposure for $100K annual investment"
+**Message**: "SOBapp prevents $375M+ exposure for $100K annual investment"
 **ROI Proof**: EVPI analysis with quantified decision value
 
 ### For Supply Chain Directors
@@ -347,7 +347,7 @@ Modern supply chains have three layers of risk:
 
 ## Elevator Pitch (30 seconds)
 
-**MIAR = Machine-Intelligence for Autonomous Resilience**
+**SOBapp = Machine-Intelligence for Autonomous Resilience**
 
 We automate supply chain risk visibility from regulation to materials to market response.
 
@@ -411,9 +411,9 @@ Three layers:
 
 ## Bottom Line
 
-**MIAR is not a compliance tool or a risk dashboard.**
+**SOBapp is not a compliance tool or a risk dashboard.**
 
-**MIAR is Machine-Intelligence for Autonomous Resilience.**
+**SOBapp is Machine-Intelligence for Autonomous Resilience.**
 
 It automates what takes consultants months. It monitors what quarterly reviews miss. It optimizes what spreadsheets can't model.
 
@@ -424,5 +424,5 @@ It automates what takes consultants months. It monitors what quarterly reviews m
 ---
 
 Generated: 2025-11-02
-Platform: MIAR - Machine-Intelligence for Autonomous Resilience
+Platform: SOBapp - Machine-Intelligence for Autonomous Resilience
 Status: STRATEGIC POSITIONING COMPLETE ✅

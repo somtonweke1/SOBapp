@@ -36,7 +36,7 @@ export interface SECOwnership {
 
 export class SECEdgarService {
   private readonly API_BASE_URL = 'https://data.sec.gov';
-  private readonly USER_AGENT = 'MIAR Supply Chain Scanner contact@miar.ai'; // Required by SEC
+  private readonly USER_AGENT = 'SOBapp Supply Chain Scanner contact@miar.ai'; // Required by SEC
   private readonly RATE_LIMIT_MS = 100; // SEC requires max 10 requests/second
   private lastRequestTime = 0;
 

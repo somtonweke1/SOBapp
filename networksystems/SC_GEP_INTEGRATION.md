@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the complete integration of the **Supply Chain-Constrained Generation Expansion Planning (SC-GEP)** model into the MIAR platform, based on the research paper:
+This document describes the complete integration of the **Supply Chain-Constrained Generation Expansion Planning (SC-GEP)** model into the SOBapp platform, based on the research paper:
 
 > **"Integrating Upstream Supply Chains into Generation Expansion Planning"**
 

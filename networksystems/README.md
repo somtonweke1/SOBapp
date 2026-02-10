@@ -1,4 +1,4 @@
-# MIAR - Supply Chain Risk Intelligence Platform
+# SOBapp - Supply Chain Risk Intelligence Platform
 
 🌍 **Dual-beachhead supply chain risk intelligence: BIS entity list compliance + critical minerals sourcing**
 
@@ -12,7 +12,7 @@
 
 # Overview
 
-**MIAR** is a research-grade supply chain risk intelligence platform. We help hardware companies, manufacturers, and energy companies solve two critical supply chain problems:
+**SOBapp** is a research-grade supply chain risk intelligence platform. We help hardware companies, manufacturers, and energy companies solve two critical supply chain problems:
 
 1. **BIS Entity List Compliance** (URGENT) - Are your suppliers affected by the expanded entity list?
 2. **Critical Minerals Risk** (STRATEGIC) - Can you secure lithium, cobalt, copper, rare earths reliably?
@@ -23,13 +23,13 @@
 
 ### The Value Chain
 
-**MIAR isn't a data platform. It's a decision intelligence engine.**
+**SOBapp isn't a data platform. It's a decision intelligence engine.**
 
 Our technology infrastructure (network modeling) enables you to see system structure, compute optimal decisions, and quantify information value.
 
 ### 1. Core Technology Layer (Network Modeling)
 
-**What Powers MIAR:**
+**What Powers SOBapp:**
 - **Supply Chain Networks**: Node-flow graphs mapping materials, processing, transport, zones
 - **SC-GEP Optimization**: Supply Chain General Equilibrium Programming with constraint-based optimization
 - **Graph Analytics**: Centrality detection, bottleneck identification, flow optimization
@@ -49,7 +49,7 @@ Our technology infrastructure (network modeling) enables you to see system struc
 
 **From Insights to EVPI (Expected Value of Perfect Information):**
 
-| Decision Type | Without MIAR | With MIAR | EVPI (Max Value) | Cost | Net Benefit | ROI |
+| Decision Type | Without SOBapp | With SOBapp | EVPI (Max Value) | Cost | Net Benefit | ROI |
 |---------------|--------------|-----------|------------------|------|-------------|-----|
 | **Compliance Decisions** | -$8.6M (blocked shipments) | +$1.2M (informed sourcing) | **$9.8M** | $85K | $9.72M | **115x** |
 | **Sourcing Timing** | -$47M (poor contract timing) | +$28M (optimal timing) | **$75M** | $120K | $74.88M | **624x** |
@@ -64,13 +64,13 @@ Network modeling technology reveals:
 
 ### Example: Capital Allocation Decision
 
-**Without MIAR:**
+**Without SOBapp:**
 - Company invests $280M across all supply chain constraints equally
 - Blind optimization treats all constraints as equal priority
 - True bottlenecks remain unaddressed
 - **Result**: -$187M loss from capital misallocation
 
-**With MIAR:**
+**With SOBapp:**
 - Network model + sensitivity analysis reveals:
   - Cobalt processing = 92% of total constraint value (shadow price: $8.2M per unit)
   - Lithium lead times = 12% of value (shadow price: $1.4M per week)
@@ -315,8 +315,8 @@ Visit [/risk-report](https://networksystems.vercel.app/risk-report) for a Conste
 
 ```bash
 # Clone repository
-git clone https://github.com/somtonweke1/MIAR.git
-cd MIAR/networksystems
+git clone https://github.com/somtonweke1/SOBapp.git
+cd SOBapp/networksystems
 
 # Install dependencies
 npm install --legacy-peer-deps
@@ -423,7 +423,7 @@ Constellation planned 5GW of battery storage requiring 50,000 tons of critical m
 
 ---
 
-## Why MIAR Wins
+## Why SOBapp Wins
 
 ### **1. Research-Grade Data Quality**
 Academic rigor meets commercial speed. Our data is validated, not scraped.

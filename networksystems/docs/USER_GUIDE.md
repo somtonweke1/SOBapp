@@ -1,6 +1,6 @@
-# MIAR Platform User Guide
+# SOBapp Platform User Guide
 
-Welcome to the Mining Intelligence & Analytics (MIAR) platform! This comprehensive guide will help you get started and make the most of the platform's powerful features.
+Welcome to the Mining Intelligence & Analytics (SOBapp) platform! This comprehensive guide will help you get started and make the most of the platform's powerful features.
 
 ## Table of Contents
 

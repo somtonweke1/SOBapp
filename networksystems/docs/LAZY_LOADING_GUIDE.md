@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide explains how to use lazy loading and code splitting in the MIAR platform to improve performance and reduce bundle sizes.
+This guide explains how to use lazy loading and code splitting in the SOBapp platform to improve performance and reduce bundle sizes.
 
 ## Quick Start
 

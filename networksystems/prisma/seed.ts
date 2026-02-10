@@ -14,10 +14,10 @@ async function main() {
     update: {},
     create: {
       email: 'admin@miar.com',
-      name: 'MIAR Admin',
+      name: 'SOBapp Admin',
       hashedPassword,
       role: 'admin',
-      company: 'MIAR Platform',
+      company: 'SOBapp Platform',
       phone: '+1 (555) 123-4567',
       subscription: 'enterprise',
       permissions: JSON.stringify(['*']), // Full access

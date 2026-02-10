@@ -1,4 +1,4 @@
-# 🚀 MIAR Mining Intelligence - Vercel Deployment Guide
+# 🚀 SOBapp Mining Intelligence - Vercel Deployment Guide
 
 ## Quick Deploy to Vercel
 
@@ -70,7 +70,7 @@ curl https://your-deployment-url.vercel.app/api/mining/tailings-analysis
 Expected response:
 ```json
 {
-  "service": "MIAR Tailings Analysis API",
+  "service": "SOBapp Tailings Analysis API",
   "status": "operational",
   "capabilities": [
     "AI-powered recovery optimization",

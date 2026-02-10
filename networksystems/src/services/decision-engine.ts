@@ -2,7 +2,7 @@
  * Decision Engine
  *
  * Automatically generates decision options when constraints change.
- * This is what separates MIAR from BI tools - we don't show data, we show decisions.
+ * This is what separates SOBapp from BI tools - we don't show data, we show decisions.
  *
  * Key insight: Executives don't want dashboards. They want "Option 1, 2, or 3?"
  */

@@ -1,138 +1,194 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import CleanStoryLanding from '@/components/landing/clean-story-landing';
-import { AuthProvider, useAuth } from '@/components/auth/auth-provider';
-import { Button } from '@/components/ui/button';
-import { LogOut, Droplet } from 'lucide-react';
-import LiveMarketFeed from '@/components/dashboard/live-market-feed';
-import PFASSourceMappingDashboard from '@/components/pfas/source-mapping-dashboard';
-import RemediationROIDashboard from '@/components/pfas/remediation-roi-dashboard';
-import FoodSupplyChainDashboard from '@/components/pfas/food-supply-chain-dashboard';
-import WaterFoodModelDashboard from '@/components/pfas/water-food-model-dashboard';
-import PFASFlowDashboard from '@/components/pfas/pfas-flow-dashboard';
+import React, { useEffect, useMemo, useState } from 'react';
 
-type PFASTabType = 'source-mapping' | 'pfas-flow' | 'food-supply' | 'water-food-model' | 'remediation-roi' | 'live-monitoring';
-type PathwayStep = 'sources' | 'flow' | 'food-supply' | 'model' | 'remediation' | 'monitoring';
+import { SOB_FORENSICS } from '@/lib/forensics';
 
-// Mapping between pathway steps and tab types
-const pathwayToTab: Record<PathwayStep, PFASTabType> = {
-  'sources': 'source-mapping',
-  'flow': 'pfas-flow',
-  'food-supply': 'food-supply',
-  'model': 'water-food-model',
-  'remediation': 'remediation-roi',
-  'monitoring': 'live-monitoring'
+type AuditResult = {
+  isValid: boolean;
+  discrepancy: number;
 };
 
-const tabToPathway: Record<PFASTabType, PathwayStep> = {
-  'source-mapping': 'sources',
-  'pfas-flow': 'flow',
-  'food-supply': 'food-supply',
-  'water-food-model': 'model',
-  'remediation-roi': 'remediation',
-  'live-monitoring': 'monitoring'
+type DSCRResult = {
+  ratio: string;
+  isFundable: boolean;
 };
 
-function HomeContent() {
-  const { user, logout, isLoading } = useAuth();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [showLanding, setShowLanding] = useState(true);
-  const [pfasTab, setPfasTab] = useState<PFASTabType>('source-mapping');
+export default function SOBLandingPage() {
+  const [gallons, setGallons] = useState('');
+  const [totalBill, setTotalBill] = useState('');
+  const [auditResult, setAuditResult] = useState<AuditResult | null>(null);
 
-  // Handler for pathway navigation
-  const handlePathwayChange = (step: PathwayStep) => {
-    setPfasTab(pathwayToTab[step]);
-  };
+  const [rent, setRent] = useState('');
+  const [piti, setPiti] = useState('');
+  const [dscrResult, setDscrResult] = useState<DSCRResult | null>(null);
 
-  // Check if user just logged in and should go to platform
+  const gallonsValue = Number(gallons);
+  const billValue = Number(totalBill);
+  const rentValue = Number(rent);
+  const pitiValue = Number(piti);
+
+  const auditBreakdown = useMemo(() => {
+    if (!Number.isFinite(gallonsValue)) {
+      return null;
+    }
+    const ccf = gallonsValue / 748;
+    const expectedMax = (ccf * 17.64) + 41.43;
+    return { ccf, expectedMax };
+  }, [gallonsValue]);
+
+  const dscrBreakdown = useMemo(() => {
+    if (!Number.isFinite(rentValue) || !Number.isFinite(pitiValue) || pitiValue === 0) {
+      return null;
+    }
+    const noi = rentValue * 0.9;
+    const dscr = noi / pitiValue;
+    return { noi, dscr };
+  }, [rentValue, pitiValue]);
+
   useEffect(() => {
-    if (isLoading) return;
-
-    const accessParam = searchParams.get('access');
-    if (user && accessParam === 'platform') {
-      setShowLanding(false);
-      router.replace('/');
+    if (!Number.isFinite(gallonsValue) || !Number.isFinite(billValue)) {
+      setAuditResult(null);
+      return;
     }
-  }, [user, isLoading, searchParams, router]);
+    setAuditResult(SOB_FORENSICS.auditWaterBill(gallonsValue, billValue));
+  }, [gallonsValue, billValue]);
 
-  // Show landing page for public access (no user) or when explicitly requested
-  if (!user || showLanding) {
-    return <CleanStoryLanding />;
-  }
-
-  const renderActiveContent = () => {
-    switch (pfasTab) {
-      case 'source-mapping':
-        return <PFASSourceMappingDashboard onPathwayChange={handlePathwayChange} />;
-      case 'pfas-flow':
-        return <PFASFlowDashboard onPathwayChange={handlePathwayChange} />;
-      case 'food-supply':
-        return <FoodSupplyChainDashboard onPathwayChange={handlePathwayChange} />;
-      case 'water-food-model':
-        return <WaterFoodModelDashboard onPathwayChange={handlePathwayChange} />;
-      case 'remediation-roi':
-        return <RemediationROIDashboard onPathwayChange={handlePathwayChange} />;
-      case 'live-monitoring':
-        return <LiveMarketFeed onPathwayChange={handlePathwayChange} />;
-      default:
-        return <PFASSourceMappingDashboard onPathwayChange={handlePathwayChange} />;
+  useEffect(() => {
+    if (!Number.isFinite(rentValue) || !Number.isFinite(pitiValue) || pitiValue === 0) {
+      setDscrResult(null);
+      return;
     }
-  };
+    setDscrResult(SOB_FORENSICS.stressTestDSCR(rentValue, pitiValue));
+  }, [rentValue, pitiValue]);
 
-  // If user is authenticated, show the full Intelligence Platform
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100">
-      {/* Platform Header */}
-      <nav className="bg-white/95 backdrop-blur-md border-b border-zinc-200/50 sticky top-0 z-50">
-        <div className="max-w-[1800px] mx-auto px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-600">
-                  <Droplet className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <div className="text-xl font-light text-zinc-900">MIAR</div>
-                  <div className="text-xs text-zinc-500 font-light">PFAS Intelligence Platform</div>
-                </div>
+    <div className="min-h-screen bg-slate-900 text-slate-100">
+      <div className="mx-auto max-w-6xl px-6 py-12">
+        <header className="border-b border-slate-800 pb-10">
+          <p className="text-xs uppercase tracking-[0.4em] text-slate-500">Baltimore Real Estate Forensics</p>
+          <h1 className="mt-4 text-6xl font-black tracking-tight text-white">SOBapp</h1>
+          <p className="mt-4 text-xl text-slate-300">The Sons of Baltimore Forensics Engine</p>
+        </header>
+
+        <main className="mt-10 grid gap-8 lg:grid-cols-2">
+          <section className="rounded-2xl border border-slate-800 bg-black/60 p-8 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-semibold text-white">DPW Water Bill Audit</h2>
+                <p className="mt-2 text-sm text-slate-400">$17.64 CCF math plus fixed service baseline.</p>
+              </div>
+              <span className="rounded-full border border-slate-700 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-slate-500">
+                Module A
+              </span>
+            </div>
+
+            <div className="mt-6 grid gap-4">
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="Total Gallons"
+                value={gallons}
+                onChange={(event) => setGallons(event.target.value)}
+                className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+              />
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="Total Bill Amount ($)"
+                value={totalBill}
+                onChange={(event) => setTotalBill(event.target.value)}
+                className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+              />
+              <div className="rounded-lg border border-slate-800 bg-slate-950/60 px-4 py-3 text-xs text-slate-400">
+                Auto-calculating as you type.
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="hidden md:block text-sm text-zinc-600 font-light">
-                {user?.name}
-              </div>
-              <Button
-                onClick={logout}
-                variant="outline"
-                size="sm"
-                className="text-zinc-600 hover:text-zinc-900"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Sign Out
-              </Button>
+            <div className="mt-6 rounded-xl border border-slate-800 bg-slate-950/70 p-4 text-sm text-slate-300">
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Forensics Logic</p>
+              <p className="mt-3 font-mono text-xs text-slate-400">
+                CCF = gallons / 748; expectedMax = (CCF * 17.64) + 41.43
+              </p>
+              {auditBreakdown && (
+                <div className="mt-3 grid gap-2 text-xs text-slate-400">
+                  <p>Computed CCF: {auditBreakdown.ccf.toFixed(2)}</p>
+                  <p>Expected Max: ${auditBreakdown.expectedMax.toFixed(2)}</p>
+                </div>
+              )}
+              {auditResult && (
+                <div className="mt-4 space-y-2">
+                  <p className={auditResult.isValid ? 'text-emerald-400' : 'text-amber-400'}>
+                    Status: {auditResult.isValid ? 'Within Expected Range' : 'Over Benchmark'}
+                  </p>
+                  <p className="text-slate-400">
+                    Discrepancy: ${auditResult.discrepancy.toFixed(2)}
+                  </p>
+                </div>
+              )}
             </div>
-          </div>
-        </div>
-      </nav>
+          </section>
 
-      {/* Main Content */}
-      <main className="p-6">
-        <div className="max-w-[1800px] mx-auto">
-          {renderActiveContent()}
-        </div>
-      </main>
+          <section className="rounded-2xl border border-slate-800 bg-black/60 p-8 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-semibold text-white">DSCR Stress-Test</h2>
+                <p className="mt-2 text-sm text-slate-400">$1.25 lender floor with NOI stress.</p>
+              </div>
+              <span className="rounded-full border border-slate-700 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-slate-500">
+                Module B
+              </span>
+            </div>
+
+            <div className="mt-6 grid gap-4">
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="Monthly Rent ($)"
+                value={rent}
+                onChange={(event) => setRent(event.target.value)}
+                className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+              />
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="Monthly Debt Service (PITI)"
+                value={piti}
+                onChange={(event) => setPiti(event.target.value)}
+                className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+              />
+              <div className="rounded-lg border border-slate-800 bg-slate-950/60 px-4 py-3 text-xs text-slate-400">
+                Auto-calculating as you type.
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-xl border border-slate-800 bg-slate-950/70 p-4 text-sm text-slate-300">
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Forensics Logic</p>
+              <p className="mt-3 font-mono text-xs text-slate-400">
+                NOI = rent * 0.90; DSCR = NOI / PITI
+              </p>
+              {dscrBreakdown && (
+                <div className="mt-3 grid gap-2 text-xs text-slate-400">
+                  <p>NOI (90%): ${dscrBreakdown.noi.toFixed(2)}</p>
+                  <p>DSCR: {dscrBreakdown.dscr.toFixed(2)}</p>
+                </div>
+              )}
+              {dscrResult && (
+                <div className="mt-4 space-y-2">
+                  <p className={dscrResult.isFundable ? 'text-emerald-400' : 'text-amber-400'}>
+                    Status: {dscrResult.isFundable ? 'Fundable' : 'Below Lender Floor'}
+                  </p>
+                  <p className="text-slate-400">DSCR Ratio: {dscrResult.ratio}</p>
+                </div>
+              )}
+            </div>
+          </section>
+        </main>
+
+        <footer className="mt-12 border-t border-slate-800 pt-6 text-xs uppercase tracking-[0.3em] text-slate-500">
+          Powered by SOBapp Intelligence
+        </footer>
+      </div>
     </div>
-  );
-}
-
-export default function Home() {
-  return (
-    <AuthProvider>
-      <HomeContent />
-    </AuthProvider>
   );
 }

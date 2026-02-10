@@ -1,6 +1,6 @@
 /**
  * Accessibility Utilities
- * WCAG 2.1 AA compliant helpers for the MIAR platform
+ * WCAG 2.1 AA compliant helpers for the SOBapp platform
  */
 
 import React from 'react';

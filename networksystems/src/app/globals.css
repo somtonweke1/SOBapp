@@ -3,81 +3,84 @@
 @tailwind utilities;
 
 /**
- * MIAR Design System - CSS Custom Properties
- * Based on Swiss minimal design principles with WCAG AA compliance
+ * SOBapp Design System - CSS Custom Properties
+ * Dark-mode foundation with Baltimore Blue + Audit Green accents
  */
 :root {
-  /* Brand Colors - Emerald (Primary) */
-  --color-primary: #059669;
-  --color-primary-dark: #047857;
-  --color-primary-light: #10b981;
+  /* Brand Colors */
+  --color-primary: #3b82f6; /* Baltimore Blue */
+  --color-primary-dark: #1d4ed8;
+  --color-primary-light: #60a5fa;
 
-  /* Neutral Colors - Zinc Scale (Swiss Minimal) */
-  --color-neutral-50: #fafafa;
-  --color-neutral-100: #f4f4f5;
-  --color-neutral-200: #e4e4e7;
-  --color-neutral-300: #d4d4d8;
-  --color-neutral-400: #a1a1aa;
-  --color-neutral-500: #71717a;
-  --color-neutral-600: #52525b;
-  --color-neutral-700: #3f3f46;
-  --color-neutral-800: #27272a;
-  --color-neutral-900: #18181b;
+  --color-accent: #22c55e; /* Audit Green */
+  --color-accent-dark: #16a34a;
+  --color-accent-light: #4ade80;
 
-  /* Functional Colors - Status Indicators */
-  --color-success: #059669;
-  --color-success-bg: #f0fdf4;
-  --color-success-border: #bbf7d0;
-  --color-success-text: #166534;
+  /* Neutral Colors - Slate Scale */
+  --color-neutral-50: #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b;
+  --color-neutral-900: #0f172a;
+
+  /* Functional Colors */
+  --color-success: #22c55e;
+  --color-success-bg: #052e16;
+  --color-success-border: #14532d;
+  --color-success-text: #86efac;
 
   --color-error: #ef4444;
-  --color-error-bg: #fef2f2;
-  --color-error-border: #fecaca;
-  --color-error-text: #991b1b;
+  --color-error-bg: #450a0a;
+  --color-error-border: #7f1d1d;
+  --color-error-text: #fecaca;
 
   --color-warning: #f59e0b;
-  --color-warning-bg: #fffbeb;
-  --color-warning-border: #fed7aa;
-  --color-warning-text: #92400e;
+  --color-warning-bg: #451a03;
+  --color-warning-border: #78350f;
+  --color-warning-text: #fde68a;
 
   --color-info: #3b82f6;
-  --color-info-bg: #eff6ff;
-  --color-info-border: #bfdbfe;
-  --color-info-text: #1e40af;
+  --color-info-bg: #0b1d3a;
+  --color-info-border: #1e3a8a;
+  --color-info-text: #bfdbfe;
 
-  /* Severity Colors - Consistent System */
-  --color-critical: #e11d48;
-  --color-critical-bg: #fff1f2;
-  --color-critical-border: #fecdd3;
-  --color-critical-text: #881337;
+  /* Severity Colors */
+  --color-critical: #f43f5e;
+  --color-critical-bg: #4c0519;
+  --color-critical-border: #9f1239;
+  --color-critical-text: #fecdd3;
 
   /* Background & Surface Colors */
-  --color-background: #ffffff;
-  --color-surface: #fafafa;
-  --color-surface-elevated: #ffffff;
+  --color-background: #0f172a;
+  --color-surface: #111827;
+  --color-surface-elevated: #0b1120;
 
   /* Text Colors */
-  --color-text-primary: #18181b;
-  --color-text-secondary: #52525b;
-  --color-text-tertiary: #71717a;
-  --color-text-disabled: #a1a1aa;
+  --color-text-primary: #e2e8f0;
+  --color-text-secondary: #94a3b8;
+  --color-text-tertiary: #64748b;
+  --color-text-disabled: #475569;
 
   /* Border Colors */
-  --color-border: #e4e4e7;
-  --color-border-hover: #d4d4d8;
+  --color-border: #1f2937;
+  --color-border-hover: #334155;
 
   /* Legacy support */
-  --foreground-rgb: 24, 24, 27;
-  --background-start-rgb: 250, 250, 250;
-  --background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 226, 232, 240;
+  --background-start-rgb: 15, 23, 42;
+  --background-end-rgb: 2, 6, 23;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark mode overrides (future enhancement) */
-    --foreground-rgb: 250, 250, 250;
-    --background-start-rgb: 24, 24, 27;
-    --background-end-rgb: 24, 24, 27;
+    --foreground-rgb: 226, 232, 240;
+    --background-start-rgb: 15, 23, 42;
+    --background-end-rgb: 2, 6, 23;
   }
 }
 

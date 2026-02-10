@@ -2,7 +2,7 @@
 
 ## ✅ Integration Complete
 
-The **Supply Chain-Constrained Generation Expansion Planning (SC-GEP)** system has been successfully integrated into the MIAR platform.
+The **Supply Chain-Constrained Generation Expansion Planning (SC-GEP)** system has been successfully integrated into the SOBapp platform.
 
 ---
 
@@ -46,7 +46,7 @@ The **Supply Chain-Constrained Generation Expansion Planning (SC-GEP)** system h
 - ✅ Reliability metrics tracking
 
 **Design:**
-- Swiss-inspired minimalist design (consistent with MIAR brand)
+- Swiss-inspired minimalist design (consistent with SOBapp brand)
 - Responsive grid layouts
 - Interactive metric cards
 - Loading states and error handling
@@ -252,13 +252,13 @@ networksystems/
 
 ---
 
-## 🔄 Integration with Existing MIAR Platform
+## 🔄 Integration with Existing SOBapp Platform
 
 ### Seamless Integration
-The SC-GEP module integrates perfectly with MIAR's existing architecture:
+The SC-GEP module integrates perfectly with SOBapp's existing architecture:
 
 ✅ **Design System Compliance**
-- Uses MIAR's zinc/gray color palette
+- Uses SOBapp's zinc/gray color palette
 - Swiss minimalist aesthetic
 - Glassmorphism effects
 - Consistent typography (Inter font)

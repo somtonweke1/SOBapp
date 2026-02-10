@@ -155,7 +155,7 @@ export class PDFExportService {
 
     doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
-    doc.text('MIAR', 26, 20);
+    doc.text('SOBapp', 26, 20);
 
     // Report title
     doc.setFontSize(18);
@@ -344,7 +344,7 @@ export class PDFExportService {
       doc.setFontSize(8);
       doc.setTextColor(150, 150, 150);
       doc.text(
-        `Page ${i} of ${pageCount} | MIAR Platform - Confidential`,
+        `Page ${i} of ${pageCount} | SOBapp Platform - Confidential`,
         105,
         285,
         { align: 'center' }

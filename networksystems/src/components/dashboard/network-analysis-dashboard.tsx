@@ -86,7 +86,7 @@ const NetworkAnalysisDashboard: React.FC = () => {
           <div className="text-center mb-6">
             <h2 className="text-xl font-medium text-zinc-900 mb-2">Africa Controls the World's Critical Mineral Supply Chains</h2>
             <p className="text-zinc-700 max-w-4xl mx-auto">
-              MIAR's network analysis reveals the invisible connections that make Africa the linchpin of global supply chains.
+              SOBapp's network analysis reveals the invisible connections that make Africa the linchpin of global supply chains.
               Understanding these networks is essential for mining companies, governments, and investors worldwide.
             </p>
           </div>

@@ -1,6 +1,6 @@
-# MIAR Platform API Documentation
+# SOBapp Platform API Documentation
 
-Comprehensive API documentation for the Mining Intelligence & Analytics (MIAR) platform.
+Comprehensive API documentation for the Mining Intelligence & Analytics (SOBapp) platform.
 
 ## Table of Contents
 
@@ -19,7 +19,7 @@ Comprehensive API documentation for the Mining Intelligence & Analytics (MIAR) p
 
 ## Overview
 
-The MIAR platform provides a RESTful API for accessing supply chain analytics, mining intelligence, market data, and machine learning predictions.
+The SOBapp platform provides a RESTful API for accessing supply chain analytics, mining intelligence, market data, and machine learning predictions.
 
 ### Base URL
 
@@ -1377,10 +1377,10 @@ Cache-Control: public, max-age=300
 npm install @miar/platform-sdk
 
 // Initialize
-import { MIARClient } from '@miar/platform-sdk';
+import { SOBappClient } from '@miar/platform-sdk';
 
-const client = new MIARClient({
-  apiKey: process.env.MIAR_API_KEY,
+const client = new SOBappClient({
+  apiKey: process.env.SOBapp_API_KEY,
   baseURL: 'https://miar-platform.com/api'
 });
 
@@ -1414,10 +1414,10 @@ const commodities = await client.marketData.getCommodities({
 pip install miar-platform-sdk
 
 # Initialize
-from miar import MIARClient
+from miar import SOBappClient
 
-client = MIARClient(
-    api_key=os.environ['MIAR_API_KEY'],
+client = SOBappClient(
+    api_key=os.environ['SOBapp_API_KEY'],
     base_url='https://miar-platform.com/api'
 )
 
