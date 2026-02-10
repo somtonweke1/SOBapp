@@ -78,6 +78,12 @@ export default function SOBLandingPage() {
               Enter War Room
             </Link>
             <Link
+              href="/audit"
+              className="rounded-lg border border-zinc-300 px-6 py-3 text-sm font-semibold text-zinc-700 transition hover:border-zinc-400 hover:text-zinc-900"
+            >
+              Start Audit
+            </Link>
+            <Link
               href="/deal-shield"
               className="rounded-lg border border-zinc-300 px-6 py-3 text-sm font-semibold text-zinc-600 transition hover:border-zinc-400 hover:text-zinc-900"
             >

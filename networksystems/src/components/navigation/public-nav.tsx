@@ -22,7 +22,7 @@ export function PublicNav() {
           {/* Navigation Links */}
           <div className="flex items-center gap-6">
             <Link
-              href="/"
+              href="/audit"
               className="hidden md:flex items-center gap-2 text-sm font-light text-zinc-800 hover:text-emerald-600 transition-colors"
             >
               <Activity className="w-4 h-4" />

@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
           ${message ? `
           <div style="background-color: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #92400e; margin-top: 0;">Mining Challenges & Message</h3>
+            <h3 style="color: #92400e; margin-top: 0;">Property Distress Notes & Message</h3>
             <p style="white-space: pre-wrap;">${message}</p>
           </div>
           ` : ''}
@@ -56,7 +56,7 @@ Company: ${company}
 Email: ${email}
 Phone: ${phone || 'Not provided'}
 
-${message ? `Mining Challenges & Message:\n${message}\n` : ''}
+${message ? `Property Distress Notes & Message:\n${message}\n` : ''}
 
 Submitted from SOBapp Platform on ${new Date().toLocaleString()}
 Contact within 24 hours to schedule strategic briefing.

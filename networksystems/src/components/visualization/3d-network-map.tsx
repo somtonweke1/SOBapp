@@ -49,75 +49,82 @@ export default function ThreeDNetworkMap({
   const [isLoading, setIsLoading] = useState(true);
   const [selectedNodeData, setSelectedNodeData] = useState<NetworkNode | null>(null);
 
-  // Mock data for African mining network
+  const nodeTypeLabels: Record<NetworkNode['type'], string> = {
+    mining_site: 'Rowhouse Cluster',
+    processing_facility: 'Infrastructure Hub',
+    research_lab: 'DPW Audit Lab',
+    logistics_hub: 'Lien Logistics'
+  };
+
+  // Mock data for Baltimore infrastructure network
   const mockNodes: NetworkNode[] = [
     {
-      id: 'witwatersrand-gold',
+      id: 'north-avenue-cluster',
       type: 'mining_site',
-      name: 'Witwatersrand Gold Complex',
-      position: { lat: -26.2041, lng: 28.0473, elevation: 1753 },
+      name: 'North Ave Rowhouse Cluster',
+      position: { lat: 39.3114, lng: -76.6166, elevation: 12 },
       data: {
-        production: 285000,
+        production: 124,
         efficiency: 87.3,
         status: 'operational',
-        connections: ['johannesburg-proc', 'pretoria-lab']
+        connections: ['dpw-hub', 'lien-lab']
       }
     },
     {
-      id: 'copperbelt-zambia',
+      id: 'west-baltimore-core',
       type: 'mining_site',
-      name: 'Copperbelt Mining Complex',
-      position: { lat: -12.5, lng: 28.3, elevation: 1200 },
+      name: 'West Baltimore Core',
+      position: { lat: 39.2905, lng: -76.6349, elevation: 20 },
       data: {
-        production: 450000,
-        efficiency: 92.1,
+        production: 182,
+        efficiency: 82.1,
         status: 'operational',
-        connections: ['lusaka-hub', 'ndola-proc']
+        connections: ['harbor-logistics', 'dpw-hub']
       }
     },
     {
-      id: 'katanga-drc',
+      id: 'harbor-logistics',
       type: 'mining_site',
-      name: 'Katanga Cobalt Operations',
-      position: { lat: -10.7, lng: 26.2, elevation: 1100 },
+      name: 'Inner Harbor Logistics',
+      position: { lat: 39.2847, lng: -76.6082, elevation: 6 },
       data: {
-        production: 125000,
-        efficiency: 78.9,
-        status: 'operational',
-        connections: ['lubumbashi-proc', 'kinshasa-hub']
+        production: 96,
+        efficiency: 74.5,
+        status: 'maintenance',
+        connections: ['west-baltimore-core']
       }
     },
     {
-      id: 'johannesburg-proc',
+      id: 'dpw-hub',
       type: 'processing_facility',
-      name: 'Johannesburg Processing Hub',
-      position: { lat: -26.2044, lng: 28.0456, elevation: 1760 },
+      name: 'DPW Billing Hub',
+      position: { lat: 39.3007, lng: -76.6152, elevation: 18 },
       data: {
-        production: 180000,
-        efficiency: 89.7,
+        production: 210,
+        efficiency: 91.4,
         status: 'operational',
-        connections: ['witwatersrand-gold', 'cape-town-port']
+        connections: ['north-avenue-cluster', 'west-baltimore-core']
       }
     },
     {
-      id: 'pretoria-lab',
+      id: 'lien-lab',
       type: 'research_lab',
-      name: 'SOBapp Research Center',
-      position: { lat: -25.7479, lng: 28.2293, elevation: 1339 },
+      name: 'Lien Filing Intelligence',
+      position: { lat: 39.2989, lng: -76.5941, elevation: 10 },
       data: {
         production: 0,
-        efficiency: 95.2,
+        efficiency: 88.7,
         status: 'operational',
-        connections: ['witwatersrand-gold', 'johannesburg-proc']
+        connections: ['north-avenue-cluster']
       }
     }
   ];
 
   const mockEdges: NetworkEdge[] = [
-    { source: 'witwatersrand-gold', target: 'johannesburg-proc', type: 'transport', strength: 0.9, distance: 15 },
-    { source: 'witwatersrand-gold', target: 'pretoria-lab', type: 'data_flow', strength: 0.8, distance: 60 },
-    { source: 'copperbelt-zambia', target: 'katanga-drc', type: 'supply_chain', strength: 0.7, distance: 180 },
-    { source: 'johannesburg-proc', target: 'pretoria-lab', type: 'communication', strength: 0.85, distance: 55 }
+    { source: 'north-avenue-cluster', target: 'dpw-hub', type: 'data_flow', strength: 0.82, distance: 2 },
+    { source: 'north-avenue-cluster', target: 'lien-lab', type: 'communication', strength: 0.74, distance: 3 },
+    { source: 'west-baltimore-core', target: 'harbor-logistics', type: 'transport', strength: 0.61, distance: 4 },
+    { source: 'west-baltimore-core', target: 'north-avenue-cluster', type: 'supply_chain', strength: 0.68, distance: 2 }
   ];
 
   const activeNodes = nodes.length > 0 ? nodes : mockNodes;
@@ -128,7 +135,7 @@ export default function ThreeDNetworkMap({
 
     // Scene setup
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0e1a);
+    scene.background = new THREE.Color(0xf4f4f5);
     sceneRef.current = scene;
 
     // Camera setup
@@ -375,7 +382,7 @@ export default function ThreeDNetworkMap({
           <div className="space-y-1 text-sm text-zinc-700">
             <div className="flex justify-between">
               <span>Type:</span>
-              <span className="capitalize">{selectedNodeData.type.replace('_', ' ')}</span>
+              <span>{nodeTypeLabels[selectedNodeData.type]}</span>
             </div>
             <div className="flex justify-between">
               <span>Status:</span>
@@ -390,8 +397,8 @@ export default function ThreeDNetworkMap({
               <span className="text-blue-600">{selectedNodeData.data.efficiency.toFixed(1)}%</span>
             </div>
             <div className="flex justify-between">
-              <span>Production:</span>
-              <span className="text-amber-600">{selectedNodeData.data.production.toLocaleString()} t</span>
+              <span>Audit Volume:</span>
+              <span className="text-amber-600">{selectedNodeData.data.production.toLocaleString()}</span>
             </div>
             <div className="flex justify-between">
               <span>Location:</span>
@@ -416,32 +423,32 @@ export default function ThreeDNetworkMap({
           <div className="font-semibold mb-2 text-zinc-900">Network Legend:</div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-yellow-500 rounded"></div>
-            <span className="text-xs">Mining Sites</span>
+            <span className="text-xs">Rowhouse Clusters</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-blue-500 rounded-sm"></div>
-            <span className="text-xs">Processing Facilities</span>
+            <span className="text-xs">Infrastructure Hubs</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-            <span className="text-xs">Research Labs</span>
+            <span className="text-xs">DPW Audit Labs</span>
           </div>
           <div className="border-t border-zinc-200 pt-2 mt-2">
             <div className="flex items-center space-x-2">
               <div className="w-6 h-0.5 bg-orange-500"></div>
-              <span className="text-xs">Transport</span>
+              <span className="text-xs">Ownership Links</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-6 h-0.5 bg-cyan-400"></div>
-              <span className="text-xs">Communication</span>
+              <span className="text-xs">Billing Ties</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-6 h-0.5 bg-red-400"></div>
-              <span className="text-xs">Supply Chain</span>
+              <span className="text-xs">Lien Links</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-6 h-0.5 bg-teal-400"></div>
-              <span className="text-xs">Data Flow</span>
+              <span className="text-xs">Audit Feeds</span>
             </div>
           </div>
         </div>
