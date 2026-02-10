@@ -7,6 +7,7 @@ declare module 'next-auth' {
     name: string;
     role: string;
     subscription: string;
+    isSubscribed: boolean;
     company: string | null;
     permissions: string;
   }
@@ -18,6 +19,7 @@ declare module 'next-auth' {
       name: string;
       role: string;
       subscription: string;
+      isSubscribed: boolean;
       company: string | null;
       permissions: string;
     };
@@ -29,6 +31,7 @@ declare module 'next-auth/jwt' {
     id: string;
     role: string;
     subscription: string;
+    isSubscribed: boolean;
     permissions: string;
     company: string | null;
   }

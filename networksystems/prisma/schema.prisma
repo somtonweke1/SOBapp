@@ -23,6 +23,8 @@ model User {
   company        String?
   phone          String?
   subscription   String   @default("free") // free, starter, professional, enterprise
+  stripeCustomerId String? @unique
+  isSubscribed   Boolean  @default(false)
 
   // Permissions
   permissions    String   @default("[]") // JSON array of permission strings
@@ -43,7 +45,29 @@ model User {
   @@index([email])
   @@index([role])
   @@index([subscription])
+  @@index([isSubscribed])
   @@index([isActive, role])
+}
+
+model WaterAudit {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  meterReadCurrent Float
+  meterReadLast Float
+  totalBill     Float
+  serviceCharge Float?
+  sewerCharge   Float?
+  expectedBill  Float?
+  discrepancyAmount Float?
+  errorPercentage Float?
+  severity      String?
+  recommendation String?
+  createdAt     DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([userId, createdAt])
 }
 
 model Session {

@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import Link from 'next/link';
 import DPWAuditor from '@/components/deal-shield/DPWAuditor';
 import ThreeDNetworkMap from '@/components/visualization/3d-network-map';
+import { useSession } from 'next-auth/react';
 
 type AuditResult = {
   isError: boolean;
@@ -33,13 +34,36 @@ type StoredAudit = {
 export default function AuditPage() {
   const [saved, setSaved] = useState(false);
   const [latestAudit, setLatestAudit] = useState<StoredAudit | null>(null);
+  const { data: session } = useSession();
 
-  const handleAuditComplete = useCallback((payload: Omit<StoredAudit, 'timestamp'>) => {
+  const handleAuditComplete = useCallback(async (payload: Omit<StoredAudit, 'timestamp'>) => {
     const entry: StoredAudit = { ...payload, timestamp: new Date().toISOString() };
     localStorage.setItem('sobapp:lastAudit', JSON.stringify(entry));
     setSaved(true);
     setLatestAudit(entry);
-  }, []);
+    if (!session?.user?.id) return;
+
+    try {
+      await fetch('/api/audits', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          meterReadCurrent: payload.input.meterReadCurrent,
+          meterReadLast: payload.input.meterReadLast,
+          totalBill: payload.input.totalBill,
+          serviceCharge: payload.input.serviceCharge,
+          sewerCharge: payload.input.sewerCharge,
+          expectedBill: payload.result.expectedBill,
+          discrepancyAmount: Number(payload.result.discrepancyAmount),
+          errorPercentage: payload.result.errorPercentage,
+          severity: payload.result.severity,
+          recommendation: payload.result.recommendation,
+        }),
+      });
+    } catch (error) {
+      console.error('Failed to save audit:', error);
+    }
+  }, [session?.user?.id]);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-zinc-50 to-zinc-100 text-zinc-900">

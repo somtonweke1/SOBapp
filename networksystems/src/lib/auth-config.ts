@@ -63,6 +63,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           role: user.role,
           subscription: user.subscription,
+          isSubscribed: user.isSubscribed,
           company: user.company,
           permissions: user.permissions,
         };
@@ -85,8 +86,34 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = user.role;
         token.subscription = user.subscription;
+        token.isSubscribed = user.isSubscribed;
         token.permissions = user.permissions;
         token.company = user.company;
+      }
+
+      if (token.id) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: {
+              subscription: true,
+              isSubscribed: true,
+              permissions: true,
+              company: true,
+              role: true,
+            },
+          });
+
+          if (dbUser) {
+            token.subscription = dbUser.subscription;
+            token.isSubscribed = dbUser.isSubscribed;
+            token.permissions = dbUser.permissions;
+            token.company = dbUser.company;
+            token.role = dbUser.role;
+          }
+        } catch (error) {
+          console.error('Failed to refresh session token:', error);
+        }
       }
       return token;
     },
@@ -96,6 +123,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         session.user.subscription = token.subscription as string;
+        session.user.isSubscribed = token.isSubscribed as boolean;
         session.user.permissions = token.permissions as string;
         session.user.company = token.company as string | null;
       }
