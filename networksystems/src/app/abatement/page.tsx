@@ -98,6 +98,9 @@ export default function AbatementPage() {
           <p className="mt-3 text-slate-300">
             Draft a DPW dispute letter using the latest audit snapshot.
           </p>
+          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-1 text-xs uppercase tracking-[0.35em] text-emerald-300">
+            Premium Export
+          </div>
           <div className="mt-6 flex flex-wrap gap-4">
             <Link
               href="/audit"

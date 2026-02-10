@@ -72,10 +72,10 @@ export default function SOBLandingPage() {
           <p className="mt-4 text-xl text-slate-300">Baltimore Real Estate Forensics Engine</p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link
-              href="/audit"
+              href="/dashboard"
               className="rounded-lg bg-blue-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-400"
             >
-              Start Audit
+              Enter War Room
             </Link>
             <Link
               href="/deal-shield"
