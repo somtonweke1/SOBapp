@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { TrendingUp, AlertTriangle, CheckCircle, XCircle, Calculator, BarChart3 } from 'lucide-react';
+import { TrendingUp, AlertTriangle, CheckCircle, XCircle, Calculator } from 'lucide-react';
 import { SOB_FORENSICS } from '@/lib/forensics';
 
 interface DSCRResult {
@@ -111,15 +111,12 @@ export default function DSCRStressTest() {
     <div className="space-y-6">
       {/* Info Banner */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="flex items-start space-x-3">
-          <BarChart3 className="h-5 w-5 text-blue-600 mt-0.5" />
-          <div className="flex-1">
-            <h3 className="text-sm font-semibold text-blue-900">DSCR Stress Test</h3>
-            <p className="text-sm text-blue-700 mt-1">
-              Analyze real estate deals for fundability. DSCR (Debt Service Coverage Ratio) measures a property's
-              ability to cover debt payments. Most lenders require DSCR ≥ 1.25.
-            </p>
-          </div>
+        <div>
+          <h3 className="text-sm font-semibold text-blue-900">DSCR Stress Test</h3>
+          <p className="text-sm text-blue-700 mt-1">
+            Analyze real estate deals for fundability. DSCR (Debt Service Coverage Ratio) measures a property's
+            ability to cover debt payments. Most lenders require DSCR ≥ 1.25.
+          </p>
         </div>
       </div>
 
