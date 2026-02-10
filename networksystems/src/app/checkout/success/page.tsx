@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function CheckoutSuccessPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [progress, setProgress] = useState(0);
+  const sessionId = searchParams.get('session_id');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -13,14 +15,17 @@ export default function CheckoutSuccessPage() {
     }, 200);
 
     const redirectTimer = setTimeout(() => {
-      router.replace('/dashboard?from=success');
+      const target = sessionId
+        ? `/dashboard?from=success&session_id=${encodeURIComponent(sessionId)}`
+        : '/dashboard?from=success';
+      router.replace(target);
     }, 3000);
 
     return () => {
       clearTimeout(timer);
       clearTimeout(redirectTimer);
     };
-  }, [router]);
+  }, [router, sessionId]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-black to-zinc-950 text-white flex items-center justify-center px-6">
