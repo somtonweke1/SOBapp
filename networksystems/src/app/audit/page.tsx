@@ -59,7 +59,7 @@ export default function AuditPage() {
               href="/auth/signup"
               className="rounded-lg border border-emerald-200 px-5 py-2 text-sm font-semibold text-emerald-600 transition hover:border-emerald-300"
             >
-              Generate Legal Abatement Letter (Sons of Baltimore Members Only)
+              Generate Legal Abatement Letter (SOBapp Members Only)
             </Link>
             <Link
               href="/deal-shield"
