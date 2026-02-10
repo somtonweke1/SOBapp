@@ -99,12 +99,12 @@ export default function BaltimoreNetworkPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 shadow-sm">
+      <div className="bg-white/95 border-b border-zinc-200/50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h1 className="text-2xl font-bold text-slate-900">Baltimore Property Network 3D</h1>
-          <p className="text-sm text-slate-600 mt-1">
+          <h1 className="text-2xl font-extralight text-zinc-900 tracking-tight">Baltimore Property Network 3D</h1>
+          <p className="text-sm text-zinc-600 mt-1 font-light">
             Network visualization of properties, liens, and billing tiers
           </p>
         </div>
@@ -114,11 +114,11 @@ export default function BaltimoreNetworkPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Main Visualization */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+            <div className="bg-white/95 rounded-lg shadow-sm border border-zinc-200/50 overflow-hidden">
               <div className="h-[600px] relative">
                 {loading ? (
                   <div className="flex items-center justify-center h-full">
-                    <div className="text-slate-500">Loading 3D Network...</div>
+                    <div className="text-zinc-500">Loading 3D Network...</div>
                   </div>
                 ) : (
                   <BaltimorePropertyNetwork3D
@@ -133,26 +133,26 @@ export default function BaltimoreNetworkPage() {
 
           {/* Sidebar - Node Details */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 sticky top-6">
-              <h2 className="text-lg font-semibold text-slate-900 mb-4">Property Details</h2>
+            <div className="bg-white/95 rounded-lg shadow-sm border border-zinc-200/50 p-6 sticky top-6">
+              <h2 className="text-lg font-semibold text-zinc-900 mb-4">Property Details</h2>
               
               {selectedNode ? (
                 <div className="space-y-4">
                   <div>
                     <div className="flex items-center space-x-2 mb-2">
-                      <Home className="h-4 w-4 text-slate-500" />
-                      <span className="font-medium text-slate-900">Address</span>
+                      <Home className="h-4 w-4 text-zinc-500" />
+                      <span className="font-medium text-zinc-900">Address</span>
                     </div>
-                    <p className="text-sm text-slate-700">{selectedNode.address}</p>
+                    <p className="text-sm text-zinc-700">{selectedNode.address}</p>
                   </div>
 
                   {selectedNode.ward && (
                     <div>
                       <div className="flex items-center space-x-2 mb-2">
-                        <MapPin className="h-4 w-4 text-slate-500" />
-                        <span className="font-medium text-slate-900">Ward/Section</span>
+                        <MapPin className="h-4 w-4 text-zinc-500" />
+                        <span className="font-medium text-zinc-900">Ward/Section</span>
                       </div>
-                      <p className="text-sm text-slate-700">
+                      <p className="text-sm text-zinc-700">
                         {selectedNode.ward} / {selectedNode.section}
                       </p>
                     </div>
@@ -161,23 +161,23 @@ export default function BaltimoreNetworkPage() {
                   {selectedNode.lastSale && (
                     <div>
                       <div className="flex items-center space-x-2 mb-2">
-                        <DollarSign className="h-4 w-4 text-slate-500" />
-                        <span className="font-medium text-slate-900">Last Sale</span>
+                        <DollarSign className="h-4 w-4 text-zinc-500" />
+                        <span className="font-medium text-zinc-900">Last Sale</span>
                       </div>
-                      <p className="text-sm text-slate-700">
+                      <p className="text-sm text-zinc-700">
                         ${selectedNode.lastSale.amount.toLocaleString()}
                       </p>
-                      <p className="text-xs text-slate-500">{selectedNode.lastSale.date}</p>
+                      <p className="text-xs text-zinc-500">{selectedNode.lastSale.date}</p>
                     </div>
                   )}
 
                   <div>
                     <div className="flex items-center space-x-2 mb-2">
-                      <AlertTriangle className="h-4 w-4 text-slate-500" />
-                      <span className="font-medium text-slate-900">Distress Score</span>
+                      <AlertTriangle className="h-4 w-4 text-zinc-500" />
+                      <span className="font-medium text-zinc-900">Distress Score</span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <div className="flex-1 bg-slate-200 rounded-full h-2">
+                      <div className="flex-1 bg-zinc-200 rounded-full h-2">
                         <div
                           className={`h-2 rounded-full ${
                             selectedNode.distressScore > 70
@@ -189,7 +189,7 @@ export default function BaltimoreNetworkPage() {
                           style={{ width: `${selectedNode.distressScore}%` }}
                         />
                       </div>
-                      <span className="text-sm font-medium text-slate-700">
+                      <span className="text-sm font-medium text-zinc-700">
                         {selectedNode.distressScore.toFixed(0)}
                       </span>
                     </div>
@@ -203,7 +203,7 @@ export default function BaltimoreNetworkPage() {
                             selectedNode.dpwAuditResult.hasError ? 'text-red-500' : 'text-green-500'
                           }`}
                         />
-                        <span className="font-medium text-slate-900">DPW Audit</span>
+                        <span className="font-medium text-zinc-900">DPW Audit</span>
                       </div>
                       {selectedNode.dpwAuditResult.hasError ? (
                         <div className="bg-red-50 border border-red-200 rounded p-2">
@@ -224,14 +224,14 @@ export default function BaltimoreNetworkPage() {
                   )}
 
                   <div>
-                    <span className="text-xs font-medium text-slate-700">Liens</span>
-                    <p className="text-sm text-slate-600">
+                    <span className="text-xs font-medium text-zinc-700">Liens</span>
+                    <p className="text-sm text-zinc-600">
                       {selectedNode.lienCount} active • ${selectedNode.totalLienAmount.toLocaleString()} total
                     </p>
                   </div>
                 </div>
               ) : (
-                <div className="text-sm text-slate-500">
+                <div className="text-sm text-zinc-500">
                   Click on a property node to view details
                 </div>
               )}
@@ -242,4 +242,3 @@ export default function BaltimoreNetworkPage() {
     </div>
   );
 }
-

@@ -361,18 +361,18 @@ export default function ThreeDNetworkMap({
       <div ref={mountRef} className="w-full h-full" />
 
       {isLoading && (
-        <div className="absolute inset-0 bg-zinc-900 bg-opacity-75 flex items-center justify-center">
+        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-            <div className="mt-4 text-white">Loading 3D Network Map...</div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
+            <div className="mt-4 text-zinc-600 font-light">Loading 3D Network Map...</div>
           </div>
         </div>
       )}
 
       {selectedNodeData && (
-        <div className="absolute top-4 right-4 bg-zinc-900 bg-opacity-90 text-white p-4 rounded-lg max-w-sm">
-          <h3 className="text-lg font-bold mb-2">{selectedNodeData.name}</h3>
-          <div className="space-y-1 text-sm">
+        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm text-zinc-900 p-4 rounded-lg max-w-sm border border-zinc-200/50 shadow-lg">
+          <h3 className="text-lg font-semibold mb-2">{selectedNodeData.name}</h3>
+          <div className="space-y-1 text-sm text-zinc-700">
             <div className="flex justify-between">
               <span>Type:</span>
               <span className="capitalize">{selectedNodeData.type.replace('_', ' ')}</span>
@@ -380,40 +380,40 @@ export default function ThreeDNetworkMap({
             <div className="flex justify-between">
               <span>Status:</span>
               <span className={`capitalize ${
-                selectedNodeData.data.status === 'operational' ? 'text-green-400' : 'text-red-400'
+                selectedNodeData.data.status === 'operational' ? 'text-emerald-600' : 'text-rose-600'
               }`}>
                 {selectedNodeData.data.status}
               </span>
             </div>
             <div className="flex justify-between">
               <span>Efficiency:</span>
-              <span className="text-blue-400">{selectedNodeData.data.efficiency.toFixed(1)}%</span>
+              <span className="text-blue-600">{selectedNodeData.data.efficiency.toFixed(1)}%</span>
             </div>
             <div className="flex justify-between">
               <span>Production:</span>
-              <span className="text-yellow-400">{selectedNodeData.data.production.toLocaleString()} t</span>
+              <span className="text-amber-600">{selectedNodeData.data.production.toLocaleString()} t</span>
             </div>
             <div className="flex justify-between">
               <span>Location:</span>
-              <span className="text-zinc-300">
+              <span className="text-zinc-500">
                 {selectedNodeData.position.lat.toFixed(3)}, {selectedNodeData.position.lng.toFixed(3)}
               </span>
             </div>
             <div className="flex justify-between">
               <span>Elevation:</span>
-              <span className="text-zinc-300">{selectedNodeData.position.elevation}m</span>
+              <span className="text-zinc-500">{selectedNodeData.position.elevation}m</span>
             </div>
             <div className="flex justify-between">
               <span>Connections:</span>
-              <span className="text-emerald-400">{selectedNodeData.data.connections.length}</span>
+              <span className="text-emerald-600">{selectedNodeData.data.connections.length}</span>
             </div>
           </div>
         </div>
       )}
 
-      <div className="absolute bottom-4 left-4 bg-zinc-900 bg-opacity-90 text-white p-3 rounded-lg">
+      <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm text-zinc-700 p-3 rounded-lg border border-zinc-200/50 shadow-lg">
         <div className="text-sm space-y-2">
-          <div className="font-semibold mb-2">Network Legend:</div>
+          <div className="font-semibold mb-2 text-zinc-900">Network Legend:</div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-yellow-500 rounded"></div>
             <span className="text-xs">Mining Sites</span>
@@ -426,7 +426,7 @@ export default function ThreeDNetworkMap({
             <div className="w-3 h-3 bg-green-500 rounded-full"></div>
             <span className="text-xs">Research Labs</span>
           </div>
-          <div className="border-t border-zinc-600 pt-2 mt-2">
+          <div className="border-t border-zinc-200 pt-2 mt-2">
             <div className="flex items-center space-x-2">
               <div className="w-6 h-0.5 bg-orange-500"></div>
               <span className="text-xs">Transport</span>

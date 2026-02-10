@@ -90,27 +90,27 @@ export default function AbatementPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 text-zinc-900">
       <div className="mx-auto max-w-5xl px-6 py-12">
-        <header className="border-b border-slate-800 pb-8">
-          <p className="text-xs uppercase tracking-[0.4em] text-slate-500">SOBapp Abatement</p>
+        <header className="border-b border-zinc-200/50 pb-8">
+          <p className="text-xs uppercase tracking-[0.4em] text-zinc-500">SOBapp Abatement</p>
           <h1 className="mt-4 text-4xl font-semibold">Notice of Dispute Generator</h1>
-          <p className="mt-3 text-slate-300">
+          <p className="mt-3 text-zinc-600">
             Draft a DPW dispute letter using the latest audit snapshot.
           </p>
-          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-1 text-xs uppercase tracking-[0.35em] text-emerald-300">
+          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-1 text-xs uppercase tracking-[0.35em] text-emerald-600">
             Premium Export
           </div>
           <div className="mt-6 flex flex-wrap gap-4">
             <Link
               href="/audit"
-              className="rounded-lg border border-slate-700 px-5 py-2 text-sm font-semibold text-slate-200 transition hover:border-slate-500"
+              className="rounded-lg border border-zinc-300 px-5 py-2 text-sm font-semibold text-zinc-600 transition hover:border-zinc-400 hover:text-zinc-900"
             >
               Back to Audit
             </Link>
             <Link
               href="/deal-shield"
-              className="rounded-lg border border-emerald-500/40 px-5 py-2 text-sm font-semibold text-emerald-300 transition hover:border-emerald-400"
+              className="rounded-lg border border-emerald-200 px-5 py-2 text-sm font-semibold text-emerald-600 transition hover:border-emerald-300"
             >
               DSCR Stress Test
             </Link>
@@ -118,86 +118,86 @@ export default function AbatementPage() {
         </header>
 
         <div className="mt-8 grid gap-6">
-          <div className="rounded-2xl border border-slate-800 bg-black/60 p-6">
+          <div className="rounded-2xl border border-zinc-200/50 bg-white/80 p-6">
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <label className="text-sm text-slate-400">Owner Name</label>
+                <label className="text-sm text-zinc-600">Owner Name</label>
                 <input
                   value={ownerName}
                   onChange={(e) => setOwnerName(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="mt-2 w-full rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-sm text-zinc-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   placeholder="Jane Doe"
                 />
               </div>
               <div>
-                <label className="text-sm text-slate-400">Property Address</label>
+                <label className="text-sm text-zinc-600">Property Address</label>
                 <input
                   value={propertyAddress}
                   onChange={(e) => setPropertyAddress(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="mt-2 w-full rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-sm text-zinc-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   placeholder="123 N Charles St, Baltimore, MD"
                 />
               </div>
               <div>
-                <label className="text-sm text-slate-400">Account Number</label>
+                <label className="text-sm text-zinc-600">Account Number</label>
                 <input
                   value={accountNumber}
                   onChange={(e) => setAccountNumber(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="mt-2 w-full rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-sm text-zinc-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   placeholder="DPW-000000"
                 />
               </div>
               <div>
-                <label className="text-sm text-slate-400">Audit Date</label>
+                <label className="text-sm text-zinc-600">Audit Date</label>
                 <input
                   value={auditDate}
                   onChange={(e) => setAuditDate(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="mt-2 w-full rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-sm text-zinc-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   placeholder="MM/DD/YYYY"
                 />
               </div>
               <div>
-                <label className="text-sm text-slate-400">Meter Read (Last)</label>
+                <label className="text-sm text-zinc-600">Meter Read (Last)</label>
                 <input
                   value={meterReadLast}
                   onChange={(e) => setMeterReadLast(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="mt-2 w-full rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-sm text-zinc-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   placeholder="120.0"
                 />
               </div>
               <div>
-                <label className="text-sm text-slate-400">Meter Read (Current)</label>
+                <label className="text-sm text-zinc-600">Meter Read (Current)</label>
                 <input
                   value={meterReadCurrent}
                   onChange={(e) => setMeterReadCurrent(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="mt-2 w-full rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-sm text-zinc-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   placeholder="135.5"
                 />
               </div>
               <div>
-                <label className="text-sm text-slate-400">Total Bill</label>
+                <label className="text-sm text-zinc-600">Total Bill</label>
                 <input
                   value={totalBill}
                   onChange={(e) => setTotalBill(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="mt-2 w-full rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-sm text-zinc-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   placeholder="150.00"
                 />
               </div>
               <div>
-                <label className="text-sm text-slate-400">Expected Max</label>
+                <label className="text-sm text-zinc-600">Expected Max</label>
                 <input
                   value={expectedMax}
                   onChange={(e) => setExpectedMax(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="mt-2 w-full rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-sm text-zinc-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   placeholder="115.40"
                 />
               </div>
               <div>
-                <label className="text-sm text-slate-400">Discrepancy</label>
+                <label className="text-sm text-zinc-600">Discrepancy</label>
                 <input
                   value={discrepancy}
                   onChange={(e) => setDiscrepancy(e.target.value)}
-                  className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="mt-2 w-full rounded-lg border border-zinc-200 bg-white/95 px-3 py-2 text-sm text-zinc-900 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   placeholder="34.60"
                 />
               </div>
@@ -205,18 +205,18 @@ export default function AbatementPage() {
 
             <button
               onClick={handleGenerate}
-              className="mt-6 w-full rounded-lg bg-blue-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-400"
+              className="mt-6 w-full rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
             >
               Generate Letter
             </button>
           </div>
 
-          <div className="rounded-2xl border border-slate-800 bg-black/60 p-6">
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Draft Letter</p>
+          <div className="rounded-2xl border border-zinc-200/50 bg-white/80 p-6">
+            <p className="text-xs uppercase tracking-[0.3em] text-zinc-500">Draft Letter</p>
             <textarea
               value={letter}
               readOnly
-              className="mt-4 h-96 w-full rounded-lg border border-slate-800 bg-slate-950 p-4 text-xs text-slate-200"
+              className="mt-4 h-96 w-full rounded-lg border border-zinc-200/50 bg-white/95 p-4 text-xs text-zinc-800"
               placeholder="Your abatement letter will appear here."
             />
           </div>

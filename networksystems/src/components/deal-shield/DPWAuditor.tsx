@@ -153,25 +153,25 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case 'critical':
-        return 'text-red-400 bg-red-950 border-red-800';
+        return 'text-rose-700 bg-rose-50 border-rose-200';
       case 'high':
-        return 'text-orange-400 bg-orange-950 border-orange-800';
+        return 'text-orange-700 bg-orange-50 border-orange-200';
       case 'medium':
-        return 'text-amber-400 bg-amber-950 border-amber-800';
+        return 'text-amber-700 bg-amber-50 border-amber-200';
       default:
-        return 'text-emerald-400 bg-emerald-950 border-emerald-800';
+        return 'text-emerald-700 bg-emerald-50 border-emerald-200';
     }
   };
 
   return (
     <div className="space-y-6">
       {/* Info Banner */}
-      <div className="bg-slate-900 border border-slate-800 rounded-lg p-4">
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <div className="flex items-start space-x-3">
-          <Info className="h-5 w-5 text-blue-400 mt-0.5" />
+          <Info className="h-5 w-5 text-blue-600 mt-0.5" />
           <div className="flex-1">
-            <h3 className="text-sm font-semibold text-blue-200">DPW Water Bill Auditor</h3>
-            <p className="text-sm text-blue-300 mt-1">
+            <h3 className="text-sm font-semibold text-blue-900">DPW Water Bill Auditor</h3>
+            <p className="text-sm text-blue-700 mt-1">
               Detect Baltimore City water billing discrepancies and overcharges. Uses official Baltimore City tiered
               water rates to verify your bill accuracy. <strong>Inversion Analysis</strong> reverse-calculates what usage
               would justify a bill amount - exposing absurd billing.
@@ -181,14 +181,14 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
       </div>
 
       {/* Mode Toggle */}
-      <div className="bg-slate-950 rounded-lg shadow-sm border border-slate-800 p-4">
+      <div className="bg-white/95 rounded-lg shadow-sm border border-zinc-200/50 p-4">
         <div className="flex space-x-4">
           <button
             onClick={() => setActiveMode('audit')}
             className={`px-4 py-2 rounded-md font-medium text-sm ${
               activeMode === 'audit'
-                ? 'bg-blue-500 text-white'
-                : 'bg-slate-900 text-slate-300 hover:bg-slate-800'
+                ? 'bg-emerald-600 text-white'
+                : 'bg-white/60 text-zinc-600 hover:bg-white/80'
             }`}
           >
             <Calculator className="h-4 w-4 inline mr-2" />
@@ -198,8 +198,8 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
             onClick={() => setActiveMode('inversion')}
             className={`px-4 py-2 rounded-md font-medium text-sm ${
               activeMode === 'inversion'
-                ? 'bg-blue-500 text-white'
-                : 'bg-slate-900 text-slate-300 hover:bg-slate-800'
+                ? 'bg-emerald-600 text-white'
+                : 'bg-white/60 text-zinc-600 hover:bg-white/80'
             }`}
           >
             <RotateCcw className="h-4 w-4 inline mr-2" />
@@ -209,15 +209,15 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
       </div>
 
       {/* Input Form */}
-      <div className="bg-slate-950 rounded-lg shadow-sm border border-slate-800 p-6">
-        <h2 className="text-lg font-semibold text-slate-100 mb-4 flex items-center space-x-2">
+      <div className="bg-white/95 rounded-lg shadow-sm border border-zinc-200/50 p-6">
+        <h2 className="text-lg font-semibold text-zinc-900 mb-4 flex items-center space-x-2">
           <Calculator className="h-5 w-5" />
           <span>Water Bill Input</span>
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">
+            <label className="block text-sm font-medium text-zinc-600 mb-1">
               Current Meter Reading (CCF)
             </label>
             <input
@@ -225,13 +225,13 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
               step="0.01"
               value={meterReadCurrent}
               onChange={(e) => setMeterReadCurrent(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-700 bg-slate-950 text-slate-100 placeholder:text-slate-500 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-zinc-300 bg-white/95 text-zinc-900 placeholder:text-zinc-500 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               placeholder="e.g., 125.5"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">
+            <label className="block text-sm font-medium text-zinc-600 mb-1">
               Previous Meter Reading (CCF)
             </label>
             <input
@@ -239,13 +239,13 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
               step="0.01"
               value={meterReadLast}
               onChange={(e) => setMeterReadLast(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-700 bg-slate-950 text-slate-100 placeholder:text-slate-500 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-zinc-300 bg-white/95 text-zinc-900 placeholder:text-zinc-500 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               placeholder="e.g., 100.0"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">
+            <label className="block text-sm font-medium text-zinc-600 mb-1">
               Total Bill Amount ($)
             </label>
             <input
@@ -253,53 +253,53 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
               step="0.01"
               value={totalBill}
               onChange={(e) => setTotalBill(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-700 bg-slate-950 text-slate-100 placeholder:text-slate-500 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-zinc-300 bg-white/95 text-zinc-900 placeholder:text-zinc-500 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               placeholder="e.g., 150.00"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">
-              Service Charge ($) <span className="text-slate-400 font-normal">(Optional)</span>
+            <label className="block text-sm font-medium text-zinc-600 mb-1">
+              Service Charge ($) <span className="text-zinc-600 font-normal">(Optional)</span>
             </label>
             <input
               type="number"
               step="0.01"
               value={serviceCharge}
               onChange={(e) => setServiceCharge(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-700 bg-slate-950 text-slate-100 placeholder:text-slate-500 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-zinc-300 bg-white/95 text-zinc-900 placeholder:text-zinc-500 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               placeholder="e.g., 10.00"
             />
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-slate-300 mb-1">
-              Sewer Charge Multiplier <span className="text-slate-400 font-normal">(Default: 1.0 = 100%)</span>
+            <label className="block text-sm font-medium text-zinc-600 mb-1">
+              Sewer Charge Multiplier <span className="text-zinc-600 font-normal">(Default: 1.0 = 100%)</span>
             </label>
             <input
               type="number"
               step="0.1"
               value={sewerCharge}
               onChange={(e) => setSewerCharge(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-700 bg-slate-950 text-slate-100 placeholder:text-slate-500 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-zinc-300 bg-white/95 text-zinc-900 placeholder:text-zinc-500 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               placeholder="1.0"
             />
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-zinc-500 mt-1">
               Baltimore City typically charges 100% of water cost for sewer (1.0)
             </p>
           </div>
         </div>
 
         {quickAudit && (
-          <div className="mt-6 rounded-lg border border-slate-800 bg-slate-950/70 p-4 text-sm text-slate-300">
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">CCF Benchmark</p>
+          <div className="mt-6 rounded-lg border border-zinc-200/50 bg-white/80 p-4 text-sm text-zinc-600">
+            <p className="text-xs uppercase tracking-[0.3em] text-zinc-500">CCF Benchmark</p>
             <div className="mt-2 grid gap-2">
               <p>Computed CCF: {quickAudit.actualCCF.toFixed(2)}</p>
               <p>Expected Max: ${quickAudit.expectedMax.toFixed(2)}</p>
-              <p className={quickAudit.isValid ? 'text-emerald-400' : 'text-amber-400'}>
+              <p className={quickAudit.isValid ? 'text-emerald-600' : 'text-amber-600'}>
                 Status: {quickAudit.isValid ? 'Within Expected Range' : 'Over Benchmark'}
               </p>
-              <p className="text-slate-400">Discrepancy: ${quickAudit.discrepancy.toFixed(2)}</p>
+              <p className="text-zinc-600">Discrepancy: ${quickAudit.discrepancy.toFixed(2)}</p>
             </div>
           </div>
         )}
@@ -308,7 +308,7 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
           <button
             onClick={handleAudit}
             disabled={loading || !meterReadCurrent || !meterReadLast || !totalBill}
-            className="mt-6 w-full md:w-auto px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+            className="mt-6 w-full md:w-auto px-6 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 disabled:bg-zinc-300 disabled:text-zinc-500 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
           >
             {loading ? (
               <>
@@ -326,7 +326,7 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
           <button
             onClick={handleInversion}
             disabled={loading || !totalBill}
-            className="mt-6 w-full md:w-auto px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:bg-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+            className="mt-6 w-full md:w-auto px-6 py-2 bg-purple-600 text-zinc-900 rounded-md hover:bg-purple-700 disabled:bg-zinc-300 disabled:text-zinc-500 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
           >
             {loading ? (
               <>
@@ -345,10 +345,10 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
 
       {/* Error Display */}
       {error && (
-        <div className="bg-red-950 border border-red-800 rounded-lg p-4">
+        <div className="bg-rose-50 border border-rose-200 rounded-lg p-4">
           <div className="flex items-center space-x-2">
-            <AlertTriangle className="h-5 w-5 text-red-400" />
-            <span className="text-sm font-medium text-red-300">{error}</span>
+            <AlertTriangle className="h-5 w-5 text-rose-600" />
+            <span className="text-sm font-medium text-rose-700">{error}</span>
           </div>
         </div>
       )}
@@ -357,7 +357,7 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
       {result && (
         <div className="space-y-4">
           {/* Summary Card */}
-          <div className={`bg-slate-950 rounded-lg shadow-sm border-2 p-6 ${getSeverityColor(result.severity)}`}>
+          <div className={`bg-white/95 rounded-lg shadow-sm border-2 p-6 ${getSeverityColor(result.severity)}`}>
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h3 className="text-lg font-semibold mb-1">Audit Results</h3>
@@ -388,7 +388,7 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
               </div>
               <div>
                 <div className="text-xs opacity-70 mb-1">Discrepancy</div>
-                <div className={`text-lg font-semibold ${parseFloat(result.discrepancyAmount) > 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                <div className={`text-lg font-semibold ${parseFloat(result.discrepancyAmount) > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
                   ${result.discrepancyAmount}
                 </div>
                 <div className="text-xs opacity-70">{result.errorPercentage.toFixed(1)}% error</div>
@@ -397,28 +397,28 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
           </div>
 
           {/* Tier Breakdown */}
-          <div className="bg-slate-950 rounded-lg shadow-sm border border-slate-800 p-6">
-            <h3 className="text-lg font-semibold text-slate-100 mb-4">Tier Breakdown</h3>
+          <div className="bg-white/95 rounded-lg shadow-sm border border-zinc-200/50 p-6">
+            <h3 className="text-lg font-semibold text-zinc-900 mb-4">Tier Breakdown</h3>
             <div className="space-y-2">
               {result.tierBreakdown.map((tier, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-slate-900 rounded-md">
+                <div key={index} className="flex items-center justify-between p-3 bg-gradient-to-br from-zinc-50 to-zinc-100 rounded-md">
                   <div>
-                    <div className="font-medium text-slate-100">{tier.tier}</div>
-                    <div className="text-sm text-slate-400">{tier.gallons.toLocaleString()} gallons</div>
+                    <div className="font-medium text-zinc-900">{tier.tier}</div>
+                    <div className="text-sm text-zinc-600">{tier.gallons.toLocaleString()} gallons</div>
                   </div>
-                  <div className="text-lg font-semibold text-slate-100">${tier.cost.toFixed(2)}</div>
+                  <div className="text-lg font-semibold text-zinc-900">${tier.cost.toFixed(2)}</div>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Recommendation */}
-          <div className="bg-slate-950 rounded-lg shadow-sm border border-slate-800 p-6">
-            <h3 className="text-lg font-semibold text-slate-100 mb-3 flex items-center space-x-2">
+          <div className="bg-white/95 rounded-lg shadow-sm border border-zinc-200/50 p-6">
+            <h3 className="text-lg font-semibold text-zinc-900 mb-3 flex items-center space-x-2">
               <Info className="h-5 w-5" />
               <span>Recommendation</span>
             </h3>
-            <p className="text-slate-300 whitespace-pre-line">{result.recommendation}</p>
+            <p className="text-zinc-600 whitespace-pre-line">{result.recommendation}</p>
           </div>
         </div>
       )}
@@ -427,7 +427,7 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
       {inversionResult && (
         <div className="space-y-4">
           {/* Summary Card */}
-          <div className={`bg-slate-950 rounded-lg shadow-sm border-2 p-6 ${
+          <div className={`bg-white/95 rounded-lg shadow-sm border-2 p-6 ${
             inversionResult.isAbsurd
               ? 'border-red-800 bg-red-950'
               : 'border-emerald-800 bg-emerald-950'
@@ -440,9 +440,9 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
                 </p>
               </div>
               {inversionResult.isAbsurd ? (
-                <AlertTriangle className="h-8 w-8 text-red-400" />
+                <AlertTriangle className="h-8 w-8 text-rose-600" />
               ) : (
-                <CheckCircle className="h-8 w-8 text-emerald-400" />
+                <CheckCircle className="h-8 w-8 text-emerald-600" />
               )}
             </div>
 
@@ -472,7 +472,7 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
               </div>
               <div>
                 <div className="text-xs opacity-70 mb-1">Status</div>
-                <div className={`text-lg font-semibold ${inversionResult.isAbsurd ? 'text-red-400' : 'text-emerald-400'}`}>
+                <div className={`text-lg font-semibold ${inversionResult.isAbsurd ? 'text-rose-600' : 'text-emerald-600'}`}>
                   {inversionResult.isAbsurd ? 'ABSURD' : 'REASONABLE'}
                 </div>
               </div>
@@ -481,46 +481,46 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
 
           {/* Absurdity Explanation */}
           {inversionResult.isAbsurd && (
-            <div className="bg-red-950 border border-red-800 rounded-lg p-6">
+            <div className="bg-rose-50 border border-rose-200 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-red-900 mb-3">🚨 Billing Error Detected</h3>
               <p className="text-red-800 whitespace-pre-line mb-4">{inversionResult.absurdityReason}</p>
-              <div className="bg-slate-950 rounded-md p-4 border border-red-800">
+              <div className="bg-white/95 rounded-md p-4 border border-red-800">
                 <p className="text-sm text-red-700 font-medium">{inversionResult.recommendation}</p>
               </div>
             </div>
           )}
 
           {/* Tier Breakdown */}
-          <div className="bg-slate-950 rounded-lg shadow-sm border border-slate-800 p-6">
-            <h3 className="text-lg font-semibold text-slate-100 mb-4">Usage Tier Breakdown</h3>
+          <div className="bg-white/95 rounded-lg shadow-sm border border-zinc-200/50 p-6">
+            <h3 className="text-lg font-semibold text-zinc-900 mb-4">Usage Tier Breakdown</h3>
             <div className="space-y-2">
               {inversionResult.tierBreakdown.map((tier, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-slate-900 rounded-md">
+                <div key={index} className="flex items-center justify-between p-3 bg-gradient-to-br from-zinc-50 to-zinc-100 rounded-md">
                   <div>
-                    <div className="font-medium text-slate-100">{tier.tier}</div>
-                    <div className="text-sm text-slate-400">{tier.gallons.toLocaleString()} gallons</div>
+                    <div className="font-medium text-zinc-900">{tier.tier}</div>
+                    <div className="text-sm text-zinc-600">{tier.gallons.toLocaleString()} gallons</div>
                   </div>
-                  <div className="text-lg font-semibold text-slate-100">${tier.cost.toFixed(2)}</div>
+                  <div className="text-lg font-semibold text-zinc-900">${tier.cost.toFixed(2)}</div>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Recommendation */}
-          <div className="bg-slate-950 rounded-lg shadow-sm border border-slate-800 p-6">
-            <h3 className="text-lg font-semibold text-slate-100 mb-3 flex items-center space-x-2">
+          <div className="bg-white/95 rounded-lg shadow-sm border border-zinc-200/50 p-6">
+            <h3 className="text-lg font-semibold text-zinc-900 mb-3 flex items-center space-x-2">
               <Info className="h-5 w-5" />
               <span>Recommendation</span>
             </h3>
-            <p className="text-slate-300 whitespace-pre-line">{inversionResult.recommendation}</p>
+            <p className="text-zinc-600 whitespace-pre-line">{inversionResult.recommendation}</p>
           </div>
         </div>
       )}
 
       {/* Usage Info */}
-      <div className="bg-slate-900 rounded-lg p-4 border border-slate-800">
-        <h4 className="text-sm font-semibold text-slate-100 mb-2">How It Works</h4>
-        <ul className="text-sm text-slate-400 space-y-1 list-disc list-inside">
+      <div className="bg-gradient-to-br from-zinc-50 to-zinc-100 rounded-lg p-4 border border-zinc-200/50">
+        <h4 className="text-sm font-semibold text-zinc-900 mb-2">How It Works</h4>
+        <ul className="text-sm text-zinc-600 space-y-1 list-disc list-inside">
           {activeMode === 'audit' ? (
             <>
               <li>Enter your current and previous meter readings in CCF (hundred cubic feet)</li>

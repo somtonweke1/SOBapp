@@ -64,28 +64,28 @@ export default function SOBLandingPage() {
   }, [rentValue, pitiValue]);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 text-zinc-900">
       <div className="mx-auto max-w-6xl px-6 py-12">
-        <header className="border-b border-slate-800 pb-10">
-          <p className="text-xs uppercase tracking-[0.4em] text-slate-500">Baltimore Real Estate Forensics</p>
-          <h1 className="mt-4 text-6xl font-black tracking-tight text-white">SOBapp</h1>
-          <p className="mt-4 text-xl text-slate-300">Baltimore Real Estate Forensics Engine</p>
+        <header className="border-b border-zinc-200/50 pb-10">
+          <p className="text-xs uppercase tracking-[0.4em] text-zinc-500">Baltimore Real Estate Forensics</p>
+          <h1 className="mt-4 text-6xl font-black tracking-tight text-zinc-900">SOBapp</h1>
+          <p className="mt-4 text-xl text-zinc-600">Baltimore Real Estate Forensics Engine</p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link
               href="/dashboard"
-              className="rounded-lg bg-blue-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-400"
+              className="rounded-lg bg-emerald-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
             >
               Enter War Room
             </Link>
             <Link
               href="/deal-shield"
-              className="rounded-lg border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:border-slate-500"
+              className="rounded-lg border border-zinc-300 px-6 py-3 text-sm font-semibold text-zinc-600 transition hover:border-zinc-400 hover:text-zinc-900"
             >
               Test Deal
             </Link>
             <Link
               href="/abatement"
-              className="rounded-lg border border-emerald-500/40 px-6 py-3 text-sm font-semibold text-emerald-300 transition hover:border-emerald-400"
+              className="rounded-lg border border-emerald-200 px-6 py-3 text-sm font-semibold text-emerald-600 transition hover:border-emerald-300"
             >
               Generate Abatement Letter
             </Link>
@@ -93,13 +93,13 @@ export default function SOBLandingPage() {
         </header>
 
         <main className="mt-10 grid gap-8 lg:grid-cols-2">
-          <section className="rounded-2xl border border-slate-800 bg-black/60 p-8 shadow-2xl">
+          <section className="rounded-2xl border border-zinc-200/50 bg-white/80 p-8 shadow-2xl">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-semibold text-white">DPW Water Bill Audit</h2>
-                <p className="mt-2 text-sm text-slate-400">$17.64 CCF math plus fixed service baseline.</p>
+                <h2 className="text-2xl font-semibold text-zinc-900">DPW Water Bill Audit</h2>
+                <p className="mt-2 text-sm text-zinc-600">$17.64 CCF math plus fixed service baseline.</p>
               </div>
-              <span className="rounded-full border border-slate-700 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-slate-500">
+              <span className="rounded-full border border-zinc-300 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-zinc-500">
                 Module A
               </span>
             </div>
@@ -111,7 +111,7 @@ export default function SOBLandingPage() {
                 placeholder="Total Gallons"
                 value={gallons}
                 onChange={(event) => setGallons(event.target.value)}
-                className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+                className="w-full rounded-lg border border-zinc-200/50 bg-white/95 px-4 py-3 text-sm text-zinc-800 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
               <input
                 type="number"
@@ -119,30 +119,30 @@ export default function SOBLandingPage() {
                 placeholder="Total Bill Amount ($)"
                 value={totalBill}
                 onChange={(event) => setTotalBill(event.target.value)}
-                className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+                className="w-full rounded-lg border border-zinc-200/50 bg-white/95 px-4 py-3 text-sm text-zinc-800 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
-              <div className="rounded-lg border border-slate-800 bg-slate-950/60 px-4 py-3 text-xs text-slate-400">
+              <div className="rounded-lg border border-zinc-200/50 bg-white/60 px-4 py-3 text-xs text-zinc-600">
                 Auto-calculating as you type.
               </div>
             </div>
 
-            <div className="mt-6 rounded-xl border border-slate-800 bg-slate-950/70 p-4 text-sm text-slate-300">
-              <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Forensics Logic</p>
-              <p className="mt-3 font-mono text-xs text-slate-400">
+            <div className="mt-6 rounded-xl border border-zinc-200/50 bg-white/80 p-4 text-sm text-zinc-600">
+              <p className="text-xs uppercase tracking-[0.3em] text-zinc-500">Forensics Logic</p>
+              <p className="mt-3 font-mono text-xs text-zinc-600">
                 CCF = gallons / 748; expectedMax = (CCF * 17.64) + 41.43
               </p>
               {auditBreakdown && (
-                <div className="mt-3 grid gap-2 text-xs text-slate-400">
+                <div className="mt-3 grid gap-2 text-xs text-zinc-600">
                   <p>Computed CCF: {auditBreakdown.ccf.toFixed(2)}</p>
                   <p>Expected Max: ${auditBreakdown.expectedMax.toFixed(2)}</p>
                 </div>
               )}
               {auditResult && (
                 <div className="mt-4 space-y-2">
-                  <p className={auditResult.isValid ? 'text-emerald-400' : 'text-amber-400'}>
+                  <p className={auditResult.isValid ? 'text-emerald-600' : 'text-amber-600'}>
                     Status: {auditResult.isValid ? 'Within Expected Range' : 'Over Benchmark'}
                   </p>
-                  <p className="text-slate-400">
+                  <p className="text-zinc-600">
                     Discrepancy: ${auditResult.discrepancy.toFixed(2)}
                   </p>
                 </div>
@@ -150,13 +150,13 @@ export default function SOBLandingPage() {
             </div>
           </section>
 
-          <section className="rounded-2xl border border-slate-800 bg-black/60 p-8 shadow-2xl">
+          <section className="rounded-2xl border border-zinc-200/50 bg-white/80 p-8 shadow-2xl">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-semibold text-white">DSCR Stress-Test</h2>
-                <p className="mt-2 text-sm text-slate-400">$1.25 lender floor with NOI stress.</p>
+                <h2 className="text-2xl font-semibold text-zinc-900">DSCR Stress-Test</h2>
+                <p className="mt-2 text-sm text-zinc-600">$1.25 lender floor with NOI stress.</p>
               </div>
-              <span className="rounded-full border border-slate-700 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-slate-500">
+              <span className="rounded-full border border-zinc-300 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-zinc-500">
                 Module B
               </span>
             </div>
@@ -168,7 +168,7 @@ export default function SOBLandingPage() {
                 placeholder="Monthly Rent ($)"
                 value={rent}
                 onChange={(event) => setRent(event.target.value)}
-                className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+                className="w-full rounded-lg border border-zinc-200/50 bg-white/95 px-4 py-3 text-sm text-zinc-800 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
               <input
                 type="number"
@@ -176,20 +176,20 @@ export default function SOBLandingPage() {
                 placeholder="Monthly Debt Service (PITI)"
                 value={piti}
                 onChange={(event) => setPiti(event.target.value)}
-                className="w-full rounded-lg border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+                className="w-full rounded-lg border border-zinc-200/50 bg-white/95 px-4 py-3 text-sm text-zinc-800 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
-              <div className="rounded-lg border border-slate-800 bg-slate-950/60 px-4 py-3 text-xs text-slate-400">
+              <div className="rounded-lg border border-zinc-200/50 bg-white/60 px-4 py-3 text-xs text-zinc-600">
                 Auto-calculating as you type.
               </div>
             </div>
 
-            <div className="mt-6 rounded-xl border border-slate-800 bg-slate-950/70 p-4 text-sm text-slate-300">
-              <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Forensics Logic</p>
-              <p className="mt-3 font-mono text-xs text-slate-400">
+            <div className="mt-6 rounded-xl border border-zinc-200/50 bg-white/80 p-4 text-sm text-zinc-600">
+              <p className="text-xs uppercase tracking-[0.3em] text-zinc-500">Forensics Logic</p>
+              <p className="mt-3 font-mono text-xs text-zinc-600">
                 NOI = rent * 0.90; DSCR = NOI / PITI
               </p>
               {dscrBreakdown && (
-                <div className="mt-3 grid gap-2 text-xs text-slate-400">
+                <div className="mt-3 grid gap-2 text-xs text-zinc-600">
                   <p>NOI (90%): ${dscrBreakdown.noi.toFixed(2)}</p>
                   <p>DSCR: {dscrBreakdown.dscr.toFixed(2)}</p>
                 </div>
@@ -199,14 +199,14 @@ export default function SOBLandingPage() {
                   <p className={dscrResult.isFundable ? 'text-emerald-400' : 'text-amber-400'}>
                     Status: {dscrResult.isFundable ? 'Fundable' : 'Below Lender Floor'}
                   </p>
-                  <p className="text-slate-400">DSCR Ratio: {dscrResult.ratio}</p>
+                  <p className="text-zinc-600">DSCR Ratio: {dscrResult.ratio}</p>
                 </div>
               )}
             </div>
           </section>
         </main>
 
-        <footer className="mt-12 border-t border-slate-800 pt-6 text-xs uppercase tracking-[0.3em] text-slate-500">
+        <footer className="mt-12 border-t border-zinc-200/50 pt-6 text-xs uppercase tracking-[0.3em] text-zinc-500">
           Powered by SOBapp Intelligence
         </footer>
       </div>

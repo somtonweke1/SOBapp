@@ -14,13 +14,13 @@ export default function Icon() {
       <div
         style={{
           fontSize: 16,
-          background: 'linear-gradient(135deg, #0f172a 0%, #020617 100%)',
+          background: 'linear-gradient(135deg, #fafafa 0%, #f4f4f5 100%)',
           width: '100%',
           height: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'white',
+          color: '#18181b',
           fontFamily: 'system-ui, -apple-system, sans-serif',
           fontWeight: 700,
           letterSpacing: '1px',

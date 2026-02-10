@@ -102,45 +102,45 @@ const pipeline = [
 ];
 
 const statusStyles: Record<string, string> = {
-  complete: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
-  active: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
-  pending: 'bg-slate-800 text-slate-400 border-slate-700'
+  complete: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  active: 'bg-blue-50 text-blue-700 border-blue-200',
+  pending: 'bg-zinc-50 text-zinc-600 border-zinc-200'
 };
 
 const severityStyles: Record<string, string> = {
-  high: 'text-amber-300',
-  medium: 'text-blue-300',
-  low: 'text-emerald-300'
+  high: 'text-amber-600',
+  medium: 'text-blue-600',
+  low: 'text-emerald-600'
 };
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 text-zinc-900">
       <div className="mx-auto max-w-7xl px-6 py-10">
-        <header className="flex flex-col gap-6 border-b border-slate-800 pb-8 lg:flex-row lg:items-center lg:justify-between">
+        <header className="flex flex-col gap-6 border-b border-zinc-200/50 pb-8 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.4em] text-slate-500">SOBapp War Room</p>
-            <h1 className="mt-4 text-4xl font-semibold text-white">Baltimore Property Distress Map</h1>
-            <p className="mt-3 text-slate-300">
+            <p className="text-xs uppercase tracking-[0.4em] text-zinc-500">SOBapp War Room</p>
+            <h1 className="mt-4 text-4xl font-semibold text-zinc-900">Baltimore Property Distress Map</h1>
+            <p className="mt-3 text-zinc-600">
               Live intelligence on DPW anomalies, lien filings, and infrastructure risk clusters.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/audit"
-              className="rounded-lg bg-blue-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-blue-400"
+              className="rounded-lg bg-emerald-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
             >
               Start Audit
             </Link>
             <Link
               href="/deal-shield"
-              className="rounded-lg border border-slate-700 px-5 py-2 text-sm font-semibold text-slate-200 transition hover:border-slate-500"
+              className="rounded-lg border border-zinc-300 px-5 py-2 text-sm font-semibold text-zinc-600 transition hover:border-zinc-400 hover:text-zinc-900"
             >
               Test Deal
             </Link>
             <Link
               href="/abatement"
-              className="rounded-lg border border-emerald-500/40 px-5 py-2 text-sm font-semibold text-emerald-300 transition hover:border-emerald-400"
+              className="rounded-lg border border-emerald-200 px-5 py-2 text-sm font-semibold text-emerald-600 transition hover:border-emerald-300"
             >
               Premium Export
             </Link>
@@ -148,41 +148,41 @@ export default function DashboardPage() {
         </header>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur">
+          <div className="rounded-2xl border border-zinc-200/50 bg-white/60 p-6 shadow-2xl backdrop-blur">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-white">3D Network Overview</h2>
-                <p className="text-sm text-slate-400">Nodes = properties. Links = ownership / infrastructure ties.</p>
+                <h2 className="text-lg font-semibold text-zinc-900">3D Network Overview</h2>
+                <p className="text-sm text-zinc-600">Nodes = properties. Links = ownership / infrastructure ties.</p>
               </div>
-              <span className="rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-xs uppercase tracking-[0.3em] text-blue-200">
+              <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs uppercase tracking-[0.3em] text-blue-700">
                 Live
               </span>
             </div>
-            <div className="mt-6 h-[420px] overflow-hidden rounded-xl border border-slate-800">
+            <div className="mt-6 h-[420px] overflow-hidden rounded-xl border border-zinc-200/50">
               <ThreeDNetworkMap nodes={distressNodes} edges={distressEdges} />
             </div>
           </div>
 
           <div className="space-y-6">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur">
-              <h3 className="text-lg font-semibold text-white">Real-Time Feed</h3>
-              <p className="text-xs uppercase tracking-[0.3em] text-slate-500 mt-2">DPW Forensic Alerts</p>
+            <div className="rounded-2xl border border-zinc-200/50 bg-white/60 p-6 shadow-2xl backdrop-blur">
+              <h3 className="text-lg font-semibold text-zinc-900">Real-Time Feed</h3>
+              <p className="text-xs uppercase tracking-[0.3em] text-zinc-500 mt-2">DPW Forensic Alerts</p>
               <div className="mt-4 space-y-4">
                 {realtimeAlerts.map((alert) => (
-                  <div key={alert.title} className="rounded-lg border border-slate-800 bg-slate-950/60 p-3">
+                  <div key={alert.title} className="rounded-lg border border-zinc-200/50 bg-white/95 p-3">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="font-semibold text-slate-200">{alert.title}</span>
+                      <span className="font-semibold text-zinc-800">{alert.title}</span>
                       <span className={`text-xs ${severityStyles[alert.severity]}`}>{alert.time}</span>
                     </div>
-                    <p className="mt-2 text-sm text-slate-400">{alert.detail}</p>
+                    <p className="mt-2 text-sm text-zinc-600">{alert.detail}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur">
-              <h3 className="text-lg font-semibold text-white">Case Progress</h3>
-              <p className="text-sm text-slate-400">Audit → Discrepancy → Abatement → Response</p>
+            <div className="rounded-2xl border border-zinc-200/50 bg-white/60 p-6 shadow-2xl backdrop-blur">
+              <h3 className="text-lg font-semibold text-zinc-900">Case Progress</h3>
+              <p className="text-sm text-zinc-600">Audit → Discrepancy → Abatement → Response</p>
               <div className="mt-4 space-y-3">
                 {pipeline.map((item) => (
                   <div
@@ -196,20 +196,20 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur">
-              <h3 className="text-lg font-semibold text-white">DPW Intelligence Snapshot</h3>
-              <div className="mt-4 grid gap-3 text-sm text-slate-300">
+            <div className="rounded-2xl border border-zinc-200/50 bg-white/60 p-6 shadow-2xl backdrop-blur">
+              <h3 className="text-lg font-semibold text-zinc-900">DPW Intelligence Snapshot</h3>
+              <div className="mt-4 grid gap-3 text-sm text-zinc-600">
                 <div className="flex items-center justify-between">
                   <span>Audits Pending Review</span>
-                  <span className="text-blue-300">14</span>
+                  <span className="text-blue-600">14</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Discrepancy Volume (30d)</span>
-                  <span className="text-emerald-300">$92,400</span>
+                  <span className="text-emerald-600">$92,400</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Average CCF Overrun</span>
-                  <span className="text-amber-300">22.1%</span>
+                  <span className="text-amber-600">22.1%</span>
                 </div>
               </div>
             </div>

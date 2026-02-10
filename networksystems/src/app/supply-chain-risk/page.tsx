@@ -14,9 +14,9 @@ export default function SupplyChainRiskRedirect() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-50 to-zinc-100">
       <div className="text-center">
-        <p className="text-slate-400">Redirecting to SOBapp Deal Shield...</p>
+        <p className="text-zinc-600 font-light">Redirecting to SOBapp Deal Shield...</p>
       </div>
     </div>
   );

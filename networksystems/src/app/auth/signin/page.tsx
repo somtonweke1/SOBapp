@@ -42,23 +42,23 @@ function SignInForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-50 to-zinc-100 text-zinc-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
           <div className="flex justify-center">
-            <div className="w-12 h-12 bg-slate-950 rounded-lg flex items-center justify-center">
-              <span className="text-white font-extralight text-xl tracking-wide">M</span>
+            <div className="w-12 h-12 bg-zinc-900 rounded-lg flex items-center justify-center">
+              <span className="text-white font-extralight text-xl tracking-wide">S</span>
             </div>
           </div>
-          <h2 className="mt-6 text-center text-3xl font-extralight tracking-tight text-slate-100">
+          <h2 className="mt-6 text-center text-3xl font-extralight tracking-tight text-zinc-900">
             Sign in to SOBapp
           </h2>
-          <p className="mt-2 text-center text-sm font-light text-slate-400">
+          <p className="mt-2 text-center text-sm font-light text-zinc-600">
             Baltimore Real Estate Forensics Platform
           </p>
         </div>
 
-        <form className="mt-8 space-y-6 bg-slate-950/95 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-slate-800/50" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6 bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-zinc-200/50" onSubmit={handleSubmit}>
           {error && (
             <div className="rounded-lg bg-rose-50 border border-rose-200 p-4">
               <div className="text-sm font-light text-rose-700">{error}</div>
@@ -67,7 +67,7 @@ function SignInForm() {
 
           <div className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-light text-slate-300 mb-2">
+              <label htmlFor="email" className="block text-sm font-light text-zinc-700 mb-2">
                 Email address
               </label>
               <input
@@ -78,13 +78,13 @@ function SignInForm() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                 placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-light text-slate-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-light text-zinc-700 mb-2">
                 Password
               </label>
               <input
@@ -95,7 +95,7 @@ function SignInForm() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                 placeholder="••••••••"
               />
             </div>
@@ -112,9 +112,9 @@ function SignInForm() {
           </div>
 
           <div className="text-center">
-            <p className="text-sm font-light text-slate-400">
+            <p className="text-sm font-light text-zinc-600">
               Don't have an account?{' '}
-              <Link href="/auth/signup" className="font-medium text-emerald-300 hover:text-emerald-300 transition-colors">
+              <Link href="/auth/signup" className="font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
                 Sign up
               </Link>
             </p>
@@ -127,14 +127,16 @@ function SignInForm() {
 
 export default function SignInPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
-          <p className="mt-4 font-light text-slate-400">Loading...</p>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-50 to-zinc-100 text-zinc-900">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
+            <p className="mt-4 font-light text-zinc-600">Loading...</p>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <SignInForm />
     </Suspense>
   );

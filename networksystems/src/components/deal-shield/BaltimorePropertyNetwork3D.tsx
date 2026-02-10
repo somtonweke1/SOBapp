@@ -367,8 +367,8 @@ const BaltimorePropertyNetwork3D: React.FC<BaltimorePropertyNetwork3DProps> = ({
       <div ref={mountRef} className="w-full h-full min-h-[600px]" />
       
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="text-white">Loading 3D Network...</div>
+        <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+          <div className="text-zinc-600 font-light">Loading 3D Network...</div>
         </div>
       )}
 
@@ -382,7 +382,7 @@ const BaltimorePropertyNetwork3D: React.FC<BaltimorePropertyNetwork3DProps> = ({
           <button
             onClick={() => setViewMode('distress')}
             className={`px-3 py-1 text-xs rounded ${
-              viewMode === 'distress' ? 'bg-blue-600 text-white' : 'bg-gray-200'
+              viewMode === 'distress' ? 'bg-emerald-600 text-white' : 'bg-zinc-100 text-zinc-600'
             }`}
           >
             Distress Score
@@ -390,7 +390,7 @@ const BaltimorePropertyNetwork3D: React.FC<BaltimorePropertyNetwork3DProps> = ({
           <button
             onClick={() => setViewMode('audit')}
             className={`px-3 py-1 text-xs rounded ${
-              viewMode === 'audit' ? 'bg-blue-600 text-white' : 'bg-gray-200'
+              viewMode === 'audit' ? 'bg-emerald-600 text-white' : 'bg-zinc-100 text-zinc-600'
             }`}
           >
             DPW Audit (RED = Error)
@@ -398,7 +398,7 @@ const BaltimorePropertyNetwork3D: React.FC<BaltimorePropertyNetwork3DProps> = ({
           <button
             onClick={() => setViewMode('billing')}
             className={`px-3 py-1 text-xs rounded ${
-              viewMode === 'billing' ? 'bg-blue-600 text-white' : 'bg-gray-200'
+              viewMode === 'billing' ? 'bg-emerald-600 text-white' : 'bg-zinc-100 text-zinc-600'
             }`}
           >
             Billing Tiers
@@ -408,14 +408,14 @@ const BaltimorePropertyNetwork3D: React.FC<BaltimorePropertyNetwork3DProps> = ({
         <div className="border-t pt-2 mt-2">
           <button
             onClick={() => setShowLabels(!showLabels)}
-            className="w-full px-3 py-1 text-xs bg-gray-200 rounded flex items-center justify-center space-x-1"
+            className="w-full px-3 py-1 text-xs bg-zinc-100 text-zinc-600 rounded flex items-center justify-center space-x-1"
           >
             {showLabels ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
             <span>Labels</span>
           </button>
           <button
             onClick={() => setShowEdges(!showEdges)}
-            className="w-full px-3 py-1 text-xs bg-gray-200 rounded mt-1 flex items-center justify-center space-x-1"
+            className="w-full px-3 py-1 text-xs bg-zinc-100 text-zinc-600 rounded mt-1 flex items-center justify-center space-x-1"
           >
             {showEdges ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
             <span>Connections</span>
@@ -480,4 +480,3 @@ const BaltimorePropertyNetwork3D: React.FC<BaltimorePropertyNetwork3DProps> = ({
 };
 
 export default BaltimorePropertyNetwork3D;
-
