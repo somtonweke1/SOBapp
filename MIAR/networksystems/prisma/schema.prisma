@@ -1,0 +1,524 @@
+// MIAR Platform Database Schema
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER MANAGEMENT
+// ============================================
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String
+  hashedPassword String
+  role           String   @default("user") // user, manager, admin
+  company        String?
+  phone          String?
+  subscription   String   @default("free") // free, starter, professional, enterprise
+
+  // Permissions
+  permissions    String   @default("[]") // JSON array of permission strings
+
+  // Metadata
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  lastLoginAt    DateTime?
+  isActive       Boolean  @default(true)
+
+  // Relations
+  networks       Network[]
+  analyses       Analysis[]
+  scenarios      Scenario[]
+  sessions       Session[]
+  apiKeys        ApiKey[]
+
+  @@index([email])
+  @@index([role])
+  @@index([subscription])
+  @@index([isActive, role])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sessionToken])
+  @@index([userId, expires])
+  @@index([expires])
+}
+
+model ApiKey {
+  id        String   @id @default(cuid())
+  name      String
+  key       String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastUsed  DateTime?
+  expiresAt DateTime?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([key])
+  @@index([userId, isActive])
+  @@index([isActive, expiresAt])
+}
+
+// ============================================
+// NETWORK & ANALYSIS
+// ============================================
+
+model Network {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  nodes       String   // JSON
+  edges       String   // JSON
+  metadata    String?  // JSON
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  analyses    Analysis[]
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([userId, updatedAt])
+  @@index([userId, createdAt])
+}
+
+model Analysis {
+  id         String   @id @default(cuid())
+  networkId  String
+  network    Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+
+  type       String   // centrality, community_detection, path_analysis, etc.
+  algorithm  String   // pagerank, betweenness, louvain, etc.
+  parameters String   // JSON
+  results    String?  // JSON
+  status     String   @default("pending") // pending, running, completed, failed
+  error      String?
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  completedAt DateTime?
+
+  @@index([userId])
+  @@index([networkId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([userId, status])
+  @@index([networkId, status])
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+}
+
+// ============================================
+// SUPPLY CHAIN & SCENARIOS
+// ============================================
+
+model Scenario {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  type        String   // baseline, high_demand, constrained_supply, rapid_expansion
+
+  parameters  String   // JSON: materials, technologies, timeHorizon, etc.
+  results     String?  // JSON: objectiveValue, feasibility, costs, metrics
+  status      String   @default("pending") // pending, running, completed, failed
+  error       String?
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  completedAt DateTime?
+
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+  @@index([userId, status])
+  @@index([userId, createdAt])
+  @@index([type, status])
+  @@index([status, createdAt])
+}
+
+// ============================================
+// MARKET DATA
+// ============================================
+
+model CommodityPrice {
+  id        String   @id @default(cuid())
+  symbol    String   // LIT, COB, NIC, etc.
+  name      String   // Lithium, Cobalt, Nickel
+  price     Float
+  change    Float    // Percentage change
+  volume    Float?
+  high      Float?
+  low       Float?
+  open      Float?
+  source    String   // yahoo_finance, alpha_vantage, etc.
+  timestamp DateTime @default(now())
+
+  @@index([symbol, timestamp])
+  @@index([timestamp])
+}
+
+model RiskAlert {
+  id          String   @id @default(cuid())
+  severity    String   // low, medium, high, critical
+  category    String   // supply_chain, geopolitical, price_volatility, etc.
+  title       String
+  description String
+  region      String?
+  commodity   String?
+  impact      String?  // JSON: affected commodities, estimated impact
+
+  resolved    Boolean  @default(false)
+  resolvedAt  DateTime?
+  resolvedBy  String?  // userId
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([severity, resolved])
+  @@index([category])
+  @@index([createdAt])
+  @@index([category, createdAt])
+  @@index([resolved, createdAt])
+  @@index([severity, createdAt])
+}
+
+model GeopoliticalEvent {
+  id          String   @id @default(cuid())
+  country     String
+  region      String
+  eventType   String   // policy_change, conflict, trade_restriction, etc.
+  title       String
+  description String
+  severity    String   // low, medium, high, critical
+
+  affectedCommodities String? // JSON array
+  riskScore   Float?
+
+  source      String
+  sourceUrl   String?
+  publishedAt DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([country])
+  @@index([region])
+  @@index([severity])
+  @@index([publishedAt])
+  @@index([country, publishedAt])
+  @@index([region, publishedAt])
+  @@index([severity, publishedAt])
+  @@index([eventType, publishedAt])
+}
+
+// ============================================
+// AUDIT & COMPLIANCE
+// ============================================
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  action      String   // login, export, create_scenario, etc.
+  resource    String   // user, scenario, network, etc.
+  resourceId  String?
+  details     String?  // JSON
+  ipAddress   String?
+  userAgent   String?
+  timestamp   DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([timestamp])
+  @@index([userId, timestamp])
+  @@index([action, timestamp])
+  @@index([resource, timestamp])
+}
+
+model ExportLog {
+  id          String   @id @default(cuid())
+  userId      String
+  exportType  String   // pdf, excel, csv
+  resource    String   // scenario_comparison, commodity_report, etc.
+  resourceId  String?
+  fileSize    Int?
+  timestamp   DateTime @default(now())
+
+  @@index([userId])
+  @@index([exportType])
+  @@index([timestamp])
+  @@index([userId, timestamp])
+  @@index([exportType, timestamp])
+}
+
+// ============================================
+// BIS ENTITY LIST SCANNER
+// ============================================
+
+model ScanResult {
+  id          String   @id @default(cuid())
+  scanId      String   @unique
+
+  // Company info
+  companyName String
+  email       String
+
+  // Scan metadata
+  fileType    String
+  fileName    String?
+  totalRows   Int
+  skippedRows Int      @default(0)
+
+  // Results summary
+  totalSuppliers      Int
+  clearSuppliers      Int      @default(0)
+  lowRiskSuppliers    Int      @default(0)
+  mediumRiskSuppliers Int      @default(0)
+  highRiskSuppliers   Int      @default(0)
+  criticalSuppliers   Int      @default(0)
+
+  overallRiskLevel    String   // low, medium, high, critical
+  overallRiskScore    Float    // 0-10
+  estimatedExposure   String?
+
+  // Full report data (JSON)
+  fullReport          String   // JSON: ComplianceScanReport
+  htmlReport          String   // HTML report
+  textSummary         String?  // Plain text summary
+
+  // Email delivery status
+  emailSent           Boolean  @default(false)
+  emailSentAt         DateTime?
+  emailError          String?
+
+  // Timestamps
+  createdAt           DateTime @default(now())
+  expiresAt           DateTime? // For automatic cleanup
+
+  @@index([scanId])
+  @@index([email])
+  @@index([companyName])
+  @@index([createdAt])
+  @@index([email, createdAt])
+  @@index([overallRiskLevel, createdAt])
+  @@index([expiresAt])
+}
+
+// ============================================
+// DISCOVERED OWNERSHIP DATA
+// ============================================
+
+model DiscoveredOwnership {
+  id          String   @id @default(cuid())
+
+  // Entity info
+  entityName  String   @unique
+  parentCompany String?
+
+  // Relationships (JSON arrays)
+  subsidiaries String  @default("[]") // JSON array of subsidiary names
+  affiliates   String  @default("[]") // JSON array of affiliate names
+
+  // Data quality
+  confidence   Float   // 0-1
+  dataQuality  String  // high, medium, low
+  sources      String  // JSON array of source names
+
+  // Evidence
+  evidencePoints String @default("[]") // JSON array of evidence
+
+  // Metadata
+  lastUpdated  DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  verified     Boolean  @default(false)
+  verifiedBy   String?
+  verifiedAt   DateTime?
+
+  @@index([entityName])
+  @@index([parentCompany])
+  @@index([confidence])
+  @@index([dataQuality])
+  @@index([lastUpdated])
+  @@index([verified])
+}
+
+// Background job tracking
+model DiscoveryJob {
+  id          String   @id @default(cuid())
+
+  // Job info
+  status      String   // pending, running, completed, failed
+  type        String   // full_discovery, incremental_update, single_entity
+
+  // Progress
+  totalEntities    Int
+  processedEntities Int @default(0)
+  discoveredCount  Int @default(0)
+  failedCount      Int @default(0)
+
+  // Results
+  coveragePercent  Float?
+  results          String? // JSON
+
+  // Error tracking
+  errors           String? // JSON array of errors
+
+  // Timestamps
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status])
+  @@index([type])
+  @@index([startedAt])
+}
+
+// ============================================
+// SYSTEM CONFIGURATION
+// ============================================
+
+model SystemConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  dataType  String   @default("string") // string, number, boolean, json
+  category  String   // api, feature_flags, limits, etc.
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}
+
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  enabled     Boolean  @default(false)
+  description String?
+  rollout     Float    @default(100) // Percentage rollout 0-100
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================
+// PFAS COMPLIANCE MODULE
+// ============================================
+
+model PFASScanResult {
+  id          String   @id @default(cuid())
+  scanId      String   @unique
+
+  // Facility/System info
+  facilityName String
+  email        String
+  systemType   String   // Fixed Bed, Moving Bed, Fluidized Bed
+
+  // PFAS Concentrations Summary (ng/L)
+  totalPFAS    Float
+  pfoaLevel    Float    @default(0)
+  pfosLevel    Float    @default(0)
+  pfnaLevel    Float    @default(0)
+  pfhxsLevel   Float    @default(0)
+
+  // Results summary
+  compoundsDetected   Int
+  compoundsAboveLimit Int      @default(0)
+
+  // Risk assessment
+  overallRiskLevel    String   // clear, low, medium, high, critical
+  overallRiskScore    Float    // 0-10 (mirrors BIS scanner)
+  complianceStatus    String   // compliant, approaching_limit, exceeds_limit, critical_exceedance
+  urgencyLevel        String   // low, medium, high, critical
+
+  // Performance metrics
+  projectedLifeMonths Float
+  removalEfficiency   Float
+  costPerMG           Float    // Cost per million gallons
+
+  // Regulatory exposure
+  estimatedFines      String?  // Potential fines/penalties
+
+  // Full report data (JSON)
+  fullReport          String   // JSON: PFASComplianceReport
+  htmlReport          String?  // HTML report
+  textSummary         String?  // Plain text summary
+
+  // Confidence
+  overallConfidence   Float    // 0-1
+
+  // Email delivery status
+  emailSent           Boolean  @default(false)
+  emailSentAt         DateTime?
+  emailError          String?
+
+  // Timestamps
+  createdAt           DateTime @default(now())
+  expiresAt           DateTime? // For automatic cleanup (30 days)
+
+  @@index([scanId])
+  @@index([email])
+  @@index([facilityName])
+  @@index([createdAt])
+  @@index([email, createdAt])
+  @@index([overallRiskLevel, createdAt])
+  @@index([complianceStatus])
+  @@index([urgencyLevel, createdAt])
+  @@index([expiresAt])
+}
+
+model PFASValidationData {
+  id          String   @id @default(cuid())
+
+  // Facility/System reference
+  facilityName String
+  systemId     String?  // Optional reference to production system
+
+  // Pilot study data
+  studyDate    DateTime
+  duration     Int      // days
+
+  // Observed performance
+  observedCapacity      Float?  // mg/g
+  observedLifespan      Float?  // months
+  breakthroughData      String  // JSON: BreakthroughPoint[]
+
+  // Validation metrics
+  modelR2               Float?  // R-squared
+  modelRMSE             Float?  // Root Mean Square Error
+  predictionAccuracy    String? // high, medium, low
+
+  // Data quality
+  dataQuality           String  // pilot_study, full_scale, literature
+  confidence            Float   // 0-1
+  notes                 String?
+
+  // Metadata
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([facilityName])
+  @@index([systemId])
+  @@index([studyDate])
+  @@index([dataQuality])
+}

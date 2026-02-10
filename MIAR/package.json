@@ -1,0 +1,11 @@
+{
+  "name": "miar-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install": "cd networksystems && npm install",
+    "build": "cd networksystems && npm run build",
+    "start": "cd networksystems && npm start",
+    "dev": "cd networksystems && npm run dev"
+  }
+}

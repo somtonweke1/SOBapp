@@ -1,0 +1,165 @@
+{
+  "metadata": {
+    "version": "2024.01",
+    "totalEntities": 87,
+    "lastUpdated": "2024-01-15",
+    "sources": [
+      "BIS Entity List Supplement No. 4 to Part 744",
+      "Federal Register Notices",
+      "Manual Research and Verification"
+    ],
+    "coverage": "High-priority entities with complete metadata"
+  },
+  "entities": [
+    {
+      "category": "China - Telecommunications",
+      "entries": [
+        "Huawei Technologies Co., Ltd.",
+        "ZTE Corporation",
+        "Hytera Communications Corporation",
+        "China Unicom",
+        "China Mobile Communications Corporation",
+        "China Telecom Corporation Limited",
+        "Inspur Group Co., Ltd.",
+        "Sugon (Dawning Information Industry Co., Ltd.)",
+        "Lenovo Group Limited (certain divisions)",
+        "TP-Link Technologies Co., Ltd."
+      ]
+    },
+    {
+      "category": "China - Surveillance & AI",
+      "entries": [
+        "Hangzhou Hikvision Digital Technology Co., Ltd.",
+        "Dahua Technology Co., Ltd.",
+        "SenseTime Group Limited",
+        "Megvii Technology Limited",
+        "Yitu Technology",
+        "CloudWalk Technology",
+        "Xiamen Meiya Pico Information Co., Ltd.",
+        "Yixin Science and Technology Co., Ltd.",
+        "Intellifusion",
+        "Is Fun AI Technology Co., Ltd."
+      ]
+    },
+    {
+      "category": "China - Drones & Robotics",
+      "entries": [
+        "SZ DJI Technology Co., Ltd.",
+        "CloudMinds Technology, Inc.",
+        "UBTECH Robotics Corp.",
+        "Beijing CloudMinds Technology Co., Ltd."
+      ]
+    },
+    {
+      "category": "China - Semiconductors",
+      "entries": [
+        "Semiconductor Manufacturing International Corporation",
+        "Yangtze Memory Technologies Co., Ltd.",
+        "Changxin Memory Technologies, Inc.",
+        "Advanced Micro-Fabrication Equipment Inc.",
+        "Shanghai Micro Electronics Equipment (Group) Co., Ltd.",
+        "Naura Technology Group Co., Ltd.",
+        "Hefei Reliance Memory Limited",
+        "Xi'an UniIC Semiconductors Co., Ltd.",
+        "Guangzhou Hongxin Electronics Technology Co., Ltd.",
+        "Fujian Jinhua Integrated Circuit Co., Ltd."
+      ]
+    },
+    {
+      "category": "China - Quantum & Supercomputing",
+      "entries": [
+        "Tianjin Phytium Information Technology Inc.",
+        "Shanghai High-Performance Integrated Circuit Design Center",
+        "Sunway Microelectronics Co., Ltd.",
+        "Hygon Information Technology Co., Ltd.",
+        "QuantumCTek Co., Ltd.",
+        "Shanghai QuantumCTek Co., Ltd."
+      ]
+    },
+    {
+      "category": "China - Universities & Research",
+      "entries": [
+        "Harbin Institute of Technology",
+        "Beijing University of Aeronautics and Astronautics",
+        "Northwestern Polytechnical University",
+        "National University of Defense Technology",
+        "Beijing Institute of Technology",
+        "Nanjing University of Aeronautics and Astronautics",
+        "Nanjing University of Science and Technology",
+        "Sichuan University",
+        "University of Electronic Science and Technology of China",
+        "Tianjin University",
+        "Beijing University of Posts and Telecommunications"
+      ]
+    },
+    {
+      "category": "Russia - Military & Defense",
+      "entries": [
+        "Joint Stock Company Mikron",
+        "United Aircraft Corporation",
+        "Russian Helicopters JSC",
+        "Rostec State Corporation",
+        "Almaz-Antey",
+        "Kalashnikov Concern",
+        "Uralvagonzavod",
+        "United Shipbuilding Corporation"
+      ]
+    },
+    {
+      "category": "Russia - Technology",
+      "entries": [
+        "Kaspersky Lab",
+        "Positive Technologies",
+        "Baikal Electronics JSC",
+        "MCST (Moscow Center of SPARC Technologies)"
+      ]
+    },
+    {
+      "category": "Iran - Aviation & Military",
+      "entries": [
+        "Mahan Air",
+        "Iran Aircraft Manufacturing Industrial Company",
+        "Aviation Industries Organization",
+        "Defense Industries Organization"
+      ]
+    },
+    {
+      "category": "Iran - Nuclear & Proliferation",
+      "entries": [
+        "Atomic Energy Organization of Iran",
+        "Kalaye Electric Company",
+        "Novin Energy Company"
+      ]
+    },
+    {
+      "category": "Pakistan - Nuclear",
+      "entries": [
+        "Kahuta Research Laboratories",
+        "Pakistan Atomic Energy Commission",
+        "National Development Complex"
+      ]
+    },
+    {
+      "category": "North Korea - All",
+      "entries": [
+        "Korea Mining Development Trading Corporation (KOMID)",
+        "Korea Ryonbong General Corporation",
+        "Tanchon Commercial Bank"
+      ]
+    },
+    {
+      "category": "Belarus - Military",
+      "entries": [
+        "Integral JSC",
+        "PELENG JSC"
+      ]
+    },
+    {
+      "category": "Myanmar - Military",
+      "entries": [
+        "Myanmar Economic Corporation",
+        "Union of Myanmar Economic Holdings Limited"
+      ]
+    }
+  ]
+}

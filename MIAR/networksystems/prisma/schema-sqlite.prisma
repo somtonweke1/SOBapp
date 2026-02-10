@@ -1,0 +1,13 @@
+// MIAR Platform Database Schema - SQLite (Development Only)
+// This is a backup of the SQLite schema for local development
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// See schema.prisma for full model definitions

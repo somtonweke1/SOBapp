@@ -1,0 +1,533 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useNetworkStore } from '@/stores/network-store';
+import { Network3D, convertTo3D } from '@/components/visualization/network-3d';
+import { TemporalAnalysis } from '@/components/visualization/temporal-analysis';
+import ThreeDNetworkMap from '@/components/visualization/3d-network-map';
+import GeoNetworkMap from '@/components/visualization/geo-network-map';
+import {
+  Map,
+  Globe,
+  Target,
+  TrendingUp,
+  Bot,
+  Activity,
+  AlertCircle
+} from 'lucide-react';
+
+const AdvancedDashboard: React.FC = () => {
+  const {
+    networks,
+    currentNetwork,
+    analysisResults,
+    loading,
+    error,
+    setCurrentNetwork,
+    addNetwork,
+    runCentralityAnalysis,
+    runNetworkAnalysis,
+    clearError
+  } = useNetworkStore();
+
+  const [activeTab, setActiveTab] = useState<'3d' | 'geospatial' | 'network3d' | 'temporal' | 'ml'>('geospatial');
+  const [mlPredictions, setMlPredictions] = useState<any>(null);
+  const [mlLoading, setMlLoading] = useState(false);
+  const [predictionType, setPredictionType] = useState('network_growth');
+  const [timeHorizon, setTimeHorizon] = useState(12);
+  const [networkHistory, setNetworkHistory] = useState<any[]>([]);
+
+  // Sample network data for demonstration
+  const sampleNetwork = {
+    id: 'sample-advanced',
+    name: 'Advanced Sample Network',
+    description: 'A sample network for demonstrating ML and 3D features',
+    nodes: [
+      { id: 'A', label: 'Alice', group: 'users', x: 0, y: 0, z: 0 },
+      { id: 'B', label: 'Bob', group: 'users', x: 2, y: 0, z: 0 },
+      { id: 'C', label: 'Charlie', group: 'users', x: 1, y: 2, z: 0 },
+      { id: 'D', label: 'Diana', group: 'admins', x: -1, y: 1, z: 1 },
+      { id: 'E', label: 'Eve', group: 'admins', x: 3, y: 1, z: -1 },
+      { id: 'F', label: 'Frank', group: 'users', x: 0, y: -2, z: 1 },
+      { id: 'G', label: 'Grace', group: 'users', x: -2, y: 0, z: -1 },
+      { id: 'H', label: 'Henry', group: 'admins', x: 2, y: -1, z: 1 }
+    ],
+    edges: [
+      { source: 'A', target: 'B', weight: 1 },
+      { source: 'B', target: 'C', weight: 1 },
+      { source: 'C', target: 'D', weight: 1 },
+      { source: 'D', target: 'E', weight: 1 },
+      { source: 'E', target: 'F', weight: 1 },
+      { source: 'F', target: 'G', weight: 1 },
+      { source: 'G', target: 'H', weight: 1 },
+      { source: 'H', target: 'A', weight: 1 },
+      { source: 'A', target: 'C', weight: 1 },
+      { source: 'B', target: 'D', weight: 1 },
+      { source: 'C', target: 'E', weight: 1 },
+      { source: 'D', target: 'F', weight: 1 },
+      { source: 'E', target: 'G', weight: 1 },
+      { source: 'F', target: 'H', weight: 1 }
+    ],
+    directed: false,
+    createdAt: new Date().toISOString()
+  };
+
+  // Generate temporal network history
+  useEffect(() => {
+    if (currentNetwork) {
+      const history = generateNetworkHistory(currentNetwork);
+      setNetworkHistory(history);
+    }
+  }, [currentNetwork]);
+
+  // Generate network evolution history
+  const generateNetworkHistory = (network: any) => {
+    const history = [];
+    const baseTime = Date.now() - 30 * 24 * 60 * 60 * 1000; // 30 days ago
+    
+    for (let i = 0; i < 10; i++) {
+      const timestamp = baseTime + i * 3 * 24 * 60 * 60 * 1000; // Every 3 days
+      const growthFactor = 1 + (i * 0.1); // 10% growth each step
+      
+      const evolvedNodes = network.nodes.map((node: any) => ({
+        ...node,
+        timestamp,
+        size: node.size * growthFactor,
+        centrality: Math.random() * 0.5 + 0.3 // Simulate centrality evolution
+      }));
+      
+      const evolvedEdges = network.edges.map((edge: any) => ({
+        ...edge,
+        timestamp,
+        weight: edge.weight * growthFactor
+      }));
+      
+      history.push({
+        timestamp,
+        nodes: evolvedNodes,
+        edges: evolvedEdges
+      });
+    }
+    
+    return history;
+  };
+
+  // Run ML predictions
+  const handleMlPrediction = async () => {
+    if (!currentNetwork) return;
+    
+    setMlLoading(true);
+    try {
+      const response = await fetch('/api/ml/predictive', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          network: currentNetwork,
+          predictionType,
+          timeHorizon,
+          features: ['degree', 'betweenness', 'closeness']
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`ML API error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      setMlPredictions(result);
+    } catch (error) {
+      console.error('ML prediction failed:', error);
+    } finally {
+      setMlLoading(false);
+    }
+  };
+
+  // Load sample network
+  const handleLoadSample = async () => {
+    try {
+      await addNetwork(sampleNetwork);
+      setCurrentNetwork(sampleNetwork);
+    } catch (error) {
+      console.error('Failed to load sample network:', error);
+    }
+  };
+
+  // Run centrality analysis for 3D visualization
+  const handleRunCentrality = async () => {
+    if (!currentNetwork) return;
+    
+    try {
+      const result = await runCentralityAnalysis(currentNetwork, 'degree');
+      console.log('Centrality analysis result:', result);
+    } catch (error) {
+      console.error('Centrality analysis failed:', error);
+    }
+  };
+
+  // Get 3D network data
+  const get3DNetworkData = () => {
+    if (!currentNetwork) return { nodes3D: [], edges3D: [] };
+    
+    const analysisData = analysisResults[currentNetwork.id];
+    const centralityResults = Array.isArray(analysisData?.centrality) ? analysisData.centrality : [];
+    return convertTo3D(currentNetwork.nodes, currentNetwork.edges, centralityResults);
+  };
+
+  const { nodes3D, edges3D } = get3DNetworkData();
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-7xl px-6 py-8 lg:px-8">
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-light tracking-tight text-gray-900">
+                Network Analysis
+              </h1>
+              <p className="mt-2 text-sm text-gray-600 font-light">
+                Advanced topology analysis and predictive modeling
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={handleLoadSample}
+                className="inline-flex items-center justify-center rounded-lg bg-white px-4 py-2 text-sm font-light text-gray-700 shadow-sm ring-1 ring-gray-200 hover:bg-gray-50 transition-colors"
+              >
+                <Activity className="mr-2 h-4 w-4" />
+                Load Sample
+              </button>
+              <button
+                onClick={handleRunCentrality}
+                disabled={!currentNetwork || loading}
+                className="inline-flex items-center justify-center rounded-lg bg-gray-900 px-4 py-2 text-sm font-light text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <Target className="mr-2 h-4 w-4" />
+                Run Analysis
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {error && (
+          <div className="mb-6 rounded-lg bg-red-50 p-4 ring-1 ring-red-200">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <AlertCircle className="mr-2 h-4 w-4 text-red-500" />
+                <span className="text-sm font-light text-red-700">{error}</span>
+              </div>
+              <button
+                onClick={clearError}
+                className="text-red-500 hover:text-red-700 transition-colors"
+              >
+                <span className="sr-only">Dismiss</span>
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Tab Navigation */}
+        <div className="mb-8">
+          <nav className="flex space-x-8 border-b border-gray-200">
+            {[
+              { id: 'geospatial', name: 'Geospatial Map', icon: Map },
+              { id: 'network3d', name: '3D Network', icon: Globe },
+              { id: '3d', name: '3D Graph', icon: Target },
+              { id: 'temporal', name: 'Temporal Analysis', icon: TrendingUp },
+              { id: 'ml', name: 'ML Predictions', icon: Bot }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex items-center py-4 px-1 border-b-2 text-sm font-light transition-colors ${
+                  activeTab === tab.id
+                    ? 'border-gray-900 text-gray-900'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <tab.icon className="mr-2 h-4 w-4" />
+                {tab.name}
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        {/* Tab Content */}
+        <div className="space-y-8">
+          {/* Geospatial Map Tab */}
+          {activeTab === 'geospatial' && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-lg font-medium text-gray-900 mb-2">
+                  African Mining Network - Geospatial View
+                </h2>
+                <p className="text-sm text-gray-600 font-light">
+                  Interactive geographical network visualization with real-time mining operations data
+                </p>
+              </div>
+
+              <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200" style={{ height: '600px' }}>
+                <GeoNetworkMap
+                  nodes={[]}
+                  onNodeSelect={(nodeId) => {
+                    console.log('Selected node:', nodeId);
+                  }}
+                />
+              </div>
+
+              <div className="rounded-lg bg-gray-50 p-6">
+                <h3 className="text-sm font-medium text-gray-900 mb-3">Interactive Features</h3>
+                <ul className="text-sm text-gray-600 space-y-2 font-light">
+                  <li>• Click on mining sites to view detailed operational information</li>
+                  <li>• Different node shapes represent different facility types</li>
+                  <li>• Connection lines show transport, supply chain, and data flows</li>
+                  <li>• Use map controls to zoom and pan across Africa</li>
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {/* 3D Network Map Tab */}
+          {activeTab === 'network3d' && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-lg font-medium text-gray-900 mb-2">
+                  3D Network Relationships - Geographic Context
+                </h2>
+                <p className="text-sm text-gray-600 font-light">
+                  Three-dimensional network visualization with real geographic coordinates and elevation data
+                </p>
+              </div>
+
+              <div className="overflow-hidden rounded-xl bg-gray-900 shadow-sm" style={{ height: '600px' }}>
+                <ThreeDNetworkMap
+                  nodes={[]}
+                  edges={[]}
+                  onNodeSelect={(nodeId) => {
+                    console.log('Selected 3D node:', nodeId);
+                  }}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div className="rounded-lg bg-gray-50 p-6">
+                  <h3 className="text-sm font-medium text-gray-900 mb-3">3D Visualization Features</h3>
+                  <ul className="text-sm text-gray-600 space-y-2 font-light">
+                    <li>• Real geographic coordinates with elevation mapping</li>
+                    <li>• Rotating 3D view of African mining network</li>
+                    <li>• Node efficiency indicators and performance halos</li>
+                    <li>• Interactive node selection with detailed panels</li>
+                  </ul>
+                </div>
+
+                <div className="rounded-lg bg-gray-50 p-6">
+                  <h3 className="text-sm font-medium text-gray-900 mb-3">Scientific Applications</h3>
+                  <ul className="text-sm text-gray-600 space-y-2 font-light">
+                    <li>• Network topology analysis in 3D coordinate space</li>
+                    <li>• Centrality metrics with geographic context</li>
+                    <li>• Materials flow optimization visualization</li>
+                    <li>• Multi-dimensional relationship mapping</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 3D Graph Visualization Tab */}
+          {activeTab === '3d' && (
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                  3D Network Visualization
+                </h2>
+                {currentNetwork ? (
+                  <div className="bg-gray-100 rounded-lg p-4">
+                    <Network3D
+                      nodes={nodes3D}
+                      edges={edges3D}
+                      width={800}
+                      height={600}
+                      showLabels={true}
+                      colorScheme="centrality"
+                    />
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="text-gray-500 text-lg">
+                      Load a network to see the 3D visualization
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Temporal Analysis Tab */}
+            {activeTab === 'temporal' && (
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                  Temporal Network Analysis
+                </h2>
+                {networkHistory.length > 0 ? (
+                  <TemporalAnalysis
+                    networkHistory={networkHistory}
+                    width={800}
+                    height={400}
+                    showEvolution={true}
+                    animationSpeed={1000}
+                  />
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="text-gray-500 text-lg">
+                      Load a network to see temporal analysis
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ML Predictions Tab */}
+            {activeTab === 'ml' && (
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                  Machine Learning Predictions
+                </h2>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Controls */}
+                  <div className="bg-gray-50 p-6 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-4">Prediction Settings</h3>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Prediction Type
+                        </label>
+                        <select
+                          value={predictionType}
+                          onChange={(e) => setPredictionType(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="network_growth">Network Growth</option>
+                          <option value="anomaly_detection">Anomaly Detection</option>
+                          <option value="influence_prediction">Influence Prediction</option>
+                          <option value="community_evolution">Community Evolution</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Time Horizon (months)
+                        </label>
+                        <input
+                          type="number"
+                          value={timeHorizon}
+                          onChange={(e) => setTimeHorizon(Number(e.target.value))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          min="1"
+                          max="60"
+                        />
+                      </div>
+
+                      <button
+                        onClick={handleMlPrediction}
+                        disabled={!currentNetwork || mlLoading}
+                        className="w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
+                      >
+                        {mlLoading ? 'Generating Predictions...' : 'Generate Predictions'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Results */}
+                  <div className="bg-gray-50 p-6 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-4">Prediction Results</h3>
+                    
+                    {mlPredictions ? (
+                      <div className="space-y-4">
+                        <div className="bg-white p-4 rounded border">
+                          <h4 className="font-semibold mb-2">Network Summary</h4>
+                          <div className="text-sm space-y-1">
+                            <p>Nodes: {mlPredictions.network_summary?.nodeCount}</p>
+                            <p>Edges: {mlPredictions.network_summary?.edgeCount}</p>
+                            <p>Density: {mlPredictions.network_summary?.density?.toFixed(3)}</p>
+                            <p>Average Degree: {mlPredictions.network_summary?.avgDegree?.toFixed(2)}</p>
+                          </div>
+                        </div>
+
+                        <div className="bg-white p-4 rounded border">
+                          <h4 className="font-semibold mb-2">Predictions</h4>
+                          <div className="text-sm">
+                            <pre className="whitespace-pre-wrap bg-gray-100 p-2 rounded text-xs">
+                              {JSON.stringify(mlPredictions.predictions, null, 2)}
+                            </pre>
+                          </div>
+                        </div>
+
+                        <div className="bg-white p-4 rounded border">
+                          <h4 className="font-semibold mb-2">Model Info</h4>
+                          <div className="text-sm space-y-1">
+                            <p>Model: {mlPredictions.metadata?.model}</p>
+                            <p>Confidence: {(mlPredictions.metadata?.confidence * 100).toFixed(1)}%</p>
+                            <p>Prediction Type: {mlPredictions.prediction_type}</p>
+                            <p>Time Horizon: {mlPredictions.time_horizon} months</p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <div className="text-gray-500">
+                          {currentNetwork 
+                            ? 'Click "Generate Predictions" to see ML insights'
+                            : 'Load a network to generate predictions'
+                          }
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Network Info */}
+        {currentNetwork && (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Current Network: {currentNetwork.name}
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-blue-50 p-3 rounded">
+                <div className="text-sm text-gray-600">Nodes</div>
+                <div className="text-2xl font-bold text-blue-600">
+                  {currentNetwork.nodes.length}
+                </div>
+              </div>
+              <div className="bg-green-50 p-3 rounded">
+                <div className="text-sm text-gray-600">Edges</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {currentNetwork.edges.length}
+                </div>
+              </div>
+              <div className="bg-purple-50 p-3 rounded">
+                <div className="text-sm text-gray-600">Groups</div>
+                <div className="text-2xl font-bold text-purple-600">
+                  {new Set(currentNetwork.nodes.map(n => n.group)).size}
+                </div>
+              </div>
+              <div className="bg-orange-50 p-3 rounded">
+                <div className="text-sm text-gray-600">Analyses</div>
+                <div className="text-2xl font-bold text-orange-600">
+                  {Object.keys(analysisResults).length}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AdvancedDashboard;

@@ -1,0 +1,2379 @@
+{
+  "transitive": [
+    {
+      "entity": "Joint Stock Company Concern Sozvezdie",
+      "relatedEntity": "United Instrument Manufacturing (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Joint Stock Company Concern Sozvezdie",
+        "United Instrument Manufacturing Corporation",
+        "United Instrument Manufacturing (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Hebei Medicines Health",
+      "relatedEntity": "Hikvision USA Inc.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Hebei Medicines Health",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Hebei Medicines Health",
+      "relatedEntity": "Hikvision Europe BV",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Hebei Medicines Health",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Hebei Medicines Health",
+      "relatedEntity": "Hikvision India Private Limited",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Hebei Medicines Health",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Hebei Medicines Health",
+      "relatedEntity": "Hikvision Japan Co., Ltd.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Hebei Medicines Health",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - MT Microsystems",
+      "relatedEntity": "Hikvision USA Inc.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - MT Microsystems",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - MT Microsystems",
+      "relatedEntity": "Hikvision Europe BV",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - MT Microsystems",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - MT Microsystems",
+      "relatedEntity": "Hikvision India Private Limited",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - MT Microsystems",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - MT Microsystems",
+      "relatedEntity": "Hikvision Japan Co., Ltd.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - MT Microsystems",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Micro Electronic Technology",
+      "relatedEntity": "Hikvision USA Inc.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Micro Electronic Technology",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Micro Electronic Technology",
+      "relatedEntity": "Hikvision Europe BV",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Micro Electronic Technology",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Micro Electronic Technology",
+      "relatedEntity": "Hikvision India Private Limited",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Micro Electronic Technology",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Micro Electronic Technology",
+      "relatedEntity": "Hikvision Japan Co., Ltd.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 13th Research Institute (CETC 13). Subordinate Institution - Micro Electronic Technology",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei do Brasil Telecomunicacoes Ltda",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei do Brasil Telecomunicacoes Ltda",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies (Yangon) Co., Ltd.,",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies (Yangon) Co., Ltd.,",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Chengdu Huawei High-Tech Investment Co., Ltd., Chengdu, Sichuan",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Chengdu Huawei High-Tech Investment Co., Ltd., Chengdu, Sichuan",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Chengdu Huawei Technologies Co., Ltd., Chengdu, Sichuan",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Chengdu Huawei Technologies Co., Ltd., Chengdu, Sichuan",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Research & Development Belgium NV",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies Research & Development Belgium NV",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies (Bolivia) S.R.L.",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies (Bolivia) S.R.L.",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Dongguan Huawei Service Co., Ltd., Dongguan, Guangdong",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Dongguan Huawei Service Co., Ltd., Dongguan, Guangdong",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Beijing Huawei Longshine Information Technology Co., Ltd.",
+      "relatedEntity": "HiSilicon",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Beijing Huawei Longshine Information Technology Co., Ltd.",
+        "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Beijing Huawei Longshine Information Technology Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Beijing Huawei Longshine Information Technology Co., Ltd.",
+      "relatedEntity": "HiSilicon",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Beijing Huawei Longshine Information Technology Co., Ltd.",
+        "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Beijing Huawei Longshine Information Technology Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou New Longshine Information Technology Co., Ltd.",
+      "relatedEntity": "HiSilicon",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou New Longshine Information Technology Co., Ltd.",
+        "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou New Longshine Information Technology Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou New Longshine Information Technology Co., Ltd.",
+      "relatedEntity": "HiSilicon",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou New Longshine Information Technology Co., Ltd.",
+        "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou New Longshine Information Technology Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou Huawei Enterprises",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou Huawei Enterprises",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Co., Ltd. (Huawei)",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies Co., Ltd. (Huawei)",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Training (Dongguan) Co., Ltd., Dongguan, Guangdong",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Training (Dongguan) Co., Ltd., Dongguan, Guangdong",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou Huawei Communication Technology Co., Ltd.",
+      "relatedEntity": "HiSilicon",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou Huawei Communication Technology Co., Ltd.",
+        "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou Huawei Communication Technology Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou Huawei Communication Technology Co., Ltd.",
+      "relatedEntity": "HiSilicon",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou Huawei Communication Technology Co., Ltd.",
+        "Huawei Technologies Co., Ltd. (Huawei). Affiliated Entity: Hangzhou Huawei Communication Technology Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Shenzhen Huawei Training School Co., Ltd., Shenzhen, Guangdong",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Shenzhen Huawei Training School Co., Ltd., Shenzhen, Guangdong",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Xi'an Huawei Technologies Co., Ltd., Xi'an, Shaanxi",
+      "relatedEntity": "HiSilicon",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "Xi'an Huawei Technologies Co., Ltd., Xi'an, Shaanxi",
+        "BYD Company"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Xi'an Huawei Technologies Co., Ltd., Xi'an, Shaanxi",
+      "relatedEntity": "HiSilicon",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "Xi'an Huawei Technologies Co., Ltd., Xi'an, Shaanxi",
+        "BYD Company"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Wuhan Huawei Investment Co., Ltd., Wuhan, Hubei",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Wuhan Huawei Investment Co., Ltd., Wuhan, Hubei",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Shenzhen Huawei Terminal Commercial Co., Ltd., Shenzhen, Guangdong",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Shenzhen Huawei Terminal Commercial Co., Ltd., Shenzhen, Guangdong",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Cooperatief U.A.",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies Cooperatief U.A.",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Lebanon",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies Lebanon",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Madagascar Sarl",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies Madagascar Sarl",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Switzerland AG, Liebefeld",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies Switzerland AG, Liebefeld",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Tech Investment Oman LLC",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Tech Investment Oman LLC",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Global Finance (UK) Limited, Great Britain",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Global Finance (UK) Limited, Great Britain",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Costa Rica SA",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies Costa Rica SA",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Cuba",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Cuba",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Bahrain, Building 647 2811 Road 2811, Block 428",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies Bahrain, Building 647 2811 Road 2811, Block 428",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Bel Huawei Technologies LLC",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Bel Huawei Technologies LLC",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Italia",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Italia",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Milan Research Institute",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Milan Research Institute",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Cr Panama S.A",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies Cr Panama S.A",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Tech Investment, PT",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Tech Investment, PT",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies LLC Kazakhstan",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies LLC Kazakhstan",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Russia",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Russia",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Sweden",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Sweden",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies (Thailand) Co.",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies (Thailand) Co.",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Cloud Guiyang",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Cloud Guiyang",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Cloud Dalian",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Cloud Dalian",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei OpenLab Suzhou",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei OpenLab Suzhou",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Cloud Beijing",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Cloud Beijing",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei OpenLab Paris",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei OpenLab Paris",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Cloud Berlin",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Cloud Berlin",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Cloud Brazil",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Cloud Brazil",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei OpenLab Munich",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei OpenLab Munich",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Cloud Argentina",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Cloud Argentina",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei OpenLab Cairo",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei OpenLab Cairo",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Technologies Morocco",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Technologies Morocco",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Cloud Netherlands",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Cloud Netherlands",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei OpenLab Mexico City",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei OpenLab Mexico City",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Cloud Russia",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Cloud Russia",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Cloud Mexico",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Cloud Mexico",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Cloud Peru",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Cloud Peru",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei OpenLab Delhi",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei OpenLab Delhi",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei OpenLab Istanbul",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei OpenLab Istanbul",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Cloud South Africa",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Cloud South Africa",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei Cloud Switzerland",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei Cloud Switzerland",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei OpenLab Moscow",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei OpenLab Moscow",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei OpenLab Johannesburg",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei OpenLab Johannesburg",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei OpenLab Dubai",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei OpenLab Dubai",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Huawei OpenLab Singapore",
+      "relatedEntity": "Huawei Technologies Co., (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Huawei OpenLab Singapore",
+        "Huawei Technologies Co., Ltd.",
+        "Huawei Technologies Co., (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation, 30th Research Institute (CETC-30)",
+      "relatedEntity": "Hikvision USA Inc.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation, 30th Research Institute (CETC-30)",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation, 30th Research Institute (CETC-30)",
+      "relatedEntity": "Hikvision Europe BV",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation, 30th Research Institute (CETC-30)",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation, 30th Research Institute (CETC-30)",
+      "relatedEntity": "Hikvision India Private Limited",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation, 30th Research Institute (CETC-30)",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation, 30th Research Institute (CETC-30)",
+      "relatedEntity": "Hikvision Japan Co., Ltd.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation, 30th Research Institute (CETC-30)",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation, 7th Research Institute (CETC-7)",
+      "relatedEntity": "Hikvision USA Inc.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation, 7th Research Institute (CETC-7)",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation, 7th Research Institute (CETC-7)",
+      "relatedEntity": "Hikvision Europe BV",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation, 7th Research Institute (CETC-7)",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation, 7th Research Institute (CETC-7)",
+      "relatedEntity": "Hikvision India Private Limited",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation, 7th Research Institute (CETC-7)",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation, 7th Research Institute (CETC-7)",
+      "relatedEntity": "Hikvision Japan Co., Ltd.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation, 7th Research Institute (CETC-7)",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "PJSC Beriev Aircraft Company",
+      "relatedEntity": "United Aircraft (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "PJSC Beriev Aircraft Company",
+        "United Aircraft Corporation",
+        "United Aircraft (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Russian Aircraft Corporation MiG",
+      "relatedEntity": "United Aircraft (global parent - inferred)",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Russian Aircraft Corporation MiG",
+        "United Aircraft Corporation",
+        "United Aircraft (global parent - inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "Gazprom Neft Shelf",
+      "relatedEntity": "Gazprom",
+      "relationshipType": "ultimate_parent",
+      "inferenceChain": [
+        "Gazprom Neft Shelf",
+        "Gazprom Neft",
+        "Gazprom"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 48th Research Institute",
+      "relatedEntity": "Hikvision USA Inc.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 48th Research Institute",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 48th Research Institute",
+      "relatedEntity": "Hikvision Europe BV",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 48th Research Institute",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 48th Research Institute",
+      "relatedEntity": "Hikvision India Private Limited",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 48th Research Institute",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 48th Research Institute",
+      "relatedEntity": "Hikvision Japan Co., Ltd.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 48th Research Institute",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 32nd Research Institute",
+      "relatedEntity": "Hikvision USA Inc.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 32nd Research Institute",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 32nd Research Institute",
+      "relatedEntity": "Hikvision Europe BV",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 32nd Research Institute",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 32nd Research Institute",
+      "relatedEntity": "Hikvision India Private Limited",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 32nd Research Institute",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 32nd Research Institute",
+      "relatedEntity": "Hikvision Japan Co., Ltd.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 32nd Research Institute",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 16th Research Institute",
+      "relatedEntity": "Hikvision USA Inc.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 16th Research Institute",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 16th Research Institute",
+      "relatedEntity": "Hikvision Europe BV",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 16th Research Institute",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 16th Research Institute",
+      "relatedEntity": "Hikvision India Private Limited",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 16th Research Institute",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 16th Research Institute",
+      "relatedEntity": "Hikvision Japan Co., Ltd.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 16th Research Institute",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    },
+    {
+      "entity": "China Electronics Technology Group Corporation 36th Research Institute",
+      "relatedEntity": "Hikvision USA Inc.",
+      "relationshipType": "subsidiary",
+      "inferenceChain": [
+        "China Electronics Technology Group Corporation 36th Research Institute",
+        "China Electronics (inferred)"
+      ],
+      "confidence": 0.75,
+      "source": "Transitive Inference"
+    }
+  ],
+  "siblings": [
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC)"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC)",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 702 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC)"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC)",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy First Design Department"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC)"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC)",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 13 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC)"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC)",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 1st Academy 12 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC)"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC)",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy 811 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC)",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC)"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC)",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC)"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC)",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC)",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC)"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 771 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+      "relatedEntity": "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Technology Corporation (CASC) 8th Academy",
+        "China Aerospace Science and (inferred)",
+        "China Aerospace Science and Technology Corporation (CASC) 9th Academy 772 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 239 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 239 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 239 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 239 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - Second Design Department",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - Second Design Department"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - Second Design Department",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - Second Design Department",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation Second Academy",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation Second Academy"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation Second Academy",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation Second Academy",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 201 Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 201 Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 201 Research Institute",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 201 Research Institute",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 203rd Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 203rd Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 203rd Research Institute",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 203rd Research Institute",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 204th Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 204th Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 204th Research Institute",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 204th Research Institute",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 206th Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 206th Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 206th Research Institute",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 206th Research Institute",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 207th Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 207th Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 207th Research Institute",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 207th Research Institute",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 23rd Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 23rd Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 23rd Research Institute",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 23rd Research Institute",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 210th Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 210th Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 210th Research Institute",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 210th Research Institute",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 208th Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 208th Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 208th Research Institute",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 208th Research Institute",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 283 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 283 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 283 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 283 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 25th Research Institute",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 25th Research Institute"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 25th Research Institute",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 25th Research Institute",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 699 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 699 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    },
+    {
+      "entity": "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 699 Factory",
+      "relatedEntity": "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory",
+      "relationshipType": "sibling",
+      "inferenceChain": [
+        "China Aerospace Science and Industry Corporation Second Academy. Subordinate Institution - 699 Factory",
+        "China Aerospace Science and Industry Corporation (CASIC)",
+        "China Aerospace Science and Industry Corporation (CASIC) 3rd Academy's 159 Factory"
+      ],
+      "confidence": 0.9,
+      "source": "Sibling Inference"
+    }
+  ],
+  "stats": {
+    "totalNodes": 1302,
+    "nodesWithParents": 1287,
+    "nodesWithChildren": 167,
+    "maxDepth": 2,
+    "ultimateParents": {},
+    "uniqueParentCompanies": 1132
+  },
+  "effectiveCoverage": {
+    "baseline": 1302,
+    "withInference": 1312,
+    "coveragePercent": 38.4,
+    "multiplier": 1.0076804915514592
+  }
+}
