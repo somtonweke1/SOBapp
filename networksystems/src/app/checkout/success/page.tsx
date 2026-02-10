@@ -7,23 +7,52 @@ export default function CheckoutSuccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [progress, setProgress] = useState(0);
+  const [isVerified, setIsVerified] = useState(false);
+  const [isDelayed, setIsDelayed] = useState(false);
   const sessionId = searchParams.get('session_id');
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setProgress(100);
-    }, 200);
+    let interval: NodeJS.Timeout | null = null;
+    let delayTimer: NodeJS.Timeout | null = null;
+    let progressTimer: NodeJS.Timeout | null = null;
 
-    const redirectTimer = setTimeout(() => {
-      const target = sessionId
-        ? `/dashboard?from=success&session_id=${encodeURIComponent(sessionId)}`
-        : '/dashboard?from=success';
-      router.replace(target);
-    }, 3000);
+    const startPolling = () => {
+      setProgress(15);
+      progressTimer = setInterval(() => {
+        setProgress((value) => (value < 90 ? value + 5 : value));
+      }, 900);
+
+      interval = setInterval(async () => {
+        if (!sessionId) return;
+        try {
+          const response = await fetch(`/api/auth/check-subscription?session_id=${encodeURIComponent(sessionId)}`);
+          if (!response.ok) return;
+          const data = await response.json();
+          if (data.subscribed) {
+            setIsVerified(true);
+            setProgress(100);
+            if (interval) clearInterval(interval);
+            if (progressTimer) clearInterval(progressTimer);
+            setTimeout(() => {
+              router.replace(`/dashboard?from=success&session_id=${encodeURIComponent(sessionId)}`);
+            }, 900);
+          }
+        } catch (error) {
+          console.error('Polling error:', error);
+        }
+      }, 1500);
+
+      delayTimer = setTimeout(() => {
+        setIsDelayed(true);
+      }, 15000);
+    };
+
+    startPolling();
 
     return () => {
-      clearTimeout(timer);
-      clearTimeout(redirectTimer);
+      if (interval) clearInterval(interval);
+      if (progressTimer) clearInterval(progressTimer);
+      if (delayTimer) clearTimeout(delayTimer);
     };
   }, [router, sessionId]);
 
@@ -41,11 +70,25 @@ export default function CheckoutSuccessPage() {
 
         <div className="mt-8 h-2 w-full overflow-hidden rounded-full bg-white/10">
           <div
-            className="h-full rounded-full bg-emerald-500 transition-all duration-[2600ms] ease-out"
+            className="h-full rounded-full bg-emerald-500 transition-all duration-[1200ms] ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className="mt-4 text-xs text-zinc-400">Redirecting you to the War Room...</p>
+        <div className="mt-4 text-xs text-zinc-400">
+          {isVerified ? 'Access granted. Launching the War Room…' : 'Verifying your membership status…'}
+        </div>
+
+        {isDelayed && !isVerified && (
+          <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-xs text-zinc-300">
+            <p>Taking longer than expected.</p>
+            <button
+              onClick={() => router.replace('/dashboard?from=success')}
+              className="mt-3 w-full rounded-lg border border-emerald-400/70 bg-emerald-500 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-emerald-600"
+            >
+              Go to Dashboard Anyway
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
