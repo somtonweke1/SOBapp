@@ -1,222 +1,95 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+const stripeCheckoutUrl = process.env.NEXT_PUBLIC_STRIPE_CHECKOUT_URL || '#';
+
 export default function SignUpPage() {
-  const router = useRouter();
-
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    company: '',
-    phone: '',
-  });
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    // Validation
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters');
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      // Register user
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          company: formData.company || undefined,
-          phone: formData.phone || undefined,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || 'Registration failed');
-        setIsLoading(false);
-        return;
-      }
-
-      // Auto sign in after registration
-      const result = await signIn('credentials', {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        setError('Registration successful but sign in failed. Please sign in manually.');
-        setIsLoading(false);
-        return;
-      }
-
-      router.push('/dashboard');
-      router.refresh();
-    } catch (err) {
-      setError('An unexpected error occurred');
-      setIsLoading(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-50 to-zinc-100 text-zinc-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <div className="flex justify-center">
-            <div className="w-12 h-12 bg-zinc-900 rounded-lg flex items-center justify-center">
-              <span className="text-white font-extralight text-xl tracking-wide">S</span>
-            </div>
-          </div>
-          <h2 className="mt-6 text-center text-3xl font-extralight tracking-tight text-zinc-900">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm font-light text-zinc-600">
-            Join SOBapp today
-          </p>
-        </div>
-
-        <form className="mt-8 space-y-6 bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-zinc-200/50" onSubmit={handleSubmit}>
-          {error && (
-            <div className="rounded-lg bg-rose-50 border border-rose-200 p-4">
-              <div className="text-sm font-light text-rose-700">{error}</div>
-            </div>
-          )}
-
-          <div className="space-y-4">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-black to-zinc-950 text-white px-6 py-16">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+          <div className="space-y-8">
             <div>
-              <label htmlFor="name" className="block text-sm font-light text-zinc-700 mb-2">
-                Full Name *
-              </label>
-              <input
-                id="name"
-                type="text"
-                required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                placeholder="John Doe"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-light text-zinc-700 mb-2">
-                Email address *
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="company" className="block text-sm font-light text-zinc-700 mb-2">
-                Company (Optional)
-              </label>
-              <input
-                id="company"
-                type="text"
-                value={formData.company}
-                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                placeholder="Acme Baltimore Property LLC"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="phone" className="block text-sm font-light text-zinc-700 mb-2">
-                Phone (Optional)
-              </label>
-              <input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                placeholder="+1 (555) 000-0000"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-light text-zinc-700 mb-2">
-                Password *
-              </label>
-              <input
-                id="password"
-                type="password"
-                required
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                placeholder="••••••••"
-              />
-              <p className="mt-2 text-xs font-light text-zinc-500">
-                Must be at least 8 characters with uppercase, lowercase, and number
+              <p className="text-xs uppercase tracking-[0.4em] text-emerald-300">Sons of Baltimore Network</p>
+              <h1 className="mt-4 text-4xl sm:text-5xl font-extralight tracking-tight">
+                Join the Sons of Baltimore Network. Secure your infrastructure. Recover your capital.
+              </h1>
+              <p className="mt-4 text-base text-zinc-300">
+                This is the premium gateway to the War Room. Your membership unlocks the forensic engine, legal abatement
+                suite, and the live 3D property map used to surface overcharges before they hit your cash flow.
               </p>
             </div>
 
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-light text-zinc-700 mb-2">
-                Confirm Password *
-              </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                required
-                value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                className="w-full px-4 py-3 border border-zinc-200 rounded-lg text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                placeholder="••••••••"
-              />
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+              <p className="text-xs uppercase tracking-[0.3em] text-zinc-400">Pro Features</p>
+              <ul className="mt-6 space-y-4 text-sm text-zinc-200">
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-400"></span>
+                  <span>3D Infrastructure Mapping with live property node intelligence.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-400"></span>
+                  <span>Abatement Letter Suite with export-ready DPW dispute templates.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-400"></span>
+                  <span>Deal Shield analytics: DSCR stress testing and lien risk alerts.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+              <p className="text-xs uppercase tracking-[0.3em] text-zinc-400">Security & Trust</p>
+              <div className="mt-4 flex flex-wrap gap-3 text-xs text-zinc-200">
+                <span className="rounded-full border border-emerald-400/40 px-3 py-1">Stripe Verified</span>
+                <span className="rounded-full border border-emerald-400/40 px-3 py-1">Encrypted Checkout</span>
+                <span className="rounded-full border border-emerald-400/40 px-3 py-1">24/7 Forensic Support</span>
+              </div>
             </div>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full flex justify-center py-4 px-4 border border-transparent rounded-lg text-lg font-light text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-md hover:shadow-lg"
-            >
-              {isLoading ? 'Creating account...' : 'Sign up'}
-            </button>
-          </div>
+          <div className="rounded-3xl border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
+            <p className="text-xs uppercase tracking-[0.3em] text-emerald-300">War Room Access</p>
+            <h2 className="mt-4 text-3xl font-semibold">$18<span className="text-base font-light text-zinc-300">/month</span></h2>
+            <p className="mt-3 text-sm text-zinc-300">
+              Priority access to the full SOBapp forensic stack. Cancel anytime.
+            </p>
 
-          <div className="text-center">
-            <p className="text-sm font-light text-zinc-600">
-              Already have an account?{' '}
-              <Link href="/auth/signin" className="font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
-                Sign in
+            <button
+              onClick={() => {
+                if (stripeCheckoutUrl === '#') return;
+                window.location.href = stripeCheckoutUrl;
+              }}
+              className="mt-6 w-full rounded-lg border border-emerald-400/70 bg-emerald-500 px-4 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-white shadow-[0_0_24px_rgba(34,197,94,0.4)] transition hover:bg-emerald-600"
+            >
+              Unlock War Room Access
+            </button>
+
+            {stripeCheckoutUrl === '#' && (
+              <p className="mt-4 text-xs text-amber-300">
+                Add `NEXT_PUBLIC_STRIPE_CHECKOUT_URL` to enable live checkout.
+              </p>
+            )}
+
+            <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-xs text-zinc-300">
+              <p className="uppercase tracking-[0.3em] text-zinc-400">Included</p>
+              <ul className="mt-3 space-y-2">
+                <li>Instant DPW forensic scans</li>
+                <li>Abatement letter exports</li>
+                <li>Portfolio risk alerts</li>
+              </ul>
+            </div>
+
+            <p className="mt-6 text-center text-xs text-zinc-400">
+              Already a member?{' '}
+              <Link href="/auth/signin" className="text-emerald-300 hover:text-emerald-200">
+                Sign in here
               </Link>
+              .
             </p>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
