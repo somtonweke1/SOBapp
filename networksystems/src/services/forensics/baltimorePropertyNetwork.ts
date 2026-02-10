@@ -404,9 +404,8 @@ export const buildBaltimorePropertyNetwork = async (
   // Build network data structure
   const network: NetworkData = {
     nodes: baltimoreNodes.map(node => ({
-      id: node.id,
-      label: node.address,
       ...node,
+      label: node.address,
     })),
     edges: billingTierEdges.map(edge => ({
       source: edge.source,
@@ -439,4 +438,3 @@ function inferPropertyType(address: string): 'ROWHOUSE' | 'APARTMENT' | 'COMMERC
   }
   return 'COMMERCIAL';
 }
-

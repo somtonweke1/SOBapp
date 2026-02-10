@@ -32,6 +32,8 @@ export default function DSCRStressTest() {
   const [result, setResult] = useState<DSCRResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const vacancyRateValue = Number(vacancyRate);
+  const vacancyRatePercent = Number.isFinite(vacancyRateValue) ? vacancyRateValue * 100 : 0;
 
   const handleCalculate = async () => {
     setLoading(true);
@@ -280,7 +282,7 @@ export default function DSCRStressTest() {
                 </span>
               </div>
               <div className="flex items-center justify-between p-3 bg-slate-50 rounded-md">
-                <span className="font-medium text-slate-700">Vacancy Loss ({vacancyRate * 100}%)</span>
+                <span className="font-medium text-slate-700">Vacancy Loss ({vacancyRatePercent}%)</span>
                 <span className="text-lg font-semibold text-red-600">
                   -${result.metrics.vacancyLoss.toLocaleString()}
                 </span>
@@ -350,4 +352,3 @@ export default function DSCRStressTest() {
     </div>
   );
 }
-
