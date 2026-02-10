@@ -3,7 +3,32 @@
 import Link from 'next/link';
 import ThreeDNetworkMap from '@/components/visualization/3d-network-map';
 
-const distressNodes = [
+type DistressNode = {
+  id: string;
+  type: 'mining_site' | 'processing_facility' | 'research_lab' | 'logistics_hub';
+  name: string;
+  position: {
+    lat: number;
+    lng: number;
+    elevation: number;
+  };
+  data: {
+    production: number;
+    efficiency: number;
+    status: 'operational' | 'maintenance' | 'offline';
+    connections: string[];
+  };
+};
+
+type DistressEdge = {
+  source: string;
+  target: string;
+  type: 'transport' | 'communication' | 'supply_chain' | 'data_flow';
+  strength: number;
+  distance: number;
+};
+
+const distressNodes: DistressNode[] = [
   {
     id: 'north-avenue-cluster',
     type: 'mining_site',
@@ -41,7 +66,7 @@ const distressNodes = [
   }
 ];
 
-const distressEdges = [
+const distressEdges: DistressEdge[] = [
   { source: 'north-avenue-cluster', target: 'dpw-hub', type: 'data_flow', strength: 0.82, distance: 2 },
   { source: 'north-avenue-cluster', target: 'lien-lab', type: 'communication', strength: 0.74, distance: 3 },
   { source: 'west-baltimore-core', target: 'harbor-logistics', type: 'transport', strength: 0.61, distance: 4 },
