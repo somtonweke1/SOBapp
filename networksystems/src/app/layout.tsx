@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'SOBapp | Baltimore Real Estate Forensics',
-  description: 'SOBapp is the Sons of Baltimore Forensics Engine for DPW water bill audits, DSCR stress-testing, and property-level risk intelligence.',
+  description: 'SOBapp is the Baltimore Real Estate Forensics Engine for DPW water bill audits, DSCR stress-testing, and property-level risk intelligence.',
 }
 
 export default function RootLayout({

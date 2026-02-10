@@ -31,7 +31,20 @@ interface InversionResult {
   recommendation: string;
 }
 
-export default function DPWAuditor() {
+type DPWAuditorProps = {
+  onAuditComplete?: (payload: {
+    input: {
+      meterReadCurrent: number;
+      meterReadLast: number;
+      totalBill: number;
+      serviceCharge?: number;
+      sewerCharge?: number;
+    };
+    result: AuditResult;
+  }) => void;
+};
+
+export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
   const [activeMode, setActiveMode] = useState<'audit' | 'inversion'>('audit');
   const [meterReadCurrent, setMeterReadCurrent] = useState('');
   const [meterReadLast, setMeterReadLast] = useState('');
@@ -84,6 +97,18 @@ export default function DPWAuditor() {
       const data = await response.json();
       if (data.success) {
         setResult(data.result);
+        if (onAuditComplete) {
+          onAuditComplete({
+            input: {
+              meterReadCurrent: parseFloat(meterReadCurrent),
+              meterReadLast: parseFloat(meterReadLast),
+              totalBill: parseFloat(totalBill),
+              serviceCharge: serviceCharge ? parseFloat(serviceCharge) : undefined,
+              sewerCharge: sewerCharge ? parseFloat(sewerCharge) : undefined,
+            },
+            result: data.result as AuditResult,
+          });
+        }
       } else {
         setError(data.error || 'Failed to audit water bill');
       }

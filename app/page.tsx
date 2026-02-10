@@ -73,7 +73,7 @@ export default function SOBLandingPage() {
         <header className="border-b border-slate-800 pb-10">
           <p className="text-xs uppercase tracking-[0.4em] text-slate-500">Baltimore Real Estate Forensics</p>
           <h1 className="mt-4 text-6xl font-black tracking-tight text-white">SOBapp</h1>
-          <p className="mt-4 text-xl text-slate-300">The Sons of Baltimore Forensics Engine</p>
+          <p className="mt-4 text-xl text-slate-300">Baltimore Real Estate Forensics Engine</p>
         </header>
 
         <main className="mt-10 grid gap-8 lg:grid-cols-2">

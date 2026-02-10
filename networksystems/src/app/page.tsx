@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 
 import { SOB_FORENSICS } from '@/lib/forensics';
 
@@ -68,7 +69,27 @@ export default function SOBLandingPage() {
         <header className="border-b border-slate-800 pb-10">
           <p className="text-xs uppercase tracking-[0.4em] text-slate-500">Baltimore Real Estate Forensics</p>
           <h1 className="mt-4 text-6xl font-black tracking-tight text-white">SOBapp</h1>
-          <p className="mt-4 text-xl text-slate-300">The Sons of Baltimore Forensics Engine</p>
+          <p className="mt-4 text-xl text-slate-300">Baltimore Real Estate Forensics Engine</p>
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Link
+              href="/audit"
+              className="rounded-lg bg-blue-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-400"
+            >
+              Start Audit
+            </Link>
+            <Link
+              href="/deal-shield"
+              className="rounded-lg border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:border-slate-500"
+            >
+              Test Deal
+            </Link>
+            <Link
+              href="/abatement"
+              className="rounded-lg border border-emerald-500/40 px-6 py-3 text-sm font-semibold text-emerald-300 transition hover:border-emerald-400"
+            >
+              Generate Abatement Letter
+            </Link>
+          </div>
         </header>
 
         <main className="mt-10 grid gap-8 lg:grid-cols-2">
