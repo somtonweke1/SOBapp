@@ -114,8 +114,8 @@ function SignInForm() {
           <div className="text-center">
             <p className="text-sm font-light text-zinc-600">
               Don't have an account?{' '}
-              <Link href="/auth/signup" className="font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
-                Sign up
+              <Link href="/claims" className="font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
+                Start a claim
               </Link>
             </p>
           </div>

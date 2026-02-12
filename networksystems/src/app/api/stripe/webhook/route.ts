@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         await prisma.user.update({
           where: { email },
           data: {
-            isSubscribed: true,
+            hasSignedAgreement: true,
             subscription: 'professional',
             stripeCustomerId: customerId ?? undefined,
           },

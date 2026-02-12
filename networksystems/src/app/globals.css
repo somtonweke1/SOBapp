@@ -52,15 +52,15 @@
   --color-critical-text: #881337;
 
   /* Background & Surface Colors */
-  --color-background: #fafafa;
-  --color-surface: #ffffff;
-  --color-surface-elevated: #ffffff;
+  --color-background: #050505;
+  --color-surface: #0b0b0f;
+  --color-surface-elevated: #111118;
 
   /* Text Colors */
-  --color-text-primary: #18181b;
-  --color-text-secondary: #52525b;
-  --color-text-tertiary: #71717a;
-  --color-text-disabled: #a1a1aa;
+  --color-text-primary: #e5f7ef;
+  --color-text-secondary: #b6c7bf;
+  --color-text-tertiary: #8ca197;
+  --color-text-disabled: #5c6b64;
 
   /* Border Colors */
   --color-border: #e4e4e7;
@@ -83,6 +83,23 @@
 body {
   color: var(--color-text-primary);
   background: var(--color-background);
+}
+
+.font-forensic {
+  font-family: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+@keyframes sob-ticker {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.sob-ticker {
+  animation: sob-ticker 24s linear infinite;
 }
 
 /* Utility classes for design system colors */

@@ -63,7 +63,8 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           role: user.role,
           subscription: user.subscription,
-          isSubscribed: user.isSubscribed,
+          hasSignedAgreement: user.hasSignedAgreement,
+          userRole: user.userRole,
           company: user.company,
           permissions: user.permissions,
         };
@@ -86,7 +87,8 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = user.role;
         token.subscription = user.subscription;
-        token.isSubscribed = user.isSubscribed;
+        token.hasSignedAgreement = user.hasSignedAgreement;
+        token.userRole = user.userRole;
         token.permissions = user.permissions;
         token.company = user.company;
       }
@@ -97,7 +99,8 @@ export const authOptions: NextAuthOptions = {
             where: { id: token.id as string },
             select: {
               subscription: true,
-              isSubscribed: true,
+              hasSignedAgreement: true,
+              userRole: true,
               permissions: true,
               company: true,
               role: true,
@@ -106,7 +109,8 @@ export const authOptions: NextAuthOptions = {
 
           if (dbUser) {
             token.subscription = dbUser.subscription;
-            token.isSubscribed = dbUser.isSubscribed;
+            token.hasSignedAgreement = dbUser.hasSignedAgreement;
+            token.userRole = dbUser.userRole;
             token.permissions = dbUser.permissions;
             token.company = dbUser.company;
             token.role = dbUser.role;
@@ -123,7 +127,8 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         session.user.subscription = token.subscription as string;
-        session.user.isSubscribed = token.isSubscribed as boolean;
+        session.user.hasSignedAgreement = token.hasSignedAgreement as boolean;
+        session.user.userRole = token.userRole as string;
         session.user.permissions = token.permissions as string;
         session.user.company = token.company as string | null;
       }

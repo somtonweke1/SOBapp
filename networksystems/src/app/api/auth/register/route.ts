@@ -54,7 +54,9 @@ export async function POST(request: NextRequest) {
         company: company || null,
         phone: phone || null,
         role: 'user',
+        userRole: 'LANDLORD',
         subscription: 'free',
+        hasSignedAgreement: false,
         permissions: JSON.stringify(['read:own']),
       },
       select: {

@@ -3,22 +3,39 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import * as d3 from 'd3';
+import { fetchRealPropertyByAddress, RealPropertyRecord } from '@/lib/data-sources';
+import Link from 'next/link';
 
 interface NetworkNode {
   id: string;
   type: 'mining_site' | 'processing_facility' | 'research_lab' | 'logistics_hub';
   name: string;
+  address?: string;
   position: {
     lat: number;
     lng: number;
     elevation: number;
   };
-  data: {
-    production: number;
-    efficiency: number;
-    status: 'operational' | 'maintenance' | 'offline';
-    connections: string[];
-  };
+    data: {
+      production: number;
+      efficiency: number;
+      status: 'operational' | 'maintenance' | 'offline';
+      connections: string[];
+      lienTotal?: number;
+      riskProfile?: string;
+      distressType?: 'DISTRESS_RED' | 'ENVIRONMENTAL_RISK' | 'STANDARD';
+      evidence?: {
+        serviceRequestId?: string;
+        foreclosureId?: string;
+        foreclosureStatus?: string;
+        filingDate?: string;
+        openedDate?: string;
+      };
+      permits?: Array<{
+        type: 'dental' | 'medical' | 'environmental' | 'other';
+        isHistorical: boolean;
+      }>;
+    };
 }
 
 interface NetworkEdge {
@@ -48,6 +65,8 @@ export default function ThreeDNetworkMap({
   const cameraRef = useRef<THREE.PerspectiveCamera>();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedNodeData, setSelectedNodeData] = useState<NetworkNode | null>(null);
+  const [propertyRecord, setPropertyRecord] = useState<RealPropertyRecord | null>(null);
+  const [propertyLoading, setPropertyLoading] = useState(false);
 
   const nodeTypeLabels: Record<NetworkNode['type'], string> = {
     mining_site: 'Rowhouse Cluster',
@@ -62,35 +81,46 @@ export default function ThreeDNetworkMap({
       id: 'north-avenue-cluster',
       type: 'mining_site',
       name: 'North Ave Rowhouse Cluster',
+      address: '1900 N Avenue, Baltimore, MD',
       position: { lat: 39.3114, lng: -76.6166, elevation: 12 },
       data: {
         production: 124,
         efficiency: 87.3,
         status: 'operational',
-        connections: ['dpw-hub', 'lien-lab']
+        connections: ['dpw-hub', 'lien-lab'],
+        lienTotal: 0,
+        riskProfile: 'Standard',
+        permits: [{ type: 'dental', isHistorical: true }]
       }
     },
     {
       id: 'west-baltimore-core',
       type: 'mining_site',
       name: 'West Baltimore Core',
+      address: '1200 W Baltimore St, Baltimore, MD',
       position: { lat: 39.2905, lng: -76.6349, elevation: 20 },
       data: {
         production: 182,
         efficiency: 82.1,
         status: 'operational',
-        connections: ['harbor-logistics', 'dpw-hub']
+        connections: ['harbor-logistics', 'dpw-hub'],
+        lienTotal: 1450,
+        riskProfile: 'Lien Distress',
+        permits: [{ type: 'medical', isHistorical: true }]
       }
     },
     {
       id: 'harbor-logistics',
       type: 'mining_site',
       name: 'Inner Harbor Logistics',
+      address: '1910 Russell St, Baltimore, MD',
       position: { lat: 39.2847, lng: -76.6082, elevation: 6 },
       data: {
         production: 96,
         efficiency: 74.5,
         status: 'maintenance',
+        lienTotal: 920,
+        riskProfile: 'Operational Deadlock',
         connections: ['west-baltimore-core']
       }
     },
@@ -98,23 +128,30 @@ export default function ThreeDNetworkMap({
       id: 'dpw-hub',
       type: 'processing_facility',
       name: 'DPW Billing Hub',
+      address: '100 N Holliday St, Baltimore, MD',
       position: { lat: 39.3007, lng: -76.6152, elevation: 18 },
       data: {
         production: 210,
         efficiency: 91.4,
         status: 'operational',
-        connections: ['north-avenue-cluster', 'west-baltimore-core']
+        connections: ['north-avenue-cluster', 'west-baltimore-core'],
+        lienTotal: 0,
+        riskProfile: 'Standard',
+        permits: [{ type: 'environmental', isHistorical: false }]
       }
     },
     {
       id: 'lien-lab',
       type: 'research_lab',
       name: 'Lien Filing Intelligence',
+      address: '1600 E Madison St, Baltimore, MD',
       position: { lat: 39.2989, lng: -76.5941, elevation: 10 },
       data: {
         production: 0,
         efficiency: 88.7,
         status: 'operational',
+        lienTotal: 2200,
+        riskProfile: 'CERCLA High Priority',
         connections: ['north-avenue-cluster']
       }
     }
@@ -130,40 +167,44 @@ export default function ThreeDNetworkMap({
   const activeNodes = nodes.length > 0 ? nodes : mockNodes;
   const activeEdges = edges.length > 0 ? edges : mockEdges;
 
+  const isInstitutionalOwner = (name?: string) => {
+    if (!name) return false;
+    const upper = name.toUpperCase();
+    return ['LLC', 'INC', 'CORP', 'COMPANY', 'CO.', 'LTD', 'LP', 'TRUST'].some((tag) => upper.includes(tag));
+  };
+
+  useEffect(() => {
+    if (!selectedNodeData?.address) {
+      setPropertyRecord(null);
+      return;
+    }
+    let isActive = true;
+    setPropertyLoading(true);
+    fetchRealPropertyByAddress(selectedNodeData.address)
+      .then((record) => {
+        if (!isActive) return;
+        setPropertyRecord(record);
+      })
+      .catch(() => {
+        if (!isActive) return;
+        setPropertyRecord(null);
+      })
+      .finally(() => {
+        if (!isActive) return;
+        setPropertyLoading(false);
+      });
+    return () => {
+      isActive = false;
+    };
+  }, [selectedNodeData?.address]);
+
   useEffect(() => {
     if (!mountRef.current) return;
 
     // Scene setup
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf4f4f5);
+    scene.background = new THREE.Color(0x050505);
     sceneRef.current = scene;
-
-    // Camera setup
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      mountRef.current.clientWidth / mountRef.current.clientHeight,
-      0.1,
-      10000
-    );
-    camera.position.set(0, 200, 400);
-    cameraRef.current = camera;
-
-    // Renderer setup
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    rendererRef.current = renderer;
-    mountRef.current.appendChild(renderer.domElement);
-
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
-    scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(100, 100, 50);
-    directionalLight.castShadow = true;
-    scene.add(directionalLight);
 
     // Create geographic coordinate system
     const earthRadius = 100;
@@ -184,8 +225,40 @@ export default function ThreeDNetworkMap({
       };
     };
 
+    // Camera setup
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      mountRef.current.clientWidth / mountRef.current.clientHeight,
+      0.1,
+      10000
+    );
+    const focusLat = 39.2783; // Russell St / Biopark midpoint
+    const focusLng = -76.6255;
+    const focus = latLngTo3D(focusLat, focusLng, 12);
+    camera.position.set(focus.x + 120, focus.y + 140, focus.z + 200);
+    camera.lookAt(new THREE.Vector3(focus.x, focus.y, focus.z));
+    cameraRef.current = camera;
+
+    // Renderer setup
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    rendererRef.current = renderer;
+    mountRef.current.appendChild(renderer.domElement);
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.8);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.1);
+    directionalLight.position.set(100, 100, 50);
+    directionalLight.castShadow = true;
+    scene.add(directionalLight);
+
     // Create nodes
     const nodeObjects: { [key: string]: THREE.Mesh } = {};
+    const permitHalos: Array<{ mesh: THREE.Mesh; material: THREE.MeshBasicMaterial }> = [];
 
     activeNodes.forEach(node => {
       const pos = latLngTo3D(node.position.lat, node.position.lng, node.position.elevation);
@@ -193,29 +266,34 @@ export default function ThreeDNetworkMap({
       let geometry: THREE.BufferGeometry;
       let material: THREE.Material;
 
+      const hasHistoricalPermit = node.data.permits?.some(
+        (permit) => permit.isHistorical && (permit.type === 'dental' || permit.type === 'medical')
+      );
+      const hasLienDistress = (node.data.lienTotal ?? 0) > 750;
+
       // Different shapes for different node types
       switch (node.type) {
         case 'mining_site':
           geometry = new THREE.ConeGeometry(3, 8, 8);
           material = new THREE.MeshLambertMaterial({
-            color: node.data.status === 'operational' ? 0xffd700 : 0xff4444
+            color: hasLienDistress ? 0xdc2626 : (hasHistoricalPermit ? 0xffbf00 : 0x00ff41)
           });
           break;
         case 'processing_facility':
           geometry = new THREE.BoxGeometry(5, 5, 5);
           material = new THREE.MeshLambertMaterial({
-            color: node.data.status === 'operational' ? 0x4a90e2 : 0xff4444
+            color: hasLienDistress ? 0xdc2626 : (hasHistoricalPermit ? 0xffbf00 : 0x00ff41)
           });
           break;
         case 'research_lab':
           geometry = new THREE.SphereGeometry(3, 16, 16);
           material = new THREE.MeshLambertMaterial({
-            color: node.data.status === 'operational' ? 0x7ed321 : 0xff4444
+            color: hasLienDistress ? 0xdc2626 : (hasHistoricalPermit ? 0xffbf00 : 0x00ff41)
           });
           break;
         default:
           geometry = new THREE.OctahedronGeometry(3);
-          material = new THREE.MeshLambertMaterial({ color: 0x9013fe });
+          material = new THREE.MeshLambertMaterial({ color: hasLienDistress ? 0xdc2626 : 0x00ff41 });
       }
 
       const mesh = new THREE.Mesh(geometry, material);
@@ -228,7 +306,7 @@ export default function ThreeDNetworkMap({
       if (node.data.efficiency > 90) {
         const haloGeometry = new THREE.RingGeometry(4, 6, 16);
         const haloMaterial = new THREE.MeshBasicMaterial({
-          color: 0x00ff00,
+          color: 0x00ff41,
           transparent: true,
           opacity: 0.3
         });
@@ -236,6 +314,20 @@ export default function ThreeDNetworkMap({
         halo.position.copy(mesh.position);
         halo.lookAt(camera.position);
         scene.add(halo);
+      }
+
+      if (hasHistoricalPermit) {
+        const permitHaloGeometry = new THREE.RingGeometry(6, 8, 20);
+        const permitHaloMaterial = new THREE.MeshBasicMaterial({
+          color: 0xffbf00,
+          transparent: true,
+          opacity: 0.35
+        });
+        const permitHalo = new THREE.Mesh(permitHaloGeometry, permitHaloMaterial);
+        permitHalo.position.copy(mesh.position);
+        permitHalo.lookAt(camera.position);
+        scene.add(permitHalo);
+        permitHalos.push({ mesh: permitHalo, material: permitHaloMaterial });
       }
 
       scene.add(mesh);
@@ -335,6 +427,14 @@ export default function ThreeDNetworkMap({
         nodeObjects[selectedNode].scale.setScalar(scale);
       }
 
+      // Pulse environmental permit halos
+      permitHalos.forEach((halo, index) => {
+        const time = Date.now() * 0.004 + index;
+        const pulse = (Math.sin(time) + 1) / 2;
+        halo.mesh.scale.setScalar(1 + pulse * 0.35);
+        halo.material.opacity = 0.25 + pulse * 0.35;
+      });
+
       renderer.render(scene, camera);
     };
 
@@ -377,9 +477,49 @@ export default function ThreeDNetworkMap({
       )}
 
       {selectedNodeData && (
-        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm text-zinc-900 p-4 rounded-lg max-w-sm border border-zinc-200/50 shadow-lg">
+        <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-sm text-emerald-100 p-4 rounded-lg max-w-sm border border-emerald-400/20 shadow-lg">
           <h3 className="text-lg font-semibold mb-2">{selectedNodeData.name}</h3>
-          <div className="space-y-1 text-sm text-zinc-700">
+          <div className="space-y-2 text-sm text-emerald-100">
+            {selectedNodeData.address && (
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-emerald-400">Forensic Snapshot</p>
+                <p className="mt-1 text-xs">Address: {selectedNodeData.address}</p>
+                <p className="text-xs">Lien Total: ${selectedNodeData.data.lienTotal?.toLocaleString() || '0'}</p>
+                <p className="text-xs">Risk Profile: {selectedNodeData.data.riskProfile || 'Standard'}</p>
+                {propertyLoading ? (
+                  <p className="text-xs text-emerald-300 mt-2">Target Entity: Loading...</p>
+                ) : propertyRecord ? (
+                  <div className="mt-2 text-xs">
+                    <p className={isInstitutionalOwner(propertyRecord.ownerName) ? 'text-emerald-300' : ''}>
+                      Target Entity: {propertyRecord.ownerName || 'Unknown'}
+                    </p>
+                    <p>Last Sale Price: ${propertyRecord.lastSalePrice?.toLocaleString() || '0'}</p>
+                  </div>
+                ) : (
+                  <p className="text-xs text-emerald-300 mt-2">Target Entity: Not found</p>
+                )}
+                {selectedNodeData.data.distressType === 'DISTRESS_RED' && (
+                  <div className="mt-3 rounded-lg border border-rose-500/40 bg-rose-500/10 p-3 text-xs text-rose-200">
+                    <p className="uppercase tracking-[0.3em] text-rose-300">Evidence Report</p>
+                    <p className="mt-2">
+                      Infrastructure Breach: Case #{selectedNodeData.data.evidence?.serviceRequestId || 'Unknown'} - Opened{' '}
+                      {selectedNodeData.data.evidence?.openedDate || 'Unknown'}
+                    </p>
+                    <p>
+                      Financial Deadlock: Foreclosure Filed {selectedNodeData.data.evidence?.filingDate || 'On File'}
+                    </p>
+                    <div className="mt-3">
+                      <Link
+                        href={`/api/pdf/abatement?caseId=${encodeURIComponent(selectedNodeData.data.evidence?.serviceRequestId || 'SR-UNKNOWN')}&accountNumber=UNKNOWN&address=${encodeURIComponent(selectedNodeData.address || 'UNKNOWN ADDRESS')}&owner=${encodeURIComponent(propertyRecord?.ownerName || 'OWNER OF RECORD')}`}
+                        className="inline-flex items-center rounded-full border border-rose-400/40 bg-rose-500/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-rose-100 transition hover:bg-rose-500/30"
+                      >
+                        Generate Abatement Letter
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
             <div className="flex justify-between">
               <span>Type:</span>
               <span>{nodeTypeLabels[selectedNodeData.type]}</span>
@@ -387,59 +527,59 @@ export default function ThreeDNetworkMap({
             <div className="flex justify-between">
               <span>Status:</span>
               <span className={`capitalize ${
-                selectedNodeData.data.status === 'operational' ? 'text-emerald-600' : 'text-rose-600'
+                selectedNodeData.data.status === 'operational' ? 'text-emerald-400' : 'text-rose-400'
               }`}>
                 {selectedNodeData.data.status}
               </span>
             </div>
             <div className="flex justify-between">
               <span>Efficiency:</span>
-              <span className="text-blue-600">{selectedNodeData.data.efficiency.toFixed(1)}%</span>
+              <span className="text-emerald-300">{selectedNodeData.data.efficiency.toFixed(1)}%</span>
             </div>
             <div className="flex justify-between">
               <span>Audit Volume:</span>
-              <span className="text-amber-600">{selectedNodeData.data.production.toLocaleString()}</span>
+              <span className="text-amber-300">{selectedNodeData.data.production.toLocaleString()}</span>
             </div>
             <div className="flex justify-between">
               <span>Location:</span>
-              <span className="text-zinc-500">
+              <span className="text-emerald-200/70">
                 {selectedNodeData.position.lat.toFixed(3)}, {selectedNodeData.position.lng.toFixed(3)}
               </span>
             </div>
             <div className="flex justify-between">
               <span>Elevation:</span>
-              <span className="text-zinc-500">{selectedNodeData.position.elevation}m</span>
+              <span className="text-emerald-200/70">{selectedNodeData.position.elevation}m</span>
             </div>
             <div className="flex justify-between">
               <span>Connections:</span>
-              <span className="text-emerald-600">{selectedNodeData.data.connections.length}</span>
+              <span className="text-emerald-300">{selectedNodeData.data.connections.length}</span>
             </div>
           </div>
         </div>
       )}
 
-      <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm text-zinc-700 p-3 rounded-lg border border-zinc-200/50 shadow-lg">
+      <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-sm text-emerald-100 p-3 rounded-lg border border-emerald-400/20 shadow-lg">
         <div className="text-sm space-y-2">
-          <div className="font-semibold mb-2 text-zinc-900">Network Legend:</div>
+          <div className="font-semibold mb-2 text-emerald-100">Network Legend:</div>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-yellow-500 rounded"></div>
-            <span className="text-xs">Rowhouse Clusters</span>
+            <div className="w-3 h-3 bg-emerald-400 rounded"></div>
+            <span className="text-xs">Operational Nodes</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-blue-500 rounded-sm"></div>
-            <span className="text-xs">Infrastructure Hubs</span>
+            <div className="w-3 h-3 bg-red-500 rounded-sm"></div>
+            <span className="text-xs">Distress Red (Lien > $750)</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-            <span className="text-xs">DPW Audit Labs</span>
+            <div className="w-3 h-3 bg-amber-400 rounded-full"></div>
+            <span className="text-xs">Historical Medical Permits</span>
           </div>
-          <div className="border-t border-zinc-200 pt-2 mt-2">
+          <div className="border-t border-emerald-400/20 pt-2 mt-2">
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-0.5 bg-orange-500"></div>
+              <div className="w-6 h-0.5 bg-emerald-400"></div>
               <span className="text-xs">Ownership Links</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-0.5 bg-cyan-400"></div>
+              <div className="w-6 h-0.5 bg-amber-400"></div>
               <span className="text-xs">Billing Ties</span>
             </div>
             <div className="flex items-center space-x-2">

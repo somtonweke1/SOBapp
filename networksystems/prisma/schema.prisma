@@ -20,11 +20,12 @@ model User {
   name           String
   hashedPassword String
   role           String   @default("user") // user, manager, admin
+  userRole       UserRole @default(LANDLORD)
   company        String?
   phone          String?
   subscription   String   @default("free") // free, starter, professional, enterprise
   stripeCustomerId String? @unique
-  isSubscribed   Boolean  @default(false)
+  hasSignedAgreement Boolean @default(false)
 
   // Permissions
   permissions    String   @default("[]") // JSON array of permission strings
@@ -41,12 +42,33 @@ model User {
   scenarios      Scenario[]
   sessions       Session[]
   apiKeys        ApiKey[]
+  waterAudits    WaterAudit[]
 
   @@index([email])
   @@index([role])
   @@index([subscription])
-  @@index([isSubscribed])
+  @@index([hasSignedAgreement])
   @@index([isActive, role])
+}
+
+enum UserRole {
+  LANDLORD
+  TENANT
+}
+
+model EnvironmentalPermit {
+  id             String   @id @default(cuid())
+  propertyNodeId String
+  permitType     String   // dental, medical, environmental, etc.
+  description    String?
+  issuedAt       DateTime?
+  isHistorical   Boolean  @default(true)
+  metadata       String?  // JSON
+  createdAt      DateTime @default(now())
+
+  @@index([propertyNodeId])
+  @@index([permitType])
+  @@index([isHistorical])
 }
 
 model WaterAudit {

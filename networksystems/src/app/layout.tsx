@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/components/providers'
 
 const inter = Inter({ subsets: ['latin'] })
+const jetbrains = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains' })
 
 export const metadata: Metadata = {
   title: 'SOBapp | Baltimore Real Estate Forensics',
@@ -17,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gradient-to-br from-zinc-50 to-zinc-100 text-zinc-900`}>
+      <body className={`${inter.className} ${jetbrains.variable} bg-[#050505] text-emerald-100`}>
         <Providers>
           {children}
         </Providers>

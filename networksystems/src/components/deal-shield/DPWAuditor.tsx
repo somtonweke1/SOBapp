@@ -42,9 +42,11 @@ type DPWAuditorProps = {
     };
     result: AuditResult;
   }) => void;
+  canViewResults?: boolean;
+  onRequestAgreement?: () => void;
 };
 
-export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
+export default function DPWAuditor({ onAuditComplete, canViewResults = true, onRequestAgreement }: DPWAuditorProps) {
   const [activeMode, setActiveMode] = useState<'audit' | 'inversion'>('audit');
   const [meterReadCurrent, setMeterReadCurrent] = useState('');
   const [meterReadLast, setMeterReadLast] = useState('');
@@ -354,7 +356,7 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
       )}
 
       {/* Results */}
-      {result && (
+      {result && canViewResults && (
         <div className="space-y-4">
           {/* Summary Card */}
           <div className={`bg-white/95 rounded-lg shadow-sm border-2 p-6 ${getSeverityColor(result.severity)}`}>
@@ -424,7 +426,7 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
       )}
 
       {/* Inversion Results */}
-      {inversionResult && (
+      {inversionResult && canViewResults && (
         <div className="space-y-4">
           {/* Summary Card */}
           <div className={`bg-white/95 rounded-lg shadow-sm border-2 p-6 ${
@@ -513,6 +515,27 @@ export default function DPWAuditor({ onAuditComplete }: DPWAuditorProps) {
               <span>Recommendation</span>
             </h3>
             <p className="text-zinc-600 whitespace-pre-line">{inversionResult.recommendation}</p>
+          </div>
+        </div>
+      )}
+
+      {!canViewResults && (result || inversionResult) && (
+        <div className="rounded-xl border border-amber-200/70 bg-amber-50/80 p-5 text-amber-700">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-amber-600">Agreement Required</p>
+              <h3 className="mt-2 text-lg font-semibold">Unlock Forensic Results</h3>
+              <p className="mt-2 text-sm">
+                Accept the contingency agreement to view your audit findings and overcharge calculations.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onRequestAgreement}
+              className="h-fit rounded-full bg-amber-600 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-amber-700"
+            >
+              Review Terms
+            </button>
           </div>
         </div>
       )}

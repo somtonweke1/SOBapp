@@ -29,10 +29,10 @@ export async function GET(request: NextRequest) {
 
     const user = await prisma.user.findUnique({
       where: { email },
-      select: { isSubscribed: true },
+      select: { hasSignedAgreement: true },
     });
 
-    return NextResponse.json({ subscribed: Boolean(user?.isSubscribed), email });
+    return NextResponse.json({ hasSignedAgreement: Boolean(user?.hasSignedAgreement), email });
   } catch (error) {
     console.error('Subscription check error:', error);
     return NextResponse.json({ error: 'Failed to check subscription' }, { status: 500 });

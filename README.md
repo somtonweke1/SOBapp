@@ -1,5 +1,28 @@
 # SOBapp - Mining Intelligence & African Network Analysis
 
+> **MISSION STATUS: FORENSIC SHIELD ACTIVE**
+> - `PROJECT_LOG.md` (Full pivot history)
+> - `/claims` (Claims intake flow)
+> - `/dashboard` (War Room map)
+
+## Deployment (Hub Setup)
+1. Set environment variables:
+   - `OPS_ACCESS_KEY`
+   - `SOCRATA_TOKEN`
+   - `DATABASE_URL`
+2. Install + build:
+   - `cd networksystems`
+   - `npm install`
+   - `npx prisma db push`
+   - `npm run build`
+3. Start:
+   - `npm run start`
+
+## Operational URLs
+- `/ops/proposal?key=YOUR_KEY` (Restricted Audit Proposal)
+- `/api/pdf/generate?key=YOUR_KEY` (Lock & Download Audit)
+- `/api/nodes/scan?zipCode=21201&key=YOUR_KEY` (Strike Zone Scan)
+
  **A mining intelligence platform providing real-time analysis of African mining operations, supply chains, and global critical mineral flows.**
 
 
