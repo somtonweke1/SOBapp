@@ -79,7 +79,7 @@ export async function GET(request: Request) {
 
     const permitsByAddress = new Map<string, Record<string, unknown>[]>();
     permitRecords.forEach((record) => {
-      const address = String(record.address || record.location || '');
+      const address = String(record.address || '');
       const normalized = normalizeAddress(address);
       if (!normalized) return;
       const entry = permitsByAddress.get(normalized) || [];
