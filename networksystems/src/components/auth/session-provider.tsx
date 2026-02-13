@@ -20,7 +20,7 @@ export function SessionProvider({ children }: Props) {
             email: 'bypass@local',
             role: 'admin',
             subscription: 'enterprise',
-            permissions: ['*'],
+            permissions: JSON.stringify(['*']),
             userRole: 'LANDLORD',
             hasSignedAgreement: true,
             company: null,
