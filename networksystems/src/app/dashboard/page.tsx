@@ -9,6 +9,8 @@ import WarRoomFeed from '@/components/war-room/war-room-feed';
 import WarRoomPipeline from '@/components/war-room/war-room-pipeline';
 import WarRoomSnapshot from '@/components/war-room/war-room-snapshot';
 
+export const dynamic = 'force-dynamic';
+
 export default function DashboardPage() {
   const { data: session } = useSession();
   const userRole = (session?.user?.userRole || 'LANDLORD') as 'LANDLORD' | 'TENANT';
