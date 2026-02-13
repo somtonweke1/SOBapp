@@ -12,6 +12,7 @@ export type PermitRecord = {
   permitType: string;
   status?: string;
   description?: string;
+  location?: string;
 };
 
 export type InstitutionalLeak = {
