@@ -11,6 +11,12 @@ const databaseUrl = process.env.DATABASE_URL;
 
 console.log('🔍 Checking database configuration...');
 
+// Explicit override to skip migrations (e.g., when DB is managed externally)
+if (process.env.SKIP_MIGRATIONS === '1') {
+  console.log('⏭️  SKIP_MIGRATIONS=1 set - skipping migrations');
+  process.exit(0);
+}
+
 // Skip migrations if no DATABASE_URL
 if (!databaseUrl) {
   console.log('⚠️  No DATABASE_URL found - skipping migrations');
