@@ -10,7 +10,7 @@ const templatePath = path.join(process.cwd(), 'src', 'templates', 'abatement-let
 
 const renderTemplate = (template: string, replacements: Record<string, string>) => {
   return Object.entries(replacements).reduce((html, [key, value]) => {
-    return html.replaceAll(`{{${key}}}`, value);
+    return html.split(`{{${key}}}`).join(value);
   }, template);
 };
 
