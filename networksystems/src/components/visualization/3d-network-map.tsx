@@ -567,7 +567,7 @@ export default function ThreeDNetworkMap({
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-red-500 rounded-sm"></div>
-            <span className="text-xs">Distress Red (Lien > $750)</span>
+            <span className="text-xs">Distress Red (Lien &gt; $750)</span>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-amber-400 rounded-full"></div>
