@@ -3,6 +3,8 @@ import RealTimeMaterialsService from '@/services/real-time-materials-service';
 import RealESGDataService from '@/services/real-esg-data-service';
 import RealNewsAlertService from '@/services/real-news-alert-service';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

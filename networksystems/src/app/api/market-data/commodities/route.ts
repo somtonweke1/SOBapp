@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 // Server-side only - API keys never exposed to client
 const ALPHA_VANTAGE_KEY = process.env.ALPHA_VANTAGE_API_KEY;
 const TWELVE_DATA_KEY = process.env.TWELVE_DATA_API_KEY;
