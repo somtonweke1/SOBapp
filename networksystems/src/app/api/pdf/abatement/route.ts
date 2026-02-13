@@ -5,6 +5,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 const templatePath = path.join(process.cwd(), 'src', 'templates', 'abatement-letter.html');
 

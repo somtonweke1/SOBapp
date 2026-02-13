@@ -8,6 +8,7 @@ import {
 } from '@/lib/data-sources';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 type NodePayload = {
   id: string;

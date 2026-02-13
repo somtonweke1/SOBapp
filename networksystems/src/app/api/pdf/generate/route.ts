@@ -3,6 +3,7 @@ import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer-core';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 const getBaseUrl = (request: NextRequest) => {
   const envUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL;
