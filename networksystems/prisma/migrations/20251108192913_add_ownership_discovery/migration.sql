@@ -9,11 +9,11 @@ CREATE TABLE "DiscoveredOwnership" (
     "dataQuality" TEXT NOT NULL,
     "sources" TEXT NOT NULL,
     "evidencePoints" TEXT NOT NULL DEFAULT '[]',
-    "lastUpdated" DATETIME NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "lastUpdated" TIMESTAMP NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "verified" BOOLEAN NOT NULL DEFAULT false,
     "verifiedBy" TEXT,
-    "verifiedAt" DATETIME
+    "verifiedAt" TIMESTAMP
 );
 
 -- CreateTable
@@ -28,9 +28,9 @@ CREATE TABLE "DiscoveryJob" (
     "coveragePercent" REAL,
     "results" TEXT,
     "errors" TEXT,
-    "startedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "completedAt" DATETIME,
-    "updatedAt" DATETIME NOT NULL
+    "startedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "completedAt" TIMESTAMP,
+    "updatedAt" TIMESTAMP NOT NULL
 );
 
 -- CreateIndex

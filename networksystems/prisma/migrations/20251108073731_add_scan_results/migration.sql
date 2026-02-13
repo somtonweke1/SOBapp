@@ -21,10 +21,10 @@ CREATE TABLE "ScanResult" (
     "htmlReport" TEXT NOT NULL,
     "textSummary" TEXT,
     "emailSent" BOOLEAN NOT NULL DEFAULT false,
-    "emailSentAt" DATETIME,
+    "emailSentAt" TIMESTAMP,
     "emailError" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "expiresAt" DATETIME
+    "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expiresAt" TIMESTAMP
 );
 
 -- CreateIndex

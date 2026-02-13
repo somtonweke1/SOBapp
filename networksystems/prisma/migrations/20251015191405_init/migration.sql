@@ -9,9 +9,9 @@ CREATE TABLE "User" (
     "phone" TEXT,
     "subscription" TEXT NOT NULL DEFAULT 'free',
     "permissions" TEXT NOT NULL DEFAULT '[]',
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    "lastLoginAt" DATETIME,
+    "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP NOT NULL,
+    "lastLoginAt" TIMESTAMP,
     "isActive" BOOLEAN NOT NULL DEFAULT true
 );
 
@@ -20,7 +20,7 @@ CREATE TABLE "Session" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "sessionToken" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "expires" DATETIME NOT NULL,
+    "expires" TIMESTAMP NOT NULL,
     CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -30,10 +30,10 @@ CREATE TABLE "ApiKey" (
     "name" TEXT NOT NULL,
     "key" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "lastUsed" DATETIME,
-    "expiresAt" DATETIME,
+    "lastUsed" TIMESTAMP,
+    "expiresAt" TIMESTAMP,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "ApiKey_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -46,8 +46,8 @@ CREATE TABLE "Network" (
     "edges" TEXT NOT NULL,
     "metadata" TEXT,
     "userId" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP NOT NULL,
     CONSTRAINT "Network_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -62,9 +62,9 @@ CREATE TABLE "Analysis" (
     "status" TEXT NOT NULL DEFAULT 'pending',
     "error" TEXT,
     "userId" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    "completedAt" DATETIME,
+    "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP NOT NULL,
+    "completedAt" TIMESTAMP,
     CONSTRAINT "Analysis_networkId_fkey" FOREIGN KEY ("networkId") REFERENCES "Network" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "Analysis_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -80,9 +80,9 @@ CREATE TABLE "Scenario" (
     "status" TEXT NOT NULL DEFAULT 'pending',
     "error" TEXT,
     "userId" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    "completedAt" DATETIME,
+    "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP NOT NULL,
+    "completedAt" TIMESTAMP,
     CONSTRAINT "Scenario_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -98,7 +98,7 @@ CREATE TABLE "CommodityPrice" (
     "low" REAL,
     "open" REAL,
     "source" TEXT NOT NULL,
-    "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "timestamp" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
@@ -112,10 +112,10 @@ CREATE TABLE "RiskAlert" (
     "commodity" TEXT,
     "impact" TEXT,
     "resolved" BOOLEAN NOT NULL DEFAULT false,
-    "resolvedAt" DATETIME,
+    "resolvedAt" TIMESTAMP,
     "resolvedBy" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP NOT NULL
 );
 
 -- CreateTable
@@ -131,8 +131,8 @@ CREATE TABLE "GeopoliticalEvent" (
     "riskScore" REAL,
     "source" TEXT NOT NULL,
     "sourceUrl" TEXT,
-    "publishedAt" DATETIME NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "publishedAt" TIMESTAMP NOT NULL,
+    "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
@@ -145,7 +145,7 @@ CREATE TABLE "AuditLog" (
     "details" TEXT,
     "ipAddress" TEXT,
     "userAgent" TEXT,
-    "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "timestamp" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
@@ -156,7 +156,7 @@ CREATE TABLE "ExportLog" (
     "resource" TEXT NOT NULL,
     "resourceId" TEXT,
     "fileSize" INTEGER,
-    "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "timestamp" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
@@ -166,7 +166,7 @@ CREATE TABLE "SystemConfig" (
     "value" TEXT NOT NULL,
     "dataType" TEXT NOT NULL DEFAULT 'string',
     "category" TEXT NOT NULL,
-    "updatedAt" DATETIME NOT NULL
+    "updatedAt" TIMESTAMP NOT NULL
 );
 
 -- CreateTable
@@ -176,7 +176,7 @@ CREATE TABLE "FeatureFlag" (
     "enabled" BOOLEAN NOT NULL DEFAULT false,
     "description" TEXT,
     "rollout" REAL NOT NULL DEFAULT 100,
-    "updatedAt" DATETIME NOT NULL
+    "updatedAt" TIMESTAMP NOT NULL
 );
 
 -- CreateIndex
