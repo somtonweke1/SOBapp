@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -11,7 +11,7 @@ import WarRoomSnapshot from '@/components/war-room/war-room-snapshot';
 
 export const dynamic = 'force-dynamic';
 
-export default function DashboardPage() {
+function DashboardInner() {
   const { data: session } = useSession();
   const userRole = (session?.user?.userRole || 'LANDLORD') as 'LANDLORD' | 'TENANT';
   const searchParams = useSearchParams();
@@ -306,5 +306,13 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+      <DashboardInner />
+    </Suspense>
   );
 }
