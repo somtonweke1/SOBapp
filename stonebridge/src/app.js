@@ -156,6 +156,21 @@ async function renderAuthedPage(req, res, view, extra = {}, role) {
   })));
 }
 
+function getDealFilterBucket(status) {
+  switch (status) {
+    case "COMPLETED":
+      return "COMPLETED";
+    case "MEMO_DELIVERED":
+    case "OUTCOME_WINDOW":
+      return "ACTIVE";
+    case "PENDING":
+    case "DIAGNOSING":
+    case "DISPUTED":
+    default:
+      return "PENDING";
+  }
+}
+
 app.get("/submit", async (req, res) => {
   const user = await getCurrentUser(req);
   res.send(renderTemplate("submit", buildPageData({
@@ -184,7 +199,7 @@ app.get("/deals", async (req, res) => {
   const dealsHtml = deals.length === 0
     ? `<div class="empty-state"><p>No diagnostics yet.</p><a href="/submit" class="btn btn-primary">Submit your first address →</a></div>`
     : deals.map((deal) => `
-      <a href="/deals/${deal.id}" class="deal-card ${verdictClass(deal.verdict)}">
+      <a href="/deals/${deal.id}" class="deal-card ${verdictClass(deal.verdict)}" data-filter-status="${getDealFilterBucket(deal.status)}">
         <div class="deal-card-head">
           <div>
             <div class="deal-address">${deal.address}</div>
