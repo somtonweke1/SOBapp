@@ -62,6 +62,17 @@ function formatAvgDeliveryHours(value) {
   return `${Math.round(value)}h`;
 }
 
+function isPaidMemoDeal(deal) {
+  return Boolean(
+    deal?.memoDeliveredAt ||
+    deal?.paymentStatus === "HELD" ||
+    deal?.paymentStatus === "RELEASED" ||
+    deal?.status === "MEMO_DELIVERED" ||
+    deal?.status === "OUTCOME_WINDOW" ||
+    deal?.status === "COMPLETED"
+  );
+}
+
 app.get("/healthz", async (_req, res) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
@@ -84,30 +95,34 @@ app.get("/healthz", async (_req, res) => {
 app.get("/", async (req, res) => {
   const user = await getCurrentUser(req);
   const stats = await prisma.deal.aggregate({ _count: { id: true }, _avg: { riskScoreBefore: true } });
+  const allDeals = await prisma.deal.findMany({
+    select: {
+      amountCents: true,
+      createdAt: true,
+      memoDeliveredAt: true,
+      paymentStatus: true,
+      status: true
+    }
+  });
+  const memoDeals = allDeals.filter(isPaidMemoDeal);
   const completed = await prisma.deal.count({
     where: { status: "COMPLETED" }
   });
-  const deliveredDeals = await prisma.deal.findMany({
-    where: { memoDeliveredAt: { not: null } },
-    select: { createdAt: true, memoDeliveredAt: true }
-  });
-  const totalRisk = await prisma.deal.aggregate({
-    _sum: { amountCents: true }
-  });
-  const averageDeliveryHours = deliveredDeals.length
-    ? deliveredDeals.reduce((sum, deal) => {
+  const averageDeliveryHours = memoDeals.length
+    ? memoDeals.reduce((sum, deal) => {
       const deliveredAt = deal.memoDeliveredAt ? new Date(deal.memoDeliveredAt).getTime() : new Date(deal.createdAt).getTime();
       const createdAt = new Date(deal.createdAt).getTime();
       return sum + Math.max(0, (deliveredAt - createdAt) / 36e5);
-    }, 0) / deliveredDeals.length
+    }, 0) / memoDeals.length
     : 0;
+  const riskExposure = Math.round(memoDeals.reduce((sum, deal) => sum + (deal.amountCents || 0), 0) / 100000);
   const html = renderTemplate("landing", buildPageData({
     title: SITE_TITLE,
     authState: formatAuthState(user, "Login"),
     userJson: JSON.stringify(user || null),
-    totalMemos: await prisma.deal.count(),
+    totalMemos: memoDeals.length,
     totalDeals: completed,
-    riskExposure: Math.round((totalRisk._sum.amountCents || 0) / 100000),
+    riskExposure,
     avgDelivery: formatAvgDeliveryHours(averageDeliveryHours),
     avgRiskScore: Math.round(stats._avg.riskScoreBefore || 0)
   }));
@@ -280,7 +295,7 @@ app.get("/deals", async (req, res) => {
     : "Pending";
 
   const dealsHtml = deals.length === 0
-    ? `<div class="empty-state"><p>No diagnostics yet.</p><a href="/submit" class="btn btn-primary">Submit your first address →</a></div>`
+    ? `<div class="empty-state"><div>No diagnostics yet.</div><div>Your workspace is clean. Start with one address and turn the first useful screen into a paid memo only when the deal pressure is real.</div><div class="empty-state-action"><a href="/submit" class="btn btn-primary">Run your first preview</a></div></div>`
     : deals.map((deal) => `
       <a href="/deals/${deal.id}" class="deal-card ${verdictClass(deal.verdict)}" data-filter-status="${getDealFilterBucket(deal.status)}">
         <div class="deal-card-head">
@@ -467,14 +482,13 @@ app.get("/deals/:id", async (req, res) => {
 app.get("/track-record", async (req, res) => {
   const user = await getCurrentUser(req);
 
-  const deals = await prisma.deal.findMany({
-    where: { status: "COMPLETED" },
+  const allDeals = await prisma.deal.findMany({
     orderBy: { createdAt: "desc" }
   });
+  const deliveredDeals = allDeals.filter(isPaidMemoDeal);
+  const completedDeals = allDeals.filter((deal) => deal.status === "COMPLETED");
 
-  const totalMemos = await prisma.deal.count();
-  const totalRisk = await prisma.deal.aggregate({ _sum: { amountCents: true } });
-  const deliveredHours = deals
+  const deliveredHours = deliveredDeals
     .filter((deal) => deal.memoDeliveredAt)
     .map((deal) => Math.max(0, (new Date(deal.memoDeliveredAt).getTime() - new Date(deal.createdAt).getTime()) / 36e5));
   const averageDelivery = deliveredHours.length
@@ -482,8 +496,8 @@ app.get("/track-record", async (req, res) => {
     : "—";
   const verdictClass = (verdict) => verdict ? verdict.toLowerCase() : "pending";
 
-  const rowsHtml = deals.length
-    ? deals.map((deal) => `
+  const rowsHtml = completedDeals.length
+    ? completedDeals.map((deal) => `
       <div class="track-row">
         <div class="track-cell track-address">${deal.address}</div>
         <div class="track-cell"><span class="v-badge ${verdictClass(deal.verdict)}">${deal.verdict || "PENDING"}</span></div>
@@ -492,16 +506,16 @@ app.get("/track-record", async (req, res) => {
         <div class="track-cell"><span class="hash-chip">${deal.memoHash ? `${deal.memoHash.slice(0, 12)}…` : "—"}</span></div>
       </div>
     `).join("")
-    : '<div class="empty-state"><div>No completed deals are in the ledger yet.</div><div class="empty-state-action"><a class="btn btn-ghost" href="/deals">View diagnostics</a></div></div>';
+    : '<div class="empty-state"><div>No completed deals are in the ledger yet.</div><div>This ledger only fills after StoneBridge delivers paid memos and those deals reach confirmed outcomes.</div><div class="empty-state-action"><a class="btn btn-ghost" href="/submit">Start with a live address</a></div></div>';
 
   res.send(renderTemplate("track-record", buildPageData({
     title: `${SITE_TITLE} | Track Record`,
     authState: formatAuthState(user, "Login"),
     userJson: JSON.stringify(user || null),
-    totalMemos,
-    completedDeals: deals.length,
-    riskExposure: `$${Math.round((totalRisk._sum.amountCents || 0) / 100).toLocaleString()}`,
-    verdictAccuracy: `${deals.length}`,
+    totalMemos: deliveredDeals.length,
+    completedDeals: completedDeals.length,
+    riskExposure: `$${Math.round(deliveredDeals.reduce((sum, deal) => sum + (deal.amountCents || 0), 0) / 100).toLocaleString()}`,
+    verdictAccuracy: `${completedDeals.length}`,
     avgDelivery: averageDelivery,
     rowsHtml
   })));
