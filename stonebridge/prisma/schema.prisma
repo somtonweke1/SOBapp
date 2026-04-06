@@ -28,7 +28,7 @@ model Deal {
   outcomeConfirmedAt DateTime?
   outcomeNote        String?
   paymentIntentId    String?
-  paymentStatus      PaymentStatus  @default(HELD)
+  paymentStatus      PaymentStatus  @default(UNPAID)
   amountCents        Int            @default(250000)
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
@@ -237,6 +237,7 @@ enum Verdict {
 }
 
 enum PaymentStatus {
+  UNPAID
   HELD
   RELEASED
   REFUNDED

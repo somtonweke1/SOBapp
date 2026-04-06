@@ -179,15 +179,60 @@ function getDealFilterBucket(status) {
   switch (status) {
     case "COMPLETED":
       return "COMPLETED";
+    case "DIAGNOSING":
     case "MEMO_DELIVERED":
     case "OUTCOME_WINDOW":
       return "ACTIVE";
     case "PENDING":
-    case "DIAGNOSING":
     case "DISPUTED":
     default:
       return "PENDING";
   }
+}
+
+function formatPaymentStatus(status) {
+  switch (status) {
+    case "UNPAID":
+      return "Preview only";
+    case "HELD":
+      return "$2,500 held";
+    case "RELEASED":
+      return "Paid";
+    case "REFUNDED":
+      return "Refunded";
+    case "DISPUTED":
+      return "Disputed";
+    default:
+      return status || "Unknown";
+  }
+}
+
+function describeCommercialState(deal) {
+  if (deal.status === "COMPLETED") {
+    return {
+      title: "Outcome confirmed",
+      description: "This memo engagement reached a confirmed outcome and the commercial cycle is complete."
+    };
+  }
+
+  if (deal.paymentStatus === "RELEASED" || deal.paymentStatus === "HELD" || deal.status === "OUTCOME_WINDOW" || deal.status === "MEMO_DELIVERED") {
+    return {
+      title: "Paid memo in motion",
+      description: "A memo has been delivered or commercial payment is already in flight for this address."
+    };
+  }
+
+  if (deal.status === "DIAGNOSING") {
+    return {
+      title: "Memo requested",
+      description: "StoneBridge has intake context for the paid memo and the deal is in operator review."
+    };
+  }
+
+  return {
+    title: "Free preview only",
+    description: "This record is still a free screen. No paid memo has been requested or billed yet."
+  };
 }
 
 app.get("/submit", async (req, res) => {
@@ -249,14 +294,14 @@ app.get("/deals", async (req, res) => {
           </div>
         </div>
         <div class="deal-card-foot">
-          <span class="deal-escrow-tag">${deal.paymentStatus === "RELEASED" ? "Paid out" : deal.paymentStatus === "HELD" ? "$2,500 held" : deal.paymentStatus}</span>
+          <span class="deal-escrow-tag">${formatPaymentStatus(deal.paymentStatus)}</span>
           <span class="v-badge ${verdictClass(deal.verdict)}">${verdictLabel(deal.verdict)}</span>
         </div>
       </a>
     `).join("");
 
   const totalDeals = deals.length;
-  const activeMemos = deals.filter((deal) => deal.status === "MEMO_DELIVERED").length;
+  const activeMemos = deals.filter((deal) => ["DIAGNOSING", "MEMO_DELIVERED", "OUTCOME_WINDOW"].includes(deal.status)).length;
   const confirmedOutcomes = deals.filter((deal) => deal.status === "COMPLETED").length;
 
   res.send(renderTemplate("deals", buildPageData({
@@ -368,6 +413,7 @@ app.get("/deals/:id", async (req, res) => {
       }
     };
     const meaning = meaningMap[deal.verdict] || meaningMap.CAUTION;
+    const commercialState = describeCommercialState(deal);
 
     res.send(renderTemplate("deal-detail", buildPageData({
       title: `${SITE_TITLE} | ${deal.address}`,
@@ -389,6 +435,8 @@ app.get("/deals/:id", async (req, res) => {
       meaningIcon: meaning.icon,
       meaningTitle: meaning.title,
       meaningDesc: meaning.desc,
+      commercialStateTitle: commercialState.title,
+      commercialStateDesc: commercialState.description,
       memoDelivered: deal.memoDeliveredAt ? "true" : "",
       paymentStatus: deal.paymentStatus
     })));

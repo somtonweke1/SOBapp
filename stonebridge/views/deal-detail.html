@@ -50,6 +50,16 @@
       </div>
     </div>
 
+    <div class="result-sources">
+      <div class="container-sm">
+        <div class="proof-block" style="margin-top:0">
+          <div><span class="pk">commercial_state</span><span class="pv">{{commercialStateTitle}}</span></div>
+          <div><span class="pk">what_this_means</span><span class="pv">{{commercialStateDesc}}</span></div>
+          <div><span class="pk">payment_status</span><span class="pv">{{paymentStatus}}</span></div>
+        </div>
+      </div>
+    </div>
+
     <div class="result-signals">
       <div class="container">
         <h2 class="section-title">Signal breakdown</h2>
@@ -227,10 +237,39 @@
           <div class="memo-cta-right">
             <div class="memo-price">$2,500</div>
             <div class="memo-price-note">Decision-grade written brief</div>
-            <a href="/submit" class="btn btn-primary btn-lg btn-full" style="margin-top:20px">Scope this address into a memo →</a>
-            <div class="memo-guarantee">The preview shows whether this address deserves the full engagement.</div>
+            <div class="memo-guarantee" style="margin-top:20px">Use the form below to request the paid memo for this exact address.</div>
           </div>
         </div>
+        <form id="memoRequestForm" class="collab-panel" style="margin-top:24px">
+          <div class="form-panel-head">
+            <div>
+              <div class="eyebrow">Memo intake</div>
+              <div class="card-title">Request the paid memo for this deal.</div>
+            </div>
+          </div>
+          <div class="field-stack">
+            <div class="field-group">
+              <label class="field-label" for="memoContactName">Contact name</label>
+              <input id="memoContactName" class="input" placeholder="Decision-maker" required>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="memoEmail">Email</label>
+              <input id="memoEmail" class="input" type="email" placeholder="you@company.com" required>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="memoTimeline">Decision timeline</label>
+              <input id="memoTimeline" class="input" placeholder="IC on Friday, lender call tomorrow, LOI this week">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="memoGoals">What needs to be diagnosed</label>
+              <textarea id="memoGoals" class="input textarea" placeholder="What could kill the deal, what needs underwriting support, and what question the memo must answer." required></textarea>
+            </div>
+            <div class="action-row">
+              <button type="submit" class="btn btn-primary">Request full memo</button>
+            </div>
+            <div class="log-list" id="memoRequestLog"></div>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -268,6 +307,8 @@
     const dealId = "{{dealId}}";
     const currentUser = {{userJson}};
     const scoreTarget = document.getElementById("score-target");
+    const memoRequestForm = document.getElementById("memoRequestForm");
+    const memoRequestLog = document.getElementById("memoRequestLog");
     if (scoreTarget && window.StoneBridge && typeof StoneBridge.animateNumber === "function") {
       StoneBridge.animateNumber(scoreTarget, Number(scoreTarget.dataset.score || 0));
     } else if (scoreTarget) {
@@ -701,10 +742,31 @@
       }
     }
 
+    async function submitMemoRequest(event) {
+      event.preventDefault();
+      memoRequestLog.innerHTML = "";
+      try {
+        const response = await StoneBridge.api(`/api/deals/${dealId}/request-memo`, {
+          method: "POST",
+          body: JSON.stringify({
+            contactName: memoContactName.value,
+            email: memoEmail.value,
+            timeline: memoTimeline.value,
+            goals: memoGoals.value
+          })
+        });
+        memoRequestLog.innerHTML = `<div class="log-line">${response.nextStep}</div>`;
+        memoRequestForm.reset();
+      } catch (error) {
+        memoRequestLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
     documentForm.addEventListener("submit", submitDocument);
     noteForm.addEventListener("submit", submitNote);
     frictionForm.addEventListener("submit", submitFriction);
     summaryForm.addEventListener("submit", submitSummary);
+    memoRequestForm.addEventListener("submit", submitMemoRequest);
     collabSearch.addEventListener("input", () => {
       collabState.query = collabSearch.value.trim().toLowerCase();
       renderDocuments(collabState.documents);

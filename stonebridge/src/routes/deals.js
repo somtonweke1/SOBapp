@@ -107,17 +107,16 @@ router.post("/diagnose", asyncHandler(async (req, res) => {
       data: {
         address,
         clientId: client.id,
-        status: "MEMO_DELIVERED",
+        status: "PENDING",
         verdict: result.verdict,
         riskScoreBefore: result.riskScore,
         flagCountBefore: result.flagCount,
         signalSources: [...new Set(result.signals.map(signal => signal.source))],
-        memoDeliveredAt: new Date(),
-        paymentStatus: "HELD",
+        paymentStatus: "UNPAID",
         timeline: {
           create: [
             { event: "DEAL_SUBMITTED", detail: "Address submitted through public diagnostic flow" },
-            { event: "DIAGNOSTIC_COMPLETE", detail: `Risk score: ${result.riskScore} | Verdict: ${result.verdict} | Signals: ${result.signals.length}` }
+            { event: "PREVIEW_GENERATED", detail: `Free preview generated. Risk score: ${result.riskScore} | Verdict: ${result.verdict} | Signals: ${result.signals.length}` }
           ]
         }
       }
@@ -142,6 +141,46 @@ router.post("/diagnose", asyncHandler(async (req, res) => {
     console.error("[/diagnose]", error);
     return res.redirect("/submit?error=Something went wrong. Please try again.");
   }
+}));
+
+router.post("/:id/request-memo", asyncHandler(async (req, res) => {
+  const deal = await prisma.deal.findFirst({
+    where: { id: req.params.id, clientId: req.user.id }
+  });
+  if (!deal) return sendError(res, 404, "Deal not found");
+
+  const contactName = String(req.body.contactName || "").trim();
+  const email = String(req.body.email || "").trim();
+  const timeline = String(req.body.timeline || "").trim();
+  const goals = String(req.body.goals || "").trim();
+
+  if (!contactName || !email || !goals) {
+    return sendError(res, 400, "Contact name, email, and memo scope are required");
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return sendError(res, 400, "Enter a valid email address");
+  }
+
+  const updated = await prisma.deal.update({
+    where: { id: deal.id },
+    data: { status: "DIAGNOSING" },
+    include: { signals: true, timeline: true }
+  });
+
+  await prisma.timelineEvent.create({
+    data: {
+      dealId: deal.id,
+      event: "MEMO_REQUESTED",
+      detail: `Memo requested by ${contactName} <${email}>${timeline ? ` | Timeline: ${timeline}` : ""} | Scope: ${goals}`
+    }
+  });
+
+  res.json({
+    ok: true,
+    deal: serializeDeal(updated),
+    nextStep: "Memo request captured. StoneBridge can now scope the paid 24-hour memo for this address."
+  });
 }));
 
 router.get("/:id", asyncHandler(async (req, res, next) => {
