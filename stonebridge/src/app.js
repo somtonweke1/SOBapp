@@ -13,7 +13,7 @@ const paymentRoutes = require("./routes/payments");
 const publicRoutes = require("./routes/public");
 const sponsorRoutes = require("./routes/sponsor");
 const { listActiveWorkspaces } = require("./lib/sponsor");
-const { HOMEPAGE_PLACEHOLDER_STATS, SITE_DESCRIPTION, SITE_TITLE } = require("./lib/site");
+const { SITE_DESCRIPTION, SITE_TITLE } = require("./lib/site");
 const { startJobs } = require("./jobs");
 
 const app = express();
@@ -50,6 +50,18 @@ function buildPageData(base = {}) {
   };
 }
 
+function formatAuthState(user, fallback = "Login") {
+  if (!user) return fallback;
+  if (user.email === "guest@stonebridge.ai") return "Preview session";
+  if (user.role === "OPERATOR") return `${user.name || user.email} · Operator`;
+  return user.name || user.email;
+}
+
+function formatAvgDeliveryHours(value) {
+  if (!Number.isFinite(value) || value <= 0) return "—";
+  return `${Math.round(value)}h`;
+}
+
 app.get("/healthz", async (_req, res) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
@@ -71,25 +83,32 @@ app.get("/healthz", async (_req, res) => {
 
 app.get("/", async (req, res) => {
   const user = await getCurrentUser(req);
-  const stats = await prisma.deal.aggregate({
-    _count: { id: true },
-    _avg: { riskScoreBefore: true }
-  });
+  const stats = await prisma.deal.aggregate({ _count: { id: true }, _avg: { riskScoreBefore: true } });
   const completed = await prisma.deal.count({
     where: { status: "COMPLETED" }
+  });
+  const deliveredDeals = await prisma.deal.findMany({
+    where: { memoDeliveredAt: { not: null } },
+    select: { createdAt: true, memoDeliveredAt: true }
   });
   const totalRisk = await prisma.deal.aggregate({
     _sum: { amountCents: true }
   });
+  const averageDeliveryHours = deliveredDeals.length
+    ? deliveredDeals.reduce((sum, deal) => {
+      const deliveredAt = deal.memoDeliveredAt ? new Date(deal.memoDeliveredAt).getTime() : new Date(deal.createdAt).getTime();
+      const createdAt = new Date(deal.createdAt).getTime();
+      return sum + Math.max(0, (deliveredAt - createdAt) / 36e5);
+    }, 0) / deliveredDeals.length
+    : 0;
   const html = renderTemplate("landing", buildPageData({
     title: SITE_TITLE,
-    authState: user ? `${user.name || user.email} · ${user.role}` : "Login",
+    authState: formatAuthState(user, "Login"),
     userJson: JSON.stringify(user || null),
     totalMemos: await prisma.deal.count(),
     totalDeals: completed,
     riskExposure: Math.round((totalRisk._sum.amountCents || 0) / 100000),
-    verdictAccuracy: 94,
-    avgDelivery: HOMEPAGE_PLACEHOLDER_STATS.avgDeliveryHours,
+    avgDelivery: formatAvgDeliveryHours(averageDeliveryHours),
     avgRiskScore: Math.round(stats._avg.riskScoreBefore || 0)
   }));
   res.send(html);
@@ -99,7 +118,7 @@ app.get("/preview", async (req, res) => {
   const user = await getCurrentUser(req);
   res.send(renderTemplate("preview", buildPageData({
     title: `${SITE_TITLE} | Preview`,
-    authState: user ? `${user.name || user.email} · ${user.role}` : "Login",
+    authState: formatAuthState(user, "Login"),
     userJson: JSON.stringify(user || null)
   })));
 });
@@ -112,7 +131,7 @@ app.get("/capital", async (req, res) => {
   }
   res.send(renderTemplate("capital-directory", buildPageData({
     title: `${SITE_TITLE} | Sponsor Intelligence`,
-    authState: user ? `${user.name || user.email} · ${user.role}` : "Investor access",
+    authState: formatAuthState(user, "Investor access"),
     userJson: JSON.stringify(user || null),
     workspacesJson: JSON.stringify(workspaces)
   })));
@@ -122,7 +141,7 @@ app.get("/capital/:workspaceSlug/opportunities/:slug", async (req, res) => {
   const user = await getCurrentUser(req);
   res.send(renderTemplate("opportunity", buildPageData({
     title: `${SITE_TITLE} | Opportunity Brief`,
-    authState: user ? `${user.name || user.email} · ${user.role}` : "Investor access",
+    authState: formatAuthState(user, "Investor access"),
     userJson: JSON.stringify(user || null),
     workspaceSlug: req.params.workspaceSlug,
     slug: req.params.slug
@@ -133,7 +152,7 @@ app.get("/capital/:workspaceSlug/room/:slug", async (req, res) => {
   const user = await getCurrentUser(req);
   res.send(renderTemplate("room", buildPageData({
     title: `${SITE_TITLE} | Private Room`,
-    authState: user ? `${user.name || user.email} · ${user.role}` : "Private room",
+    authState: formatAuthState(user, "Private room"),
     userJson: JSON.stringify(user || null),
     workspaceSlug: req.params.workspaceSlug,
     slug: req.params.slug
@@ -144,7 +163,7 @@ app.get("/capital/:workspaceSlug", async (req, res) => {
   const user = await getCurrentUser(req);
   res.send(renderTemplate("sponsor", buildPageData({
     title: `${SITE_TITLE} | Sponsor Intelligence`,
-    authState: user ? `${user.name || user.email} · ${user.role}` : "Investor access",
+    authState: formatAuthState(user, "Investor access"),
     userJson: JSON.stringify(user || null),
     workspaceSlug: req.params.workspaceSlug
   })));
@@ -169,7 +188,7 @@ async function renderAuthedPage(req, res, view, extra = {}, role) {
   }
   return res.send(renderTemplate(view, buildPageData({
     title: extra.title || SITE_TITLE,
-    authState: user ? `${user.name || user.email} · ${user.role}` : "Operator access code",
+    authState: formatAuthState(user, "Operator access code"),
     userJson: JSON.stringify(user || null),
     ...extra
   })));
@@ -240,7 +259,7 @@ app.get("/submit", async (req, res) => {
   res.send(renderTemplate("submit", buildPageData({
     title: `${SITE_TITLE} | Diagnostics`,
     stripePublishableKey: "",
-    authState: user ? `${user.name || user.email} · ${user.role}` : "Start free preview",
+    authState: formatAuthState(user, "Start free preview"),
     userJson: JSON.stringify(user || null)
   })));
 });
@@ -306,7 +325,7 @@ app.get("/deals", async (req, res) => {
 
   res.send(renderTemplate("deals", buildPageData({
     title: `${SITE_TITLE} | Your Diagnostics`,
-    authState: `${user.name || user.email} · ${user.role}`,
+    authState: formatAuthState(user),
     userJson: JSON.stringify(user),
     totalDeals,
     activeMemos,
@@ -417,7 +436,7 @@ app.get("/deals/:id", async (req, res) => {
 
     res.send(renderTemplate("deal-detail", buildPageData({
       title: `${SITE_TITLE} | ${deal.address}`,
-      authState: `${user.name || user.email} · ${user.role}`,
+      authState: formatAuthState(user),
       userJson: JSON.stringify(user || null),
       dealId: deal.id,
       dealAddress: deal.address,
@@ -455,6 +474,12 @@ app.get("/track-record", async (req, res) => {
 
   const totalMemos = await prisma.deal.count();
   const totalRisk = await prisma.deal.aggregate({ _sum: { amountCents: true } });
+  const deliveredHours = deals
+    .filter((deal) => deal.memoDeliveredAt)
+    .map((deal) => Math.max(0, (new Date(deal.memoDeliveredAt).getTime() - new Date(deal.createdAt).getTime()) / 36e5));
+  const averageDelivery = deliveredHours.length
+    ? `${Math.round(deliveredHours.reduce((sum, hours) => sum + hours, 0) / deliveredHours.length)}h`
+    : "—";
   const verdictClass = (verdict) => verdict ? verdict.toLowerCase() : "pending";
 
   const rowsHtml = deals.length
@@ -471,13 +496,13 @@ app.get("/track-record", async (req, res) => {
 
   res.send(renderTemplate("track-record", buildPageData({
     title: `${SITE_TITLE} | Track Record`,
-    authState: user ? `${user.name || user.email} · ${user.role}` : "Login",
+    authState: formatAuthState(user, "Login"),
     userJson: JSON.stringify(user || null),
     totalMemos,
     completedDeals: deals.length,
     riskExposure: `$${Math.round((totalRisk._sum.amountCents || 0) / 100).toLocaleString()}`,
-    verdictAccuracy: "94%",
-    avgDelivery: "19h",
+    verdictAccuracy: `${deals.length}`,
+    avgDelivery: averageDelivery,
     rowsHtml
   })));
 });
@@ -488,7 +513,7 @@ app.get("/operator", async (req, res) => {
   if (!canAccess) return res.redirect("/login");
   return res.send(renderTemplate("operator", buildPageData({
     title: `${SITE_TITLE} | Operator`,
-    authState: user ? `${user.name || user.email} · ${user.role}` : "Operator access code",
+    authState: formatAuthState(user, "Operator access code"),
     userJson: JSON.stringify(user || null),
     accessCodeHash: crypto.createHash("sha256").update(config.operatorAccessCode).digest("hex")
   })));

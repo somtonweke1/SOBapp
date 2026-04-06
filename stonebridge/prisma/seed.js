@@ -22,6 +22,8 @@ function sampleSignals(sourceSet) {
 }
 
 async function main() {
+  const includeSampleData = process.env.SEED_SAMPLE_DATA === "true";
+
   await prisma.sponsorOpportunity.deleteMany();
   await prisma.sponsorWorkspace.deleteMany();
   await prisma.investorInquiry.deleteMany();
@@ -39,6 +41,11 @@ async function main() {
       name: "StoneBridge Operator"
     }
   });
+
+  if (!includeSampleData) {
+    console.log(`Seed complete. Operator only: ${operator.email} / password123`);
+    return;
+  }
 
   const clients = await Promise.all([
     prisma.user.create({ data: { email: "amira@harborcap.com", password, role: "CLIENT", name: "Amira Cole" } }),
