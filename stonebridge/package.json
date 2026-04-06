@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "node --watch src/app.js",
     "start": "node src/app.js",
+    "smoke": "node scripts/smoke.js",
     "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",

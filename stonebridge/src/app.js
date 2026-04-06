@@ -50,6 +50,25 @@ function buildPageData(base = {}) {
   };
 }
 
+app.get("/healthz", async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    return res.json({
+      ok: true,
+      service: "stonebridge-web",
+      database: "reachable",
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    return res.status(503).json({
+      ok: false,
+      service: "stonebridge-web",
+      database: "unreachable",
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 app.get("/", async (req, res) => {
   const user = await getCurrentUser(req);
   const stats = await prisma.deal.aggregate({

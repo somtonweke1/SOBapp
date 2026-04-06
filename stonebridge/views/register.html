@@ -14,7 +14,7 @@
     <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
     <div class="nav-links">
       <a class="nav-link" href="/">Home</a>
-      <a class="nav-link" href="/deals">Diagnostics</a>
+      <a class="nav-link" href="/submit">Diagnostics</a>
       <a class="nav-link" href="/track-record">Track Record</a>
       <a class="nav-link" href="/capital">Sponsor Intelligence</a>
       <a class="nav-link" href="/operator">Operator</a>
@@ -39,15 +39,15 @@
         <p class="subcopy">Create a StoneBridge account and optionally provision a sponsor workspace you can manage from the console.</p>
         <div class="field-group" style="margin-top:24px">
           <label class="field-label" for="name">Name</label>
-          <input id="name" class="input" value="New Client">
+          <input id="name" class="input" placeholder="Your name">
         </div>
         <div class="field-group" style="margin-top:18px">
           <label class="field-label" for="email">Email</label>
-          <input id="email" class="input" value="newclient@example.com">
+          <input id="email" class="input" type="email" placeholder="you@company.com">
         </div>
         <div class="field-group" style="margin-top:18px">
           <label class="field-label" for="password">Password</label>
-          <input id="password" type="password" class="input" value="password123">
+          <input id="password" type="password" class="input" placeholder="Create a password">
         </div>
         <div class="statement-bar" style="margin-top:24px">Optional: create your sponsor workspace now.</div>
         <div class="field-group" style="margin-top:18px">
@@ -75,6 +75,14 @@
   <script>
     registerBtn.addEventListener("click", async () => {
       registerLog.innerHTML = "";
+      if (!name.value.trim() || !email.value.trim() || !password.value) {
+        registerLog.innerHTML = '<div class="log-line">Name, email, and password are required.</div>';
+        return;
+      }
+      if (!email.checkValidity()) {
+        registerLog.innerHTML = '<div class="log-line">Enter a valid email address.</div>';
+        return;
+      }
       try {
         await StoneBridge.api("/api/auth/register", {
           method: "POST",

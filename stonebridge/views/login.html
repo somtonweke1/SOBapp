@@ -14,7 +14,7 @@
     <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
     <div class="nav-links">
       <a class="nav-link" href="/">Home</a>
-      <a class="nav-link" href="/deals">Diagnostics</a>
+      <a class="nav-link" href="/submit">Diagnostics</a>
       <a class="nav-link" href="/track-record">Track Record</a>
       <a class="nav-link" href="/capital">Sponsor Intelligence</a>
       <a class="nav-link" href="/operator">Operator</a>
@@ -45,7 +45,7 @@
           <label class="field-label" for="password">Password</label>
           <input id="password" type="password" class="input" autocomplete="current-password" required>
         </div>
-        <div class="detail-note" style="margin-top:18px"><a href="#" id="forgotPasswordLink">Forgot password</a></div>
+        <div class="detail-note" style="margin-top:18px">Password reset is not available yet. Contact the StoneBridge operator to reset access.</div>
         <div class="action-row" style="margin-top:24px">
           <button class="btn-primary" id="loginBtn">Login</button>
           <a class="btn-ghost" href="/">Back home</a>
@@ -85,11 +85,6 @@
       } catch (error) {
         loginLog.innerHTML = `<div class="log-line">${error.message}</div>`;
       }
-    });
-
-    forgotPasswordLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      loginLog.innerHTML = '<div class="log-line">Password reset is not available yet.</div>';
     });
   </script>
 </body>
