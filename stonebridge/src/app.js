@@ -18,6 +18,11 @@ const { startJobs } = require("./jobs");
 
 const app = express();
 const publicPath = path.resolve(__dirname, "..", "public");
+const DEMO_EMAILS = new Set([
+  "amira@harborcap.com",
+  "jonah@rowhousefund.com",
+  "talia@monumentlending.com"
+]);
 
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
@@ -30,10 +35,12 @@ async function getCurrentUser(req) {
     const token = readTokenFromRequest(req);
     if (!token) return null;
     const payload = verifyToken(token);
-    return prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: payload.sub },
       include: { ownedWorkspaces: { select: { id: true, slug: true, name: true }, orderBy: { createdAt: "asc" }, take: 1 } }
     });
+    if (user?.email && DEMO_EMAILS.has(user.email.toLowerCase())) return null;
+    return user;
   } catch {
     return null;
   }
@@ -73,6 +80,15 @@ function isPaidMemoDeal(deal) {
   );
 }
 
+function isDemoDeal(deal) {
+  const memoHash = String(deal?.memoHash || "").toLowerCase();
+  const paymentIntentId = String(deal?.paymentIntentId || "").toLowerCase();
+  return memoHash.startsWith("seeded-") ||
+    memoHash.startsWith("prod-demo-") ||
+    paymentIntentId.startsWith("pi_seed_") ||
+    paymentIntentId.startsWith("pi_demo_");
+}
+
 app.get("/healthz", async (_req, res) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
@@ -94,20 +110,24 @@ app.get("/healthz", async (_req, res) => {
 
 app.get("/", async (req, res) => {
   const user = await getCurrentUser(req);
-  const stats = await prisma.deal.aggregate({ _count: { id: true }, _avg: { riskScoreBefore: true } });
   const allDeals = await prisma.deal.findMany({
     select: {
       amountCents: true,
       createdAt: true,
       memoDeliveredAt: true,
+      memoHash: true,
       paymentStatus: true,
+      paymentIntentId: true,
+      riskScoreBefore: true,
       status: true
     }
   });
-  const memoDeals = allDeals.filter(isPaidMemoDeal);
-  const completed = await prisma.deal.count({
-    where: { status: "COMPLETED" }
-  });
+  const realDeals = allDeals.filter((deal) => !isDemoDeal(deal));
+  const memoDeals = realDeals.filter(isPaidMemoDeal);
+  const completed = realDeals.filter((deal) => deal.status === "COMPLETED").length;
+  const avgRiskScore = realDeals.length
+    ? realDeals.reduce((sum, deal) => sum + (deal.riskScoreBefore || 0), 0) / realDeals.length
+    : 0;
   const averageDeliveryHours = memoDeals.length
     ? memoDeals.reduce((sum, deal) => {
       const deliveredAt = deal.memoDeliveredAt ? new Date(deal.memoDeliveredAt).getTime() : new Date(deal.createdAt).getTime();
@@ -124,7 +144,7 @@ app.get("/", async (req, res) => {
     totalDeals: completed,
     riskExposure,
     avgDelivery: formatAvgDeliveryHours(averageDeliveryHours),
-    avgRiskScore: Math.round(stats._avg.riskScoreBefore || 0)
+    avgRiskScore: Math.round(avgRiskScore || 0)
   }));
   res.send(html);
 });
@@ -282,11 +302,12 @@ app.get("/deals", async (req, res) => {
   const user = await getCurrentUser(req);
   if (!user) return res.redirect("/login");
 
-  const deals = await prisma.deal.findMany({
+  const rawDeals = await prisma.deal.findMany({
     where: { clientId: user.id },
     include: { signals: true },
     orderBy: { createdAt: "desc" }
   });
+  const deals = rawDeals.filter((deal) => !isDemoDeal(deal));
 
   const verdictClass = (verdict) => verdict ? verdict.toLowerCase() : "pending";
   const verdictLabel = (verdict) => verdict || "PENDING";
@@ -485,8 +506,9 @@ app.get("/track-record", async (req, res) => {
   const allDeals = await prisma.deal.findMany({
     orderBy: { createdAt: "desc" }
   });
-  const deliveredDeals = allDeals.filter(isPaidMemoDeal);
-  const completedDeals = allDeals.filter((deal) => deal.status === "COMPLETED");
+  const realDeals = allDeals.filter((deal) => !isDemoDeal(deal));
+  const deliveredDeals = realDeals.filter(isPaidMemoDeal);
+  const completedDeals = realDeals.filter((deal) => deal.status === "COMPLETED");
 
   const deliveredHours = deliveredDeals
     .filter((deal) => deal.memoDeliveredAt)

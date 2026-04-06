@@ -8,6 +8,8 @@ async function main() {
     "jonah@rowhousefund.com",
     "talia@monumentlending.com"
   ];
+  const demoMemoPrefixes = ["seeded-", "prod-demo-"];
+  const demoPaymentPrefixes = ["pi_seed_", "pi_demo_"];
 
   const demoUsers = await prisma.user.findMany({
     where: { email: { in: demoEmails } },
@@ -19,8 +21,8 @@ async function main() {
     where: {
       OR: [
         { clientId: { in: demoUserIds.length ? demoUserIds : ["__none__"] } },
-        { memoHash: { startsWith: "seeded-" } },
-        { paymentIntentId: { startsWith: "pi_seed_" } }
+        ...demoMemoPrefixes.map((prefix) => ({ memoHash: { startsWith: prefix } })),
+        ...demoPaymentPrefixes.map((prefix) => ({ paymentIntentId: { startsWith: prefix } }))
       ]
     },
     select: { id: true }
@@ -28,37 +30,35 @@ async function main() {
 
   const demoDealIds = demoDeals.map((deal) => deal.id);
 
-  await prisma.$transaction(async (tx) => {
-    if (demoDealIds.length) {
-      await tx.timelineEvent.deleteMany({ where: { dealId: { in: demoDealIds } } });
-      await tx.signal.deleteMany({ where: { dealId: { in: demoDealIds } } });
-      await tx.dealNote.deleteMany({ where: { dealId: { in: demoDealIds } } });
-      await tx.dealDocument.deleteMany({ where: { dealId: { in: demoDealIds } } });
-      await tx.dealMarketFriction.deleteMany({ where: { dealId: { in: demoDealIds } } });
-      await tx.dealDecisionSummary.deleteMany({ where: { dealId: { in: demoDealIds } } });
-      await tx.deal.deleteMany({ where: { id: { in: demoDealIds } } });
-    }
+  if (demoDealIds.length) {
+    await prisma.timelineEvent.deleteMany({ where: { dealId: { in: demoDealIds } } });
+    await prisma.signal.deleteMany({ where: { dealId: { in: demoDealIds } } });
+    await prisma.dealNote.deleteMany({ where: { dealId: { in: demoDealIds } } });
+    await prisma.dealDocument.deleteMany({ where: { dealId: { in: demoDealIds } } });
+    await prisma.dealMarketFriction.deleteMany({ where: { dealId: { in: demoDealIds } } });
+    await prisma.dealDecisionSummary.deleteMany({ where: { dealId: { in: demoDealIds } } });
+    await prisma.deal.deleteMany({ where: { id: { in: demoDealIds } } });
+  }
 
-    await tx.investorInquiry.deleteMany({
-      where: {
-        OR: [
-          { accessCode: { startsWith: "seed-room-" } },
-          { email: { in: ["maya@northpointfo.com", "jordan@aggregatorcapital.com"] } }
-        ]
-      }
-    });
-
-    await tx.sponsorOpportunity.deleteMany({
-      where: { workspace: { slug: "stonebridge-capital" } }
-    });
-    await tx.sponsorWorkspace.deleteMany({
-      where: { slug: "stonebridge-capital" }
-    });
-
-    if (demoUserIds.length) {
-      await tx.user.deleteMany({ where: { id: { in: demoUserIds } } });
+  await prisma.investorInquiry.deleteMany({
+    where: {
+      OR: [
+        { accessCode: { startsWith: "seed-room-" } },
+        { email: { in: ["maya@northpointfo.com", "jordan@aggregatorcapital.com"] } }
+      ]
     }
   });
+
+  await prisma.sponsorOpportunity.deleteMany({
+    where: { workspace: { slug: "stonebridge-capital" } }
+  });
+  await prisma.sponsorWorkspace.deleteMany({
+    where: { slug: "stonebridge-capital" }
+  });
+
+  if (demoUserIds.length) {
+    await prisma.user.deleteMany({ where: { id: { in: demoUserIds } } });
+  }
 
   console.log(`Removed ${demoUsers.length} demo users and ${demoDeals.length} demo deals.`);
 }
