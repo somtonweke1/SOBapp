@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link active" href="/deals">Diagnostics</a>
+      <a class="nav-link" href="/track-record">Track Record</a>
+      <a class="nav-link" href="/capital">Sponsor Intelligence</a>
+      <a class="nav-link" href="/operator">Operator</a>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-auth">{{authState}}</span>
+    </div>
+  </nav>
+
+  <main class="app-shell">
+    <section class="page-header">
+      <div class="container">
+        <div class="kicker">Client Deal List</div>
+        <h1 class="page-title display-title" style="font-size:clamp(40px,5vw,64px)">Your Diagnostics</h1>
+        <p class="subcopy">Locked diagnostic scores, memo status, confirmed outcomes, and source-backed verdicts for every active Baltimore deal.</p>
+        <div class="mini-stats-grid" id="dealMiniStats" style="grid-template-columns:repeat(3,1fr);margin-top:28px">
+          <div class="mini-stat"><div class="mini-stat-value">{{totalDeals}}</div><div class="mini-stat-label">Total Deals</div></div>
+          <div class="mini-stat"><div class="mini-stat-value">{{activeMemos}}</div><div class="mini-stat-label">Active Memos</div></div>
+          <div class="mini-stat"><div class="mini-stat-value">{{confirmedOutcomes}}</div><div class="mini-stat-label">Confirmed Outcomes</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section" style="padding-top:24px">
+      <div class="container">
+        <div class="scenario-tabs" data-tab-group="deal-status-filter" style="padding:0;border:none;margin-bottom:24px">
+          <button class="tab-button active" data-filter="ALL">All</button>
+          <button class="tab-button" data-filter="PENDING">Pending</button>
+          <button class="tab-button" data-filter="ACTIVE">Active</button>
+          <button class="tab-button" data-filter="COMPLETED">Completed</button>
+        </div>
+        <div id="dealList" class="deal-list">{{{dealsHtml}}}</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/deals">Diagnostics</a>
+      <a class="nav-link active" href="/track-record">Track Record</a>
+      <a class="nav-link" href="/capital">Sponsor Intelligence</a>
+      <a class="nav-link" href="/operator">Operator</a>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-auth">{{authState}}</span>
+    </div>
+  </nav>
+
+  <main class="app-shell">
+    <section class="page-header">
+      <div class="container">
+        <div class="kicker">Credibility Ledger</div>
+        <h1 class="page-title display-title page-title-italic">Every deal we've diagnosed.</h1>
+        <p class="subcopy">No client names. No portfolio theater. Just verdicts, timestamps, hashes, and confirmed outcomes in one public record.</p>
+      </div>
+    </section>
+
+    <section class="page-section page-section-tight">
+      <div class="container">
+        <div class="stats-strip track-stats" id="trackStats">
+          <div class="stat-cell"><div class="stat-num">{{totalMemos}}</div><div class="stat-label">Total Memos Delivered</div></div>
+          <div class="stat-cell"><div class="stat-num">{{verdictAccuracy}}</div><div class="stat-label">Verdict Accuracy Rate</div></div>
+          <div class="stat-cell"><div class="stat-num">{{riskExposure}}</div><div class="stat-label">Risk Exposure Diagnosed</div></div>
+          <div class="stat-cell"><div class="stat-num">{{avgDelivery}}</div><div class="stat-label">Average Delivery Time</div></div>
+        </div>
+
+        <div class="track-table" style="margin-top:40px">
+          <div class="table-head">
+            <div>Address</div>
+            <div>Verdict</div>
+            <div>Outcome Confirmed</div>
+            <div>Delivery Timestamp</div>
+            <div>Hash</div>
+          </div>
+          <div id="trackRows">{{{rowsHtml}}}</div>
+        </div>
+
+        <div class="center-statement" style="margin-top:40px">The record speaks. No references needed.</div>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>

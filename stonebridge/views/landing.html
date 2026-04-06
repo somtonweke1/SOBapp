@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/deals">Diagnostics</a>
+      <a class="nav-link" href="/track-record">Track Record</a>
+      <a class="nav-link" href="/capital">Sponsor Intelligence</a>
+      <a class="nav-link" href="/operator">Operator</a>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-auth">{{authState}}</span>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <section class="hero">
+      <div class="hero-grid"></div>
+      <div class="hero-content">
+        <p class="eyebrow">Baltimore deal diagnostics</p>
+        <h1 class="hero-title">Free address screen up front.<br><em>Paid decision memo when the deal is real.</em></h1>
+        <p class="hero-sub">StoneBridge helps developers, lenders, and operators decide whether to proceed, reprice, or escalate before capital is trapped. The free screen proves the signal layer. The paid product is a written memo someone can actually use to make a decision.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/submit">Start free preview</a>
+          <a class="btn btn-gold" href="/submit">Scope the $2,500 memo</a>
+          <a class="btn btn-ghost" href="/track-record">View track record</a>
+        </div>
+        <div class="hero-proof">Public records in the front-end proof layer. Decision-grade memo and next steps in the paid engagement.</div>
+      </div>
+    </section>
+
+    <section class="stats-strip">
+      <div class="stat-cell"><div class="stat-num">{{totalMemos}}</div><div class="stat-label">Total memos</div></div>
+      <div class="stat-cell"><div class="stat-num">{{totalDeals}}</div><div class="stat-label">Completed deals</div></div>
+      <div class="stat-cell"><div class="stat-num">${{riskExposure}}k</div><div class="stat-label">Risk exposure mapped</div></div>
+      <div class="stat-cell"><div class="stat-num">{{avgDelivery}}h</div><div class="stat-label">Average delivery</div></div>
+    </section>
+
+    <section class="value-band">
+      <div class="container">
+        <div class="value-grid">
+          <article class="value-card">
+            <div class="eyebrow">Who pays</div>
+            <h2 class="card-title">Buyers under real deadline pressure.</h2>
+            <p class="card-copy">This is for people facing LOIs, lender committee, contractor selection, rehab scope, or seller pressure. If there is no live decision, the free screen is enough.</p>
+          </article>
+          <article class="value-card value-card-accent">
+            <div class="eyebrow">What they buy</div>
+            <h2 class="card-title">A written Proceed / Caution / Escalate memo.</h2>
+            <p class="card-copy">Not a dashboard screenshot. A memo with signal citations, evidence links, underwriting questions, and the next diligence move tied to the actual address.</p>
+          </article>
+          <article class="value-card">
+            <div class="eyebrow">Why it converts</div>
+            <h2 class="card-title">It moves the decision, or it should not get billed.</h2>
+            <p class="card-copy">The commercial promise is simple: if StoneBridge cannot materially sharpen the decision, the engagement should not feel worth a contract.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="offer-band">
+      <div class="container">
+        <div class="offer-card">
+          <div class="offer-copy">
+            <div class="eyebrow">Commercial path</div>
+            <h2 class="section-title">Proof first. Memo second. Retainer after that.</h2>
+            <div class="brief-list">
+              <div class="brief-row">Free preview: enter a Baltimore address and inspect the public signal layer.</div>
+              <div class="brief-row">$2,500 memo: written decision brief delivered within 24 hours for a live deal.</div>
+              <div class="brief-row">Ongoing support: retained diligence, monitoring, and sponsor-facing packet work when the deal needs continued attention.</div>
+            </div>
+          </div>
+          <div class="offer-side">
+            <div class="memo-price">$2,500</div>
+            <div class="memo-price-note">24-hour decision memo</div>
+            <a class="btn btn-primary btn-full" href="/submit">Start with an address</a>
+            <div class="memo-guarantee">Use the free screen to decide whether the paid memo is justified.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

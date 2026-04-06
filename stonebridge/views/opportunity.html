@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/deals">Diagnostics</a>
+      <a class="nav-link" href="/track-record">Track Record</a>
+      <a class="nav-link active" href="/capital/{{workspaceSlug}}">Sponsor Intelligence</a>
+      <a class="nav-link" href="/operator">Operator</a>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-auth">{{authState}}</span>
+      <a class="btn btn-primary" href="/capital/{{workspaceSlug}}#investor-intake">Request room access</a>
+    </div>
+  </nav>
+
+  <main class="page-wrap sponsor-shell">
+    <section class="result-hero result-hero--pending">
+      <div class="container">
+        <div class="eyebrow" id="opportunityMarket">Loading market…</div>
+        <h1 class="result-verdict-word" id="opportunityTitle">Opportunity brief</h1>
+        <div class="signal-summary center" id="opportunityMetrics"></div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container sponsor-grid sponsor-grid-tight">
+        <div>
+          <div class="section-head">
+            <div class="eyebrow">Investment Thesis</div>
+            <h2 class="section-title">Decision-ready framing for partners.</h2>
+          </div>
+          <div class="sponsor-panel" id="opportunitySummary"></div>
+          <div class="sponsor-panel" style="margin-top:20px">
+            <div class="eyebrow">Diligence Focus</div>
+            <div id="diligenceList"></div>
+          </div>
+        </div>
+        <aside class="sponsor-panel">
+          <div class="eyebrow">Room Access</div>
+          <div class="card-title">Request private room materials.</div>
+          <p class="card-copy">StoneBridge can gate deeper sponsor notes, sequencing logic, and partner-facing context behind qualified access.</p>
+          <a class="btn btn-primary" href="/capital/{{workspaceSlug}}#investor-intake">Submit investor fit</a>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script>
+    async function loadOpportunity() {
+      const response = await StoneBridge.api("/api/sponsor/{{workspaceSlug}}/opportunities/{{slug}}");
+      const opportunity = response.opportunity;
+      opportunityMarket.textContent = `${opportunity.market} · ${opportunity.assetType}`;
+      opportunityTitle.textContent = opportunity.title;
+      opportunityMetrics.innerHTML = `
+        <span class="pill">${opportunity.stage}</span>
+        <span class="pill">${opportunity.targetEquity}</span>
+        <span class="pill">${opportunity.targetHold}</span>
+      `;
+      opportunitySummary.innerHTML = `
+        <p class="card-copy">${opportunity.summary}</p>
+        <div class="brief-list">${opportunity.thesis.map((item) => `<div class="brief-row">${item}</div>`).join("")}</div>
+      `;
+      diligenceList.innerHTML = opportunity.diligence.map((item) => `<div class="brief-row">${item}</div>`).join("");
+    }
+
+    loadOpportunity().catch((error) => {
+      opportunityTitle.textContent = error.message;
+    });
+  </script>
+</body>
+</html>

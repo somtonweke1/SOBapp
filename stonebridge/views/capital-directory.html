@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/deals">Diagnostics</a>
+      <a class="nav-link" href="/track-record">Track Record</a>
+      <a class="nav-link active" href="/capital">Sponsor Intelligence</a>
+      <a class="nav-link" href="/operator">Operator</a>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-auth">{{authState}}</span>
+      <a class="btn btn-primary" href="/register">Create sponsor workspace</a>
+    </div>
+  </nav>
+
+  <main class="page-wrap sponsor-shell">
+    <section class="sponsor-hero">
+      <div class="container">
+        <div class="eyebrow">Sponsor Intelligence SaaS</div>
+        <h1 class="hero-title">Multi-tenant sponsor portals for capital formation.</h1>
+        <p class="hero-sub">Each workspace gets a public investor surface, opportunity briefs, gated rooms, and an owner-managed console.</p>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Live Workspaces</div>
+          <h2 class="section-title">Open a sponsor portal.</h2>
+        </div>
+        <div class="sponsor-card-grid" id="workspaceDirectory"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const workspaces = {{{workspacesJson}}};
+    workspaceDirectory.innerHTML = workspaces.length
+      ? workspaces.map((workspace) => `
+        <article class="sponsor-card sponsor-card-accent">
+          <div class="eyebrow">${workspace.slug}</div>
+          <div class="card-title">${workspace.name}</div>
+          <div class="detail-note">${workspace.strapline || ""}</div>
+          <p class="card-copy">${workspace.fundName || ""}${workspace.targetRaise ? ` · ${workspace.targetRaise}` : ""}</p>
+          <div class="signal-summary">
+            ${workspace.targetProfile ? `<span class="pill">${workspace.targetProfile}</span>` : ""}
+          </div>
+          <div class="action-row">
+            <a class="btn btn-primary" href="/capital/${workspace.slug}">View portal →</a>
+          </div>
+        </article>
+      `).join("")
+      : '<div class="empty-state"><div>No sponsor workspaces are live yet.</div><div class="empty-state-action"><a class="btn btn-ghost" href="/register">Create sponsor workspace</a></div></div>';
+  </script>
+</body>
+</html>

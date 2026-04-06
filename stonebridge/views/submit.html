@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link active" href="/deals">Diagnostics</a>
+      <a class="nav-link" href="/track-record">Track Record</a>
+      <a class="nav-link" href="/capital">Sponsor Intelligence</a>
+      <a class="nav-link" href="/operator">Operator</a>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-auth">{{authState}}</span>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="submit-hero">
+      <div class="container-sm">
+        <p class="eyebrow">Deal Diagnostics</p>
+        <h1 class="submit-title">Start with the address.<br>Buy the memo if the pressure is real.</h1>
+        <p class="submit-sub">Use this page as the front-end proof layer. We scan Baltimore public records, surface the signal stack, and help you decide whether this deal deserves the full written memo.</p>
+      </div>
+    </div>
+
+    <div class="submit-form-wrap">
+      <div class="container-sm">
+        <div class="submit-offer-strip">
+          <div class="submit-offer-card">
+            <div class="eyebrow">Free preview</div>
+            <div class="submit-offer-title">Run the screen first.</div>
+            <div class="submit-offer-copy">Check whether the address shows enough friction, signal density, or hidden risk to justify deeper work.</div>
+          </div>
+          <div class="submit-offer-card submit-offer-card-accent">
+            <div class="eyebrow">Paid deliverable</div>
+            <div class="submit-offer-title">$2,500 decision memo.</div>
+            <div class="submit-offer-copy">Proceed / Caution / Escalate recommendation, written rationale, evidence links, and next diligence questions within 24 hours.</div>
+          </div>
+        </div>
+
+        <div id="submit-error"></div>
+
+        <form action="/api/deals/diagnose" method="POST" id="diagnose-form">
+          <div class="address-field-wrap">
+            <input
+              type="text"
+              name="address"
+              id="address-input"
+              class="address-input"
+              placeholder="e.g. 1401 Hull St, Baltimore MD 21230"
+              autocomplete="off"
+              autofocus
+              required
+            >
+            <button type="submit" class="diagnose-btn" id="diagnose-btn">
+              <span class="diagnose-btn-text">Run free preview</span>
+              <span class="diagnose-btn-arrow">→</span>
+            </button>
+          </div>
+
+          <div class="quick-chips">
+            <span class="chips-label">Try an example:</span>
+            <button type="button" class="chip" data-addr="1401 Hull St, Baltimore MD 21230">1401 Hull St</button>
+            <button type="button" class="chip" data-addr="820 N Eutaw St, Baltimore MD 21201">820 N Eutaw</button>
+            <button type="button" class="chip" data-addr="2801 Maryland Ave, Baltimore MD 21218">2801 Maryland Ave</button>
+            <button type="button" class="chip" data-addr="300 W Pratt St, Baltimore MD 21201">300 W Pratt</button>
+          </div>
+        </form>
+
+        <div class="loading-state" id="loading-state" style="display:none">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Reading public records for <strong id="loading-address"></strong>...</div>
+          <div class="loading-sources">
+            <span class="loading-src">Baltimore City Open Data</span>
+            <span class="loading-src">Maryland SDAT</span>
+            <span class="loading-src">SAM.gov</span>
+            <span class="loading-src">Baltimore 311</span>
+          </div>
+        </div>
+
+        <div class="submit-trust">
+          <div class="trust-item"><span class="trust-icon">⏱</span><span>Results in under 10 seconds</span></div>
+          <div class="trust-item"><span class="trust-icon">🔒</span><span>Public records are read directly, not entered by hand</span></div>
+          <div class="trust-item"><span class="trust-icon">📋</span><span>Paid memo available when the screen reveals real risk</span></div>
+        </div>
+
+        <div class="submit-proof">
+          <div class="proof-block">
+            <div><span class="pk">free_preview</span><span class="pv">Public signals, preliminary verdict, source trace</span></div>
+            <div><span class="pk">paid_memo</span><span class="pv">$2,500, 24-hour turnaround, written decision brief</span></div>
+            <div><span class="pk">best_for</span><span class="pv">Acquisition, refinance, rehab, lender, and vendor-signature decisions</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    StoneBridge.setQueryError('submit-error');
+    document.querySelectorAll('.chip[data-addr]').forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        document.getElementById('address-input').value = chip.dataset.addr;
+        document.getElementById('address-input').focus();
+      });
+    });
+
+    document.getElementById('diagnose-form').addEventListener('submit', function() {
+      var addr = document.getElementById('address-input').value;
+      document.getElementById('loading-address').textContent = addr;
+      document.querySelector('.address-field-wrap').style.display = 'none';
+      document.querySelector('.quick-chips').style.display = 'none';
+      document.getElementById('loading-state').style.display = 'block';
+      document.getElementById('diagnose-btn').disabled = true;
+    });
+  </script>
+</body>
+</html>

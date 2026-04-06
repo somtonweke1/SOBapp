@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link active" href="/deals">Diagnostics</a>
+      <a class="nav-link" href="/track-record">Track Record</a>
+      <a class="nav-link" href="/capital">Sponsor Intelligence</a>
+      <a class="nav-link" href="/operator">Operator</a>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-auth">{{authState}}</span>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="result-hero result-hero--{{verdictClass}}">
+      <div class="container">
+        <div class="result-address">{{dealAddress}}</div>
+        <div class="result-verdict-word">{{dealVerdict}}</div>
+        <div class="result-score-row">
+          <span class="result-score-label">Risk score</span>
+          <span class="result-score-val" id="score-target" data-score="{{riskScore}}">0</span>
+          <span class="result-score-max">/ 100</span>
+        </div>
+        <div class="result-flag-count">{{flagCount}} public flags identified</div>
+      </div>
+    </div>
+
+    <div class="result-meaning">
+      <div class="container">
+        <div class="meaning-card {{meaningClass}}">
+          <div class="meaning-icon">{{meaningIcon}}</div>
+          <div>
+            <div class="meaning-title">{{meaningTitle}}</div>
+            <div class="meaning-desc">{{meaningDesc}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-signals">
+      <div class="container">
+        <h2 class="section-title">Signal breakdown</h2>
+        <p class="section-sub">{{signalCount}} signals identified across {{sourceCount}} public data sources</p>
+        {{{signalsHtml}}}
+      </div>
+    </div>
+
+    <div class="result-sources">
+      <div class="container">
+        <h2 class="section-title">Sources read</h2>
+        <div class="sources-grid">
+          {{{sourcesHtml}}}
+        </div>
+      </div>
+    </div>
+
+    <div class="result-sources">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Collaborative Deal Workspace</div>
+          <h2 class="section-title">Documents, underwriting notes, market friction, and decision support.</h2>
+        </div>
+        <div class="collab-toolbar">
+          <div class="field-group collab-search">
+            <label class="field-label" for="collabSearch">Search workspace</label>
+            <input id="collabSearch" class="input" placeholder="Search notes, documents, market friction, and activity">
+          </div>
+        </div>
+        <div class="collab-grid">
+          <section class="collab-panel">
+            <div class="form-panel-head">
+              <div>
+                <div class="eyebrow">Document Hub</div>
+                <div class="card-title">Attach the working deal room.</div>
+              </div>
+            </div>
+            <form id="documentForm" class="field-stack">
+              <div class="field-group">
+                <label class="field-label" for="documentLabel">Label</label>
+                <input id="documentLabel" class="input" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="documentUrl">URL</label>
+                <input id="documentUrl" class="input" type="url" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="documentKind">Type</label>
+                <input id="documentKind" class="input" placeholder="OM, lender note, plans, data room">
+              </div>
+              <div class="action-row">
+                <button class="btn btn-primary" type="submit">Add document</button>
+              </div>
+              <div class="log-list" id="documentLog"></div>
+            </form>
+            <div class="collab-list" id="documentList"></div>
+          </section>
+
+          <section class="collab-panel">
+            <div class="form-panel-head">
+              <div>
+                <div class="eyebrow">Underwriting Notes</div>
+                <div class="card-title">Keep assumptions and questions with the deal.</div>
+              </div>
+            </div>
+            <form id="noteForm" class="field-stack">
+              <div class="field-group">
+                <label class="field-label" for="noteTitle">Title</label>
+                <input id="noteTitle" class="input" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="noteBody">Body</label>
+                <textarea id="noteBody" class="input textarea textarea-lg" required></textarea>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="noteMentions">Mentions</label>
+                <input id="noteMentions" class="input" placeholder="@teammate, lender, Germano">
+              </div>
+              <div class="action-row">
+                <button class="btn btn-primary" type="submit">Add note</button>
+              </div>
+              <div class="log-list" id="noteLog"></div>
+            </form>
+            <div class="collab-list" id="noteList"></div>
+          </section>
+
+          <section class="collab-panel">
+            <div class="form-panel-head">
+              <div>
+                <div class="eyebrow">Market Friction</div>
+                <div class="card-title">Capture lender pullback, policy drag, or execution risk.</div>
+              </div>
+            </div>
+            <form id="frictionForm" class="field-stack">
+              <div class="field-group">
+                <label class="field-label" for="frictionCategory">Category</label>
+                <input id="frictionCategory" class="input" placeholder="Lending, legal, tenant, zoning" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="frictionObservation">Observation</label>
+                <textarea id="frictionObservation" class="input textarea" required></textarea>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="frictionImpact">Impact</label>
+                <input id="frictionImpact" class="input" placeholder="10% rate, 30% down, delayed close">
+              </div>
+              <div class="action-row">
+                <button class="btn btn-primary" type="submit">Log friction</button>
+              </div>
+              <div class="log-list" id="frictionLog"></div>
+            </form>
+            <div class="collab-list" id="frictionList"></div>
+          </section>
+
+          <section class="collab-panel">
+            <div class="form-panel-head">
+              <div>
+                <div class="eyebrow">Decision Summary</div>
+                <div class="card-title">Compress the current underwriting stance.</div>
+              </div>
+            </div>
+            <form id="summaryForm" class="field-stack">
+              <div class="field-group">
+                <label class="field-label" for="summaryRecommendation">Recommendation</label>
+                <input id="summaryRecommendation" class="input" placeholder="Proceed, caution, pass, reprice" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="summaryRisks">Key risks</label>
+                <textarea id="summaryRisks" class="input textarea textarea-sm" placeholder="One per line"></textarea>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="summaryPositives">Key positives</label>
+                <textarea id="summaryPositives" class="input textarea textarea-sm" placeholder="One per line"></textarea>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="summaryQuestions">Unresolved questions</label>
+                <textarea id="summaryQuestions" class="input textarea textarea-sm" placeholder="One per line"></textarea>
+              </div>
+              <div class="action-row">
+                <button class="btn btn-primary" type="submit">Save summary</button>
+              </div>
+              <div class="log-list" id="summaryLog"></div>
+            </form>
+            <div class="collab-summary" id="summaryView"></div>
+          </section>
+
+          <section class="collab-panel collab-panel-wide">
+            <div class="form-panel-head">
+              <div>
+                <div class="eyebrow">Activity Feed</div>
+                <div class="card-title">Decision history tied to the deal.</div>
+              </div>
+            </div>
+            <div class="timeline collab-timeline" id="collabTimeline"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-memo-cta">
+      <div class="container-sm">
+        <div class="memo-cta-card">
+          <div class="memo-cta-left">
+            <div class="memo-cta-eyebrow">Full diagnostic memo</div>
+            <div class="memo-cta-title">Convert this screen into the written decision memo</div>
+            <div class="memo-cta-desc">This page proves the signal layer. The paid memo is the commercial product: a decision-ready brief with evidence links, signal citations, risk framing, and next actions someone can use in a real meeting.</div>
+            <ul class="memo-cta-list">
+              <li>Proceed / Caution / Escalate with written reasoning</li>
+              <li>Every signal cited with source and evidence link</li>
+              <li>Specific next diligence steps for this address</li>
+              <li>Questions for lender, seller, GC, or internal IC</li>
+              <li>Delivered within 24 hours when the deal is live</li>
+            </ul>
+          </div>
+          <div class="memo-cta-right">
+            <div class="memo-price">$2,500</div>
+            <div class="memo-price-note">Decision-grade written brief</div>
+            <a href="/submit" class="btn btn-primary btn-lg btn-full" style="margin-top:20px">Scope this address into a memo →</a>
+            <div class="memo-guarantee">The preview shows whether this address deserves the full engagement.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-proof">
+      <div class="container-sm">
+        <h2 class="section-title">Diagnostic timeline</h2>
+        <div class="timeline" style="margin-top:24px">
+          {{{timelineHtml}}}
+        </div>
+      </div>
+    </div>
+
+    <div class="result-proof" style="padding-top:0">
+      <div class="container-sm">
+        <h2 class="section-title">Diagnostic record</h2>
+        <div class="proof-block" style="margin-top:16px">
+          <div><span class="pk">deal_id &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="pv">{{dealId}}</span></div>
+          <div><span class="pk">address &nbsp;&nbsp;&nbsp;&nbsp;</span><span class="pv">{{dealAddress}}</span></div>
+          <div><span class="pk">risk_score &nbsp;</span><span class="pv">{{riskScore}}</span></div>
+          <div><span class="pk">verdict &nbsp;&nbsp;&nbsp;&nbsp;</span><span class="pv">{{dealVerdict}}</span></div>
+          <div><span class="pk">signals &nbsp;&nbsp;&nbsp;&nbsp;</span><span class="pv">{{signalCount}}</span></div>
+          <div><span class="pk">diagnosed_at </span><span class="pv pv-date">{{createdAt}}</span></div>
+          <div><span class="pk">status &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="pv pv-ok">DIAGNOSTIC COMPLETE</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:40px 0 80px;background:var(--white);text-align:center">
+      <a href="/submit" class="btn btn-ghost">← Diagnose another address</a>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    const dealId = "{{dealId}}";
+    const currentUser = {{userJson}};
+    const scoreTarget = document.getElementById("score-target");
+    if (scoreTarget && window.StoneBridge && typeof StoneBridge.animateNumber === "function") {
+      StoneBridge.animateNumber(scoreTarget, Number(scoreTarget.dataset.score || 0));
+    } else if (scoreTarget) {
+      scoreTarget.textContent = String(scoreTarget.dataset.score || 0);
+    }
+
+    function renderAuthor(author) {
+      return author?.name || author?.email || "StoneBridge user";
+    }
+
+    function splitLines(value) {
+      return String(value || "").split("\n").map((item) => item.trim()).filter(Boolean);
+    }
+
+    function parseMentions(value) {
+      return String(value || "")
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    const collabState = {
+      documents: [],
+      notes: [],
+      frictions: [],
+      summary: null,
+      timeline: [],
+      query: ""
+    };
+
+    function renderEmpty(container, message) {
+      container.innerHTML = `<div class="empty-state">${message}</div>`;
+    }
+
+    function canManage(item) {
+      return currentUser?.role === "OPERATOR" || item.authorId === currentUser?.id;
+    }
+
+    function matchesQuery(...values) {
+      if (!collabState.query) return true;
+      const haystack = values.filter(Boolean).join(" ").toLowerCase();
+      return haystack.includes(collabState.query);
+    }
+
+    function renderDocuments(items) {
+      const filtered = items.filter((item) => matchesQuery(item.label, item.kind, item.url, item.author?.name, item.author?.email));
+      if (!filtered.length) return renderEmpty(documentList, "No document links match the current filter.");
+      documentList.innerHTML = filtered.map((item) => `
+        <article class="brief-row collab-item">
+          <div class="collab-item-head">
+            <span class="pill">${item.kind}</span>
+            <span class="detail-note">${StoneBridge.formatDate(item.createdAt)}</span>
+          </div>
+          <div class="card-title collab-item-title">${item.label}</div>
+          <div class="detail-note">${renderAuthor(item.author)}</div>
+          <div class="action-row" style="margin-top:12px">
+            <a class="btn btn-ghost" href="${item.url}" target="_blank" rel="noreferrer">Open link</a>
+            ${canManage(item) ? `<button class="btn btn-ghost" onclick="editDocument('${item.id}')">Edit</button>` : ""}
+            ${canManage(item) ? `<button class="btn btn-ghost" onclick="deleteDocument('${item.id}')">Delete</button>` : ""}
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderNoteReplies(replies) {
+      if (!replies?.length) return "";
+      return `
+        <div class="collab-replies">
+          ${replies.map((reply) => `
+            <article class="brief-row collab-item collab-reply">
+              <div class="collab-item-head">
+                <span class="pill">Reply</span>
+                <span class="detail-note">${StoneBridge.formatDate(reply.createdAt)}</span>
+              </div>
+              <div class="card-copy">${reply.body}</div>
+              ${reply.mentions?.length ? `<div class="signal-summary">${reply.mentions.map((mention) => `<span class="pill">${mention}</span>`).join("")}</div>` : ""}
+              <div class="detail-note">${renderAuthor(reply.author)}</div>
+              <div class="action-row">
+                ${canManage(reply) ? `<button class="btn btn-ghost" onclick="editNote('${reply.id}')">Edit</button>` : ""}
+                ${canManage(reply) ? `<button class="btn btn-ghost" onclick="deleteNote('${reply.id}')">Delete</button>` : ""}
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderNotes(items) {
+      const topLevel = items
+        .filter((item) => !item.parentId)
+        .filter((item) => matchesQuery(item.title, item.body, item.mentions?.join(" "), item.author?.name, item.author?.email, ...(item.replies || []).map((reply) => `${reply.body} ${reply.mentions?.join(" ") || ""}`)));
+
+      if (!topLevel.length) return renderEmpty(noteList, "No underwriting notes match the current filter.");
+      noteList.innerHTML = topLevel.map((item) => `
+        <article class="brief-row collab-item">
+          <div class="collab-item-head">
+            <span class="pill">Note</span>
+            <span class="detail-note">${StoneBridge.formatDate(item.createdAt)}</span>
+          </div>
+          <div class="card-title collab-item-title">${item.title}</div>
+          <p class="card-copy">${item.body}</p>
+          ${item.mentions?.length ? `<div class="signal-summary">${item.mentions.map((mention) => `<span class="pill">${mention}</span>`).join("")}</div>` : ""}
+          <div class="detail-note">${renderAuthor(item.author)}</div>
+          <div class="action-row">
+            <button class="btn btn-ghost" onclick="replyToNote('${item.id}', '${item.title.replace(/'/g, "\\'")}')">Reply</button>
+            ${canManage(item) ? `<button class="btn btn-ghost" onclick="editNote('${item.id}')">Edit</button>` : ""}
+            ${canManage(item) ? `<button class="btn btn-ghost" onclick="deleteNote('${item.id}')">Delete</button>` : ""}
+          </div>
+          ${renderNoteReplies(item.replies || [])}
+        </article>
+      `).join("");
+    }
+
+    function renderFrictions(items) {
+      const filtered = items.filter((item) => matchesQuery(item.category, item.observation, item.impact, item.author?.name, item.author?.email));
+      if (!filtered.length) return renderEmpty(frictionList, "No market friction matches the current filter.");
+      frictionList.innerHTML = filtered.map((item) => `
+        <article class="brief-row collab-item">
+          <div class="collab-item-head">
+            <span class="pill">${item.category}</span>
+            <span class="detail-note">${StoneBridge.formatDate(item.createdAt)}</span>
+          </div>
+          <p class="card-copy">${item.observation}</p>
+          ${item.impact ? `<div class="detail-note">Impact: ${item.impact}</div>` : ""}
+          <div class="detail-note">${renderAuthor(item.author)}</div>
+          <div class="action-row">
+            ${canManage(item) ? `<button class="btn btn-ghost" onclick="editFriction('${item.id}')">Edit</button>` : ""}
+            ${canManage(item) ? `<button class="btn btn-ghost" onclick="deleteFriction('${item.id}')">Delete</button>` : ""}
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderTimeline(items) {
+      const filtered = items.filter((item) => matchesQuery(item.event, item.detail));
+      if (!filtered.length) return renderEmpty(collabTimeline, "No activity matches the current filter.");
+      collabTimeline.innerHTML = filtered.map((item) => `
+        <div class="tl-item">
+          <div class="tl-dot done">✓</div>
+          <div class="tl-content">
+            <div class="tl-title">${StoneBridge.capitalize(String(item.event || "").replace(/_/g, " "))}</div>
+            <div class="tl-sub">${StoneBridge.formatDate(item.createdAt)}</div>
+            ${item.detail ? `<div class="tl-detail">${item.detail}</div>` : ""}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderSummary(summary, timeline) {
+      if (!summary) {
+        summaryView.innerHTML = '<div class="empty-state">No decision summary saved yet.</div>';
+      } else {
+        summaryRecommendation.value = summary.recommendation || "";
+        summaryRisks.value = (summary.keyRisks || []).join("\n");
+        summaryPositives.value = (summary.keyPositives || []).join("\n");
+        summaryQuestions.value = (summary.unresolvedQuestions || []).join("\n");
+        summaryView.innerHTML = `
+          <div class="triptych triptych-inline">
+            <div class="t-col">
+              <div class="t-label">Recommendation</div>
+              <div class="t-verdict ${StoneBridge.verdictClass(summary.recommendation)}">${StoneBridge.capitalize(summary.recommendation)}</div>
+              <div class="t-unit">${renderAuthor(summary.updatedBy)}</div>
+            </div>
+            <div class="t-sep">→</div>
+            <div class="t-col">
+              <div class="t-label">Updated</div>
+              <div class="t-score dim">${StoneBridge.formatDate(summary.updatedAt)}</div>
+              <div class="t-unit">Current collaboration summary</div>
+            </div>
+            <div class="t-sep">→</div>
+            <div class="t-col">
+              <div class="t-label">Open questions</div>
+              <div class="t-score dim">${(summary.unresolvedQuestions || []).length}</div>
+              <div class="t-unit">Still unresolved</div>
+            </div>
+          </div>
+          <div class="collab-summary-grid">
+            <div class="sponsor-panel">
+              <div class="eyebrow">Key Risks</div>
+              <div class="brief-list">${(summary.keyRisks || []).map((item) => `<div class="brief-row">${item}</div>`).join("") || '<div class="empty-state">No risks logged.</div>'}</div>
+            </div>
+            <div class="sponsor-panel">
+              <div class="eyebrow">Key Positives</div>
+              <div class="brief-list">${(summary.keyPositives || []).map((item) => `<div class="brief-row">${item}</div>`).join("") || '<div class="empty-state">No positives logged.</div>'}</div>
+            </div>
+          </div>
+          <div class="sponsor-panel" style="margin-top:18px">
+            <div class="eyebrow">Unresolved Questions</div>
+            <div class="brief-list">${(summary.unresolvedQuestions || []).map((item) => `<div class="brief-row">${item}</div>`).join("") || '<div class="empty-state">No unresolved questions logged.</div>'}</div>
+          </div>
+        `;
+      }
+      renderTimeline(timeline || collabState.timeline || []);
+    }
+
+    async function loadCollaboration() {
+      const data = await StoneBridge.api(`/api/deals/${dealId}/collaboration`);
+      collabState.documents = data.documents || [];
+      collabState.notes = data.notes || [];
+      collabState.frictions = data.frictions || [];
+      collabState.summary = data.summary || null;
+      collabState.timeline = data.timeline || [];
+      renderDocuments(collabState.documents);
+      renderNotes(collabState.notes);
+      renderFrictions(collabState.frictions);
+      renderSummary(collabState.summary, collabState.timeline);
+    }
+
+    async function submitDocument(event) {
+      event.preventDefault();
+      const formEl = event.currentTarget;
+      documentLog.innerHTML = "";
+      try {
+        await StoneBridge.api(`/api/deals/${dealId}/documents`, {
+          method: "POST",
+          body: JSON.stringify({
+            label: documentLabel.value,
+            url: documentUrl.value,
+            kind: documentKind.value || "Document"
+          })
+        });
+        formEl.reset();
+        documentLog.innerHTML = '<div class="log-line">Document added.</div>';
+        await loadCollaboration();
+      } catch (error) {
+        documentLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function submitNote(event) {
+      event.preventDefault();
+      const formEl = event.currentTarget;
+      noteLog.innerHTML = "";
+      try {
+        await StoneBridge.api(`/api/deals/${dealId}/notes`, {
+          method: "POST",
+          body: JSON.stringify({
+            title: noteTitle.value,
+            body: noteBody.value,
+            mentions: parseMentions(noteMentions.value)
+          })
+        });
+        formEl.reset();
+        noteLog.innerHTML = '<div class="log-line">Note added.</div>';
+        await loadCollaboration();
+      } catch (error) {
+        noteLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function submitFriction(event) {
+      event.preventDefault();
+      const formEl = event.currentTarget;
+      frictionLog.innerHTML = "";
+      try {
+        await StoneBridge.api(`/api/deals/${dealId}/frictions`, {
+          method: "POST",
+          body: JSON.stringify({
+            category: frictionCategory.value,
+            observation: frictionObservation.value,
+            impact: frictionImpact.value
+          })
+        });
+        formEl.reset();
+        frictionLog.innerHTML = '<div class="log-line">Market friction logged.</div>';
+        await loadCollaboration();
+      } catch (error) {
+        frictionLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function submitSummary(event) {
+      event.preventDefault();
+      summaryLog.innerHTML = "";
+      try {
+        await StoneBridge.api(`/api/deals/${dealId}/summary`, {
+          method: "POST",
+          body: JSON.stringify({
+            recommendation: summaryRecommendation.value,
+            keyRisks: splitLines(summaryRisks.value),
+            keyPositives: splitLines(summaryPositives.value),
+            unresolvedQuestions: splitLines(summaryQuestions.value)
+          })
+        });
+        summaryLog.innerHTML = '<div class="log-line">Decision summary updated.</div>';
+        await loadCollaboration();
+      } catch (error) {
+        summaryLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    function findDocument(id) {
+      return collabState.documents.find((item) => item.id === id);
+    }
+
+    function findFriction(id) {
+      return collabState.frictions.find((item) => item.id === id);
+    }
+
+    function flattenNotes(items = collabState.notes) {
+      const map = [];
+      for (const item of items) {
+        map.push(item);
+        for (const reply of item.replies || []) map.push(reply);
+      }
+      return map;
+    }
+
+    function findNote(id) {
+      return flattenNotes().find((item) => item.id === id);
+    }
+
+    async function editDocument(id) {
+      const item = findDocument(id);
+      if (!item) return;
+      const label = window.prompt("Document label", item.label);
+      if (label === null) return;
+      const url = window.prompt("Document URL", item.url);
+      if (url === null) return;
+      const kind = window.prompt("Document type", item.kind || "Document");
+      documentLog.innerHTML = '<div class="log-line">Updating document...</div>';
+      try {
+        await StoneBridge.api(`/api/deals/${dealId}/documents/${id}`, {
+          method: "POST",
+          body: JSON.stringify({ label, url, kind })
+        });
+        documentLog.innerHTML = '<div class="log-line">Document updated.</div>';
+        await loadCollaboration();
+      } catch (error) {
+        documentLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function deleteDocument(id) {
+      if (!window.confirm("Delete this document link?")) return;
+      documentLog.innerHTML = '<div class="log-line">Removing document...</div>';
+      try {
+        await StoneBridge.api(`/api/deals/${dealId}/documents/${id}`, { method: "DELETE" });
+        documentLog.innerHTML = '<div class="log-line">Document removed.</div>';
+        await loadCollaboration();
+      } catch (error) {
+        documentLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function editNote(id) {
+      const item = findNote(id);
+      if (!item) return;
+      const title = window.prompt("Note title", item.title);
+      if (title === null) return;
+      const body = window.prompt("Note body", item.body);
+      if (body === null) return;
+      const mentions = window.prompt("Mentions (comma separated)", (item.mentions || []).join(", "));
+      noteLog.innerHTML = '<div class="log-line">Updating note...</div>';
+      try {
+        await StoneBridge.api(`/api/deals/${dealId}/notes/${id}`, {
+          method: "POST",
+          body: JSON.stringify({ title, body, mentions: parseMentions(mentions) })
+        });
+        noteLog.innerHTML = '<div class="log-line">Note updated.</div>';
+        await loadCollaboration();
+      } catch (error) {
+        noteLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function deleteNote(id) {
+      if (!window.confirm("Delete this note? Replies will also be removed.")) return;
+      noteLog.innerHTML = '<div class="log-line">Removing note...</div>';
+      try {
+        await StoneBridge.api(`/api/deals/${dealId}/notes/${id}`, { method: "DELETE" });
+        noteLog.innerHTML = '<div class="log-line">Note removed.</div>';
+        await loadCollaboration();
+      } catch (error) {
+        noteLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function replyToNote(parentId, title) {
+      const body = window.prompt(`Reply to "${title}"`);
+      if (!body) return;
+      const mentions = window.prompt("Mentions (comma separated)", "");
+      noteLog.innerHTML = '<div class="log-line">Adding reply...</div>';
+      try {
+        await StoneBridge.api(`/api/deals/${dealId}/notes`, {
+          method: "POST",
+          body: JSON.stringify({
+            parentId,
+            title: `Re: ${title}`,
+            body,
+            mentions: parseMentions(mentions)
+          })
+        });
+        noteLog.innerHTML = '<div class="log-line">Reply added.</div>';
+        await loadCollaboration();
+      } catch (error) {
+        noteLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function editFriction(id) {
+      const item = findFriction(id);
+      if (!item) return;
+      const category = window.prompt("Category", item.category);
+      if (category === null) return;
+      const observation = window.prompt("Observation", item.observation);
+      if (observation === null) return;
+      const impact = window.prompt("Impact", item.impact || "");
+      frictionLog.innerHTML = '<div class="log-line">Updating market friction...</div>';
+      try {
+        await StoneBridge.api(`/api/deals/${dealId}/frictions/${id}`, {
+          method: "POST",
+          body: JSON.stringify({ category, observation, impact })
+        });
+        frictionLog.innerHTML = '<div class="log-line">Market friction updated.</div>';
+        await loadCollaboration();
+      } catch (error) {
+        frictionLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function deleteFriction(id) {
+      if (!window.confirm("Delete this market friction item?")) return;
+      frictionLog.innerHTML = '<div class="log-line">Removing market friction...</div>';
+      try {
+        await StoneBridge.api(`/api/deals/${dealId}/frictions/${id}`, { method: "DELETE" });
+        frictionLog.innerHTML = '<div class="log-line">Market friction removed.</div>';
+        await loadCollaboration();
+      } catch (error) {
+        frictionLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    documentForm.addEventListener("submit", submitDocument);
+    noteForm.addEventListener("submit", submitNote);
+    frictionForm.addEventListener("submit", submitFriction);
+    summaryForm.addEventListener("submit", submitSummary);
+    collabSearch.addEventListener("input", () => {
+      collabState.query = collabSearch.value.trim().toLowerCase();
+      renderDocuments(collabState.documents);
+      renderNotes(collabState.notes);
+      renderFrictions(collabState.frictions);
+      renderSummary(collabState.summary, collabState.timeline);
+    });
+    loadCollaboration().catch((error) => {
+      documentLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      noteLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      frictionLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      summaryLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+    });
+  </script>
+</body>
+</html>

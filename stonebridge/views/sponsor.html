@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/deals">Diagnostics</a>
+      <a class="nav-link" href="/track-record">Track Record</a>
+      <a class="nav-link active" href="/capital/{{workspaceSlug}}">Sponsor Intelligence</a>
+      <a class="nav-link" href="/operator">Operator</a>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-auth">{{authState}}</span>
+      <a class="btn btn-primary" href="#investor-intake">Request access</a>
+    </div>
+  </nav>
+
+  <main class="page-wrap sponsor-shell">
+    <section class="sponsor-hero">
+      <div class="container sponsor-grid">
+        <div>
+          <div class="eyebrow">Sponsor Intelligence</div>
+          <h1 class="hero-title" id="sponsorName">Loading sponsor profile…</h1>
+          <p class="hero-sub" id="sponsorOverview">StoneBridge packages track record, opportunities, and investor demand into a cleaner capital formation surface.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#opportunityGrid">View opportunities</a>
+            <a class="btn btn-ghost" href="#investor-intake">Submit investor fit</a>
+          </div>
+        </div>
+        <aside class="sponsor-panel">
+          <div class="eyebrow">Fund Snapshot</div>
+          <div class="card-title" id="fundName">Loading…</div>
+          <div class="detail-note" id="fundTargetProfile"></div>
+          <div class="proof-block sponsor-proof" id="fundThesis"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="page-section sponsor-metrics">
+      <div class="container">
+        <div class="stats-strip sponsor-stats" id="sponsorMetrics"></div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Track Record Ledger</div>
+          <h2 class="section-title">Institutional proof without portfolio theater.</h2>
+        </div>
+        <div class="sponsor-card-grid" id="trackRecordGrid"></div>
+      </div>
+    </section>
+
+    <section class="page-section sponsor-surface">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Active Opportunities</div>
+          <h2 class="section-title">Fund and project briefs ready for partner review.</h2>
+        </div>
+        <div class="sponsor-card-grid" id="opportunityGrid"></div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container sponsor-grid sponsor-grid-tight">
+        <div>
+          <div class="section-head">
+            <div class="eyebrow">Investor Intake</div>
+            <h2 class="section-title">Qualify fit before you spend sponsor time.</h2>
+          </div>
+          <form id="investor-intake" class="sponsor-form">
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="field-label" for="name">Name</label>
+                <input id="name" name="name" class="input" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="email">Email</label>
+                <input id="email" name="email" class="input" type="email" required>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="firm">Firm</label>
+                <input id="firm" name="firm" class="input">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="investorType">Investor Type</label>
+                <select id="investorType" name="investorType" class="input" required>
+                  <option value="">Select</option>
+                  <option>Family Office</option>
+                  <option>Accredited Individual</option>
+                  <option>Capital Aggregator</option>
+                  <option>Fund-of-Funds</option>
+                  <option>RIA / Advisor</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="checkSize">Typical Check Size</label>
+                <select id="checkSize" name="checkSize" class="input" required>
+                  <option value="">Select</option>
+                  <option>$100k - $250k</option>
+                  <option>$250k - $500k</option>
+                  <option>$500k - $1M</option>
+                  <option>$1M+</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="interestLevel">Interest Level</label>
+                <select id="interestLevel" name="interestLevel" class="input" required>
+                  <option value="">Select</option>
+                  <option>Reviewing first opportunity</option>
+                  <option>Interested in current fund</option>
+                  <option>Exploring partner economics</option>
+                  <option>Ready for sponsor call</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="timeline">Decision Timeline</label>
+                <select id="timeline" name="timeline" class="input">
+                  <option value="">Select</option>
+                  <option>Within 2 weeks</option>
+                  <option>This quarter</option>
+                  <option>Next 2 quarters</option>
+                  <option>Exploratory</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="opportunitySlug">Primary Opportunity</label>
+                <select id="opportunitySlug" name="opportunitySlug" class="input">
+                  <option value="">General fund review</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Target Markets</label>
+              <div class="chip-row">
+                <label class="chip-option"><input type="checkbox" name="targetMarkets" value="Texas">Texas</label>
+                <label class="chip-option"><input type="checkbox" name="targetMarkets" value="Florida">Florida</label>
+                <label class="chip-option"><input type="checkbox" name="targetMarkets" value="Self-storage">Self-storage</label>
+                <label class="chip-option"><input type="checkbox" name="targetMarkets" value="Flex">Office / Flex</label>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="message">Context</label>
+              <textarea id="message" name="message" class="input textarea" placeholder="What are you evaluating?"></textarea>
+            </div>
+
+            <label class="check-row">
+              <input id="accredited" name="accredited" type="checkbox">
+              <span>I am an accredited investor or represent accredited capital.</span>
+            </label>
+
+            <div class="action-row">
+              <button class="btn btn-primary" type="submit">Submit investor fit</button>
+            </div>
+            <div class="log-list" id="intakeLog"></div>
+          </form>
+        </div>
+
+        <aside class="sponsor-panel">
+          <div class="eyebrow">Why This Exists</div>
+          <div class="card-title">From sponsor credibility to qualified conversations.</div>
+          <div class="faq-list" id="faqList"></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script>
+    const workspaceSlug = "{{workspaceSlug}}";
+
+    async function loadSponsorPortal() {
+      const data = await StoneBridge.api(`/api/sponsor/${workspaceSlug}/overview`);
+      sponsorName.textContent = data.profile.name;
+      sponsorOverview.textContent = data.profile.overview;
+      fundName.textContent = `${data.profile.fund.name} · ${data.profile.fund.targetRaise}`;
+      fundTargetProfile.textContent = data.profile.fund.targetProfile;
+      fundThesis.innerHTML = data.profile.fund.thesis.map((item) => `<div><span class="pk">•</span><span class="pv">${item}</span></div>`).join("");
+
+      sponsorMetrics.innerHTML = [...data.profile.metrics, { label: "Live completed diagnostics", value: String(data.liveMetrics.completedDeals) }, { label: "Released capital mapped", value: data.liveMetrics.releasedCapital }]
+        .map((metric) => `<div class="stat-cell"><div class="stat-num">${metric.value}</div><div class="stat-label">${metric.label}</div></div>`)
+        .join("");
+
+      trackRecordGrid.innerHTML = data.profile.trackRecord.map((item) => `
+        <article class="sponsor-card">
+          <div class="eyebrow">${item.market}</div>
+          <div class="card-title">${item.title}</div>
+          <div class="detail-note">${item.assetType}</div>
+          <p class="card-copy">${item.summary}</p>
+          <div class="signal-summary">
+            <span class="pill">${item.exitValue}</span>
+            <span class="pill">${item.investorResult}</span>
+            ${StoneBridge.renderVerdictBadge(item.outcome)}
+          </div>
+        </article>
+      `).join("");
+
+      opportunityGrid.innerHTML = data.opportunities.map((opportunity) => `
+        <article class="sponsor-card sponsor-card-accent">
+          <div class="eyebrow">${opportunity.market}</div>
+          <div class="card-title">${opportunity.title}</div>
+          <div class="detail-note">${opportunity.assetType} · ${opportunity.stage}</div>
+          <p class="card-copy">${opportunity.summary}</p>
+          <div class="signal-summary">
+            <span class="pill">${opportunity.targetEquity}</span>
+            <span class="pill">${opportunity.targetHold}</span>
+          </div>
+          <div class="action-row">
+            <a class="btn btn-ghost" href="/capital/${workspaceSlug}/opportunities/${opportunity.slug}">Open brief</a>
+          </div>
+        </article>
+      `).join("");
+
+      opportunitySlug.innerHTML += data.opportunities.map((opportunity) => `<option value="${opportunity.slug}">${opportunity.title}</option>`).join("");
+
+      faqList.innerHTML = data.profile.faqs.map((item) => `
+        <div class="faq-item">
+          <div class="faq-question">${item.question}</div>
+          <div class="detail-note">${item.answer}</div>
+        </div>
+      `).join("");
+    }
+
+    document.getElementById("investor-intake").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      intakeLog.innerHTML = "";
+      const formEl = event.currentTarget;
+      const form = new FormData(event.currentTarget);
+      const payload = Object.fromEntries(form.entries());
+      payload.accredited = form.get("accredited") === "on";
+      payload.targetMarkets = form.getAll("targetMarkets");
+
+      try {
+        const response = await StoneBridge.api(`/api/sponsor/${workspaceSlug}/inquiries`, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+        formEl.reset();
+        intakeLog.innerHTML = `<div class="log-line">${response.nextStep}</div>`;
+      } catch (error) {
+        intakeLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      }
+    });
+
+    loadSponsorPortal().catch((error) => {
+      sponsorName.textContent = "StoneBridge Sponsor Intelligence";
+      sponsorOverview.textContent = error.message;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Deal {
+  id                 String         @id @default(cuid())
+  address            String
+  city               String         @default("Baltimore")
+  state              String         @default("MD")
+  clientId           String
+  client             User           @relation(fields: [clientId], references: [id])
+  status             DealStatus     @default(PENDING)
+  verdict            Verdict?
+  riskScoreBefore    Float?
+  riskScoreAfter     Float?
+  flagCountBefore    Int?
+  flagCountAfter     Int?
+  signalSources      String[]
+  memoPath           String?
+  memoHash           String?
+  memoDeliveredAt    DateTime?
+  outcomeConfirmedAt DateTime?
+  outcomeNote        String?
+  paymentIntentId    String?
+  paymentStatus      PaymentStatus  @default(HELD)
+  amountCents        Int            @default(250000)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  signals            Signal[]
+  timeline           TimelineEvent[]
+  notes              DealNote[]
+  documents          DealDocument[]
+  frictions          DealMarketFriction[]
+  summary            DealDecisionSummary?
+}
+
+model Signal {
+  id        String         @id @default(cuid())
+  dealId    String
+  deal      Deal           @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  source    String
+  category  SignalCategory
+  label     String
+  value     String
+  severity  Severity       @default(MEDIUM)
+  url       String?
+  pulledAt  DateTime       @default(now())
+}
+
+model TimelineEvent {
+  id        String   @id @default(cuid())
+  dealId    String
+  deal      Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  event     String
+  detail    String?
+  hash      String?
+  createdAt DateTime @default(now())
+}
+
+model DealNote {
+  id        String   @id @default(cuid())
+  dealId     String
+  deal       Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  authorId   String?
+  author     User?    @relation("DealNoteAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  parentId   String?
+  parent     DealNote? @relation("DealNoteReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies    DealNote[] @relation("DealNoteReplies")
+  title      String
+  body       String
+  mentions   String[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([dealId, createdAt])
+  @@index([parentId])
+}
+
+model DealDocument {
+  id         String   @id @default(cuid())
+  dealId      String
+  deal        Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  authorId    String?
+  author      User?    @relation("DealDocumentAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  label       String
+  url         String
+  kind        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([dealId, createdAt])
+}
+
+model DealMarketFriction {
+  id          String   @id @default(cuid())
+  dealId       String
+  deal         Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  authorId     String?
+  author       User?    @relation("DealFrictionAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  category     String
+  observation  String
+  impact       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([dealId, createdAt])
+}
+
+model DealDecisionSummary {
+  id                  String   @id @default(cuid())
+  dealId               String   @unique
+  deal                 Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  recommendation       String
+  keyRisks             String[]
+  keyPositives         String[]
+  unresolvedQuestions  String[]
+  updatedById          String?
+  updatedBy            User?    @relation("DealSummaryUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model User {
+  id              String             @id @default(cuid())
+  email           String             @unique
+  password        String
+  role            Role               @default(CLIENT)
+  name            String?
+  deals           Deal[]
+  inquiries       InvestorInquiry[]
+  ownedWorkspaces SponsorWorkspace[] @relation("WorkspaceOwner")
+  authoredDealNotes DealNote[]       @relation("DealNoteAuthor")
+  authoredDealDocuments DealDocument[] @relation("DealDocumentAuthor")
+  authoredDealFrictions DealMarketFriction[] @relation("DealFrictionAuthor")
+  updatedDealSummaries DealDecisionSummary[] @relation("DealSummaryUpdater")
+  createdAt       DateTime           @default(now())
+}
+
+model SponsorWorkspace {
+  id                 String             @id @default(cuid())
+  ownerId            String?
+  owner              User?              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  name               String
+  slug               String             @unique
+  strapline          String
+  overview           String
+  fundName           String
+  targetRaise        String
+  targetProfile      String
+  geographies        String[]
+  thesis             String[]
+  metrics            Json
+  trackRecord        Json
+  faqs               Json
+  isActive           Boolean            @default(true)
+  opportunities      SponsorOpportunity[]
+  inquiries          InvestorInquiry[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+}
+
+model SponsorOpportunity {
+  id            String            @id @default(cuid())
+  workspaceId   String
+  workspace     SponsorWorkspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  slug          String            @unique
+  title         String
+  market        String
+  assetType     String
+  stage         String
+  targetEquity  String
+  targetHold    String
+  summary       String
+  thesis        String[]
+  diligence     String[]
+  roomNotes     String[]
+  isActive      Boolean           @default(true)
+  inquiries     InvestorInquiry[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([workspaceId])
+}
+
+model InvestorInquiry {
+  id                String        @id @default(cuid())
+  name              String
+  email             String
+  firm              String?
+  investorType      String
+  checkSize         String
+  interestLevel     String
+  accredited        Boolean       @default(false)
+  targetMarkets     String[]
+  opportunitySlug   String?
+  workspaceId       String?
+  workspace         SponsorWorkspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  opportunityId     String?
+  opportunity       SponsorOpportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+  timeline          String?
+  message           String?
+  status            InquiryStatus @default(NEW)
+  roomAccessGranted Boolean       @default(false)
+  accessCode        String        @unique
+  lastViewedAt      DateTime?
+  ownerId           String?
+  owner             User?         @relation(fields: [ownerId], references: [id])
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([opportunitySlug])
+  @@index([workspaceId])
+  @@index([opportunityId])
+}
+
+enum DealStatus {
+  PENDING
+  DIAGNOSING
+  MEMO_DELIVERED
+  OUTCOME_WINDOW
+  COMPLETED
+  DISPUTED
+}
+
+enum Verdict {
+  PROCEED
+  CAUTION
+  ESCALATE
+}
+
+enum PaymentStatus {
+  HELD
+  RELEASED
+  REFUNDED
+  DISPUTED
+}
+
+enum SignalCategory {
+  UTILITY
+  LIEN
+  TITLE
+  PROCUREMENT
+  OWNERSHIP
+  PROPERTY_DISTRESS
+  INFRASTRUCTURE
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum Role {
+  CLIENT
+  OPERATOR
+}
+
+enum InquiryStatus {
+  NEW
+  QUALIFIED
+  FOLLOW_UP
+  ROOM_GRANTED
+  CLOSED
+}

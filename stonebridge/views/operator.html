@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/deals">Diagnostics</a>
+      <a class="nav-link" href="/track-record">Track Record</a>
+      <a class="nav-link" href="/capital">Sponsor Intelligence</a>
+      <a class="nav-link active" href="/operator">Operator</a>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-auth">{{authState}}</span>
+      <a class="btn btn-primary" href="/capital">Open sponsor portal</a>
+    </div>
+  </nav>
+
+  <main class="page-wrap operator-shell">
+    <section class="operator-layout">
+      <aside class="operator-sidebar">
+        <div class="operator-panel">
+          <div class="eyebrow">Operator Console</div>
+          <div class="card-title">Live sponsor + deal operating layer.</div>
+          <div class="detail-note">Run diagnostics, shape verdicts, and qualify investor demand from one surface.</div>
+        </div>
+        <div class="operator-panel">
+          <div class="operator-nav">
+            <button class="active" data-operator-view="pipeline">Pipeline</button>
+            <button data-operator-view="diagnostics">Diagnostics</button>
+            <button data-operator-view="capital">Capital</button>
+            <button data-operator-view="health">Signal Health</button>
+            <button data-operator-view="settings">Settings</button>
+          </div>
+        </div>
+        <div class="operator-panel">
+          <div class="field-group">
+            <label class="field-label" for="workspaceScope">Workspace scope</label>
+            <select class="input" id="workspaceScope"></select>
+          </div>
+        </div>
+        <div class="operator-panel">
+          <div class="eyebrow">Aggregate Stats</div>
+          <div class="stats-stack" id="operatorStats"></div>
+        </div>
+      </aside>
+
+      <section class="operator-main">
+        <div class="operator-view active" id="operatorView-pipeline">
+          <div class="section-head">
+            <div class="eyebrow">Pipeline</div>
+            <h1 class="page-title display-title">Deals in motion.</h1>
+          </div>
+          <div id="operatorPipeline"></div>
+        </div>
+
+        <div class="operator-view" id="operatorView-diagnostics">
+          <div class="section-head">
+            <div class="eyebrow">Diagnostics Queue</div>
+            <h2 class="section-title">Each deal run, verdict, and memo handoff.</h2>
+          </div>
+          <div class="operator-deal-list" id="operatorDiagnostics"></div>
+        </div>
+
+        <div class="operator-view" id="operatorView-capital">
+          <div class="section-head">
+            <div class="eyebrow">Capital Pipeline</div>
+            <h2 class="section-title">Investor fit, room access, and follow-up priority.</h2>
+          </div>
+          <div class="operator-panel">
+            <div class="stats-stack" id="capitalStats"></div>
+          </div>
+          <div class="operator-deal-list" id="capitalPipeline" style="margin-top:24px"></div>
+        </div>
+
+        <div class="operator-view" id="operatorView-health">
+          <div class="section-head">
+            <div class="eyebrow">Signal Health</div>
+            <h2 class="section-title">Which external signals are live, mocked, or degraded.</h2>
+          </div>
+          <div class="operator-panel" id="signalHealth"></div>
+        </div>
+
+        <div class="operator-view" id="operatorView-settings">
+          <div class="section-head">
+            <div class="eyebrow">Settings</div>
+            <h2 class="section-title">Workspace and opportunity configuration.</h2>
+          </div>
+          <div class="operator-settings-grid">
+            <section class="operator-panel">
+              <div class="form-panel-head">
+                <div>
+                  <div class="eyebrow">Workspace</div>
+                  <div class="card-title">Control the sponsor-facing portal.</div>
+                </div>
+              </div>
+              <form id="workspaceForm" class="auth-card-body">
+                <div class="form-grid">
+                  <div class="field-group">
+                    <label class="field-label" for="workspaceName">Workspace name</label>
+                    <input class="input" id="workspaceName" name="name" required>
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="workspaceSlug">Workspace slug</label>
+                    <input class="input" id="workspaceSlug" name="slug" required>
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="workspaceStrapline">Strapline</label>
+                    <input class="input" id="workspaceStrapline" name="strapline">
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="workspaceFundName">Fund name</label>
+                    <input class="input" id="workspaceFundName" name="fundName" required>
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="workspaceTargetRaise">Target raise</label>
+                    <input class="input" id="workspaceTargetRaise" name="targetRaise" placeholder="$50M">
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="workspaceTargetProfile">Target profile</label>
+                    <input class="input" id="workspaceTargetProfile" name="targetProfile" placeholder="Family offices, RIAs, accredited investors">
+                  </div>
+                </div>
+                <div class="field-group" style="margin-top:16px">
+                  <label class="field-label" for="workspaceOverview">Overview</label>
+                  <textarea class="input textarea textarea-lg" id="workspaceOverview" name="overview" required></textarea>
+                </div>
+                <div class="field-group" style="margin-top:16px">
+                  <label class="field-label" for="workspaceGeographies">Geographies</label>
+                  <textarea class="input textarea textarea-sm" id="workspaceGeographies" name="geographies" placeholder="One geography per line"></textarea>
+                </div>
+                <div class="field-group" style="margin-top:16px">
+                  <label class="field-label" for="workspaceThesis">Investment thesis</label>
+                  <textarea class="input textarea textarea-sm" id="workspaceThesis" name="thesis" placeholder="One thesis point per line"></textarea>
+                </div>
+                <div class="field-group" style="margin-top:16px">
+                  <label class="field-label" for="workspaceMetrics">Metrics</label>
+                  <textarea class="input textarea textarea-sm" id="workspaceMetrics" name="metrics" placeholder="Label | Value | Context"></textarea>
+                </div>
+                <div class="field-group" style="margin-top:16px">
+                  <label class="field-label" for="workspaceTrackRecord">Track record</label>
+                  <textarea class="input textarea textarea-sm" id="workspaceTrackRecord" name="trackRecord" placeholder="Label | Value | Context"></textarea>
+                </div>
+                <div class="field-group" style="margin-top:16px">
+                  <label class="field-label" for="workspaceFaqs">FAQs</label>
+                  <textarea class="input textarea textarea-sm" id="workspaceFaqs" name="faqs" placeholder="Question | Answer"></textarea>
+                </div>
+                <div class="action-row">
+                  <button class="btn btn-primary" type="submit">Save workspace</button>
+                </div>
+                <div class="log-list" id="workspaceLog"></div>
+              </form>
+            </section>
+
+            <section class="operator-panel">
+              <div class="form-panel-head">
+                <div>
+                  <div class="eyebrow">Opportunities</div>
+                  <div class="card-title">Create and update live sponsor offerings.</div>
+                </div>
+              </div>
+              <form id="opportunityForm" class="auth-card-body">
+                <input type="hidden" id="opportunityId" name="id">
+                <div class="form-grid">
+                  <div class="field-group">
+                    <label class="field-label" for="opportunityTitle">Title</label>
+                    <input class="input" id="opportunityTitle" name="title" required>
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="opportunitySlug">Slug</label>
+                    <input class="input" id="opportunitySlug" name="slug" required>
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="opportunityMarket">Market</label>
+                    <input class="input" id="opportunityMarket" name="market" required>
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="opportunityAssetType">Asset type</label>
+                    <input class="input" id="opportunityAssetType" name="assetType">
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="opportunityStage">Stage</label>
+                    <input class="input" id="opportunityStage" name="stage">
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="opportunityTargetEquity">Target equity</label>
+                    <input class="input" id="opportunityTargetEquity" name="targetEquity">
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="opportunityTargetHold">Target hold</label>
+                    <input class="input" id="opportunityTargetHold" name="targetHold">
+                  </div>
+                </div>
+                <div class="field-group" style="margin-top:16px">
+                  <label class="field-label" for="opportunitySummary">Summary</label>
+                  <textarea class="input textarea textarea-lg" id="opportunitySummary" name="summary" required></textarea>
+                </div>
+                <div class="field-group" style="margin-top:16px">
+                  <label class="field-label" for="opportunityThesis">Opportunity thesis</label>
+                  <textarea class="input textarea textarea-sm" id="opportunityThesis" name="thesis" placeholder="One thesis point per line"></textarea>
+                </div>
+                <div class="field-group" style="margin-top:16px">
+                  <label class="field-label" for="opportunityDiligence">Diligence highlights</label>
+                  <textarea class="input textarea textarea-sm" id="opportunityDiligence" name="diligence" placeholder="One diligence item per line"></textarea>
+                </div>
+                <div class="field-group" style="margin-top:16px">
+                  <label class="field-label" for="opportunityRoomNotes">Private room notes</label>
+                  <textarea class="input textarea textarea-sm" id="opportunityRoomNotes" name="roomNotes" placeholder="One note per line"></textarea>
+                </div>
+                <div class="action-row">
+                  <button class="btn btn-primary" type="submit">Save opportunity</button>
+                  <button class="btn btn-ghost" type="button" id="opportunityReset">Reset form</button>
+                </div>
+                <div class="log-list" id="opportunityLog"></div>
+              </form>
+              <div id="workspaceOpportunityList" style="margin-top:24px"></div>
+              <div class="proof-block">
+                <div><span class="label">Operator access hash</span><span class="hash">{{accessCodeHash}}</span></div>
+                <div><span class="label">Private room policy</span><span>Room access is granted per inquiry and opportunity.</span></div>
+                <div><span class="label">Memo rule</span><span>Verdict must be set before delivery.</span></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <aside class="runner-panel" id="runnerPanel">
+    <div class="runner-head">
+      <div class="eyebrow">Diagnostic Runner</div>
+      <div class="card-title" id="runnerAddress">Awaiting selection</div>
+    </div>
+    <div class="runner-body">
+      <div class="runner-rows" id="runnerRows"></div>
+      <div id="runnerVerdict" style="margin-top:24px"></div>
+    </div>
+    <div class="runner-foot">
+      <button class="btn btn-ghost btn-full" id="closeRunner">Close runner</button>
+    </div>
+  </aside>
+
+  <script src="/js/app.js"></script>
+  <script>
+    const currentUser = {{userJson}};
+    const operatorCode = new URLSearchParams(window.location.search).get("code");
+    const operatorOptions = operatorCode ? { headers: { "x-operator-access-code": operatorCode } } : {};
+    const sourceHealthRows = [
+      { source: "Baltimore City Open Data", status: "live", records: "property + code + permits", pulled: "4s timeout" },
+      { source: "Maryland SDAT", status: "mock", records: "ownership + title", pulled: "fallback enabled" },
+      { source: "Baltimore 311", status: "live", records: "utility and neighborhood friction", pulled: "real-time pull" },
+      { source: "Sponsor Opportunity Layer", status: "live", records: "fund + room briefs", pulled: "static sponsor config" }
+    ];
+    const runnerSources = [
+      "Public records",
+      "Ownership chain",
+      "Property distress",
+      "Utility / service friction",
+      "Procurement adjacency",
+      "Memo packaging"
+    ];
+
+    let operatorDeals = [];
+    let investorInquiries = [];
+    let workspaceData = null;
+    let workspaceOpportunities = [];
+    let editingOpportunityId = "";
+    let availableWorkspaces = [];
+    let selectedWorkspaceSlug = currentUser?.ownedWorkspaces?.[0]?.slug || "";
+
+    function scopedUrl(url) {
+      if (!selectedWorkspaceSlug) return url;
+      const parsed = new URL(url, window.location.origin);
+      parsed.searchParams.set("workspace", selectedWorkspaceSlug);
+      return `${parsed.pathname}${parsed.search}`;
+    }
+
+    function groupDealsByStatus(deals) {
+      return {
+        "Awaiting Diagnosis": deals.filter((deal) => ["PENDING", "DIAGNOSING"].includes(deal.status)),
+        "Memo Delivered": deals.filter((deal) => deal.status === "MEMO_DELIVERED"),
+        "Outcome Window": deals.filter((deal) => deal.status === "OUTCOME_WINDOW"),
+        "Completed": deals.filter((deal) => deal.status === "COMPLETED")
+      };
+    }
+
+    function groupInquiriesByStatus(inquiries) {
+      return {
+        "New": inquiries.filter((item) => item.status === "NEW"),
+        "Qualified": inquiries.filter((item) => item.status === "QUALIFIED"),
+        "Follow Up": inquiries.filter((item) => item.status === "FOLLOW_UP"),
+        "Room Granted": inquiries.filter((item) => item.status === "ROOM_GRANTED"),
+        "Closed": inquiries.filter((item) => item.status === "CLOSED")
+      };
+    }
+
+    function renderDealCard(deal) {
+      return `
+        <article class="deal-card">
+          <div class="deal-card-head">
+            <div>
+              <div class="deal-address">${deal.address}</div>
+              <div class="detail-note">${deal.client?.email || "client pending"} · ${StoneBridge.capitalize(deal.status)}</div>
+            </div>
+            ${StoneBridge.renderVerdictBadge(deal.verdict)}
+          </div>
+          <div class="triptych">
+            <div class="t-col">
+              <div class="t-label">Risk score</div>
+              <div class="t-score ${StoneBridge.verdictClass(deal.verdict)}">${deal.riskScoreBefore ?? "—"}</div>
+              <div class="t-unit">${deal.flagCountBefore ?? 0} non-low flags</div>
+            </div>
+            <div class="t-sep">→</div>
+            <div class="t-col">
+              <div class="t-label">Verdict</div>
+              <div class="t-verdict ${StoneBridge.verdictClass(deal.verdict)}">${StoneBridge.capitalize(deal.verdict)}</div>
+              <div class="t-unit">${deal.paymentStatus}</div>
+            </div>
+            <div class="t-sep">→</div>
+            <div class="t-col">
+              <div class="t-label">Last update</div>
+              <div class="t-score dim">${StoneBridge.formatDate(deal.updatedAt)}</div>
+              <div class="t-unit">${deal.memoPath ? "Memo ready" : "No memo yet"}</div>
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="btn btn-ghost" onclick="runDiag('${deal.id}')">Run diagnostic</button>
+            <button class="btn btn-ghost" onclick="setVerdict('${deal.id}','PROCEED')">Proceed</button>
+            <button class="btn btn-ghost" onclick="setVerdict('${deal.id}','CAUTION')">Caution</button>
+            <button class="btn btn-ghost" onclick="setVerdict('${deal.id}','ESCALATE')">Escalate</button>
+            <button class="btn btn-primary" onclick="deliver('${deal.id}')">Deliver memo</button>
+          </div>
+          <div class="log-list" id="log-${deal.id}"></div>
+        </article>
+      `;
+    }
+
+    function renderInquiryCard(inquiry) {
+      return `
+        <article class="deal-card sponsor-inquiry-card">
+          <div class="deal-card-head">
+            <div>
+              <div class="deal-address">${inquiry.name}</div>
+              <div class="detail-note">${inquiry.email}${inquiry.firm ? ` · ${inquiry.firm}` : ""}</div>
+            </div>
+            <span class="pill">${StoneBridge.capitalize(inquiry.status)}</span>
+          </div>
+          <div class="signal-summary">
+            <span class="pill">${inquiry.investorType}</span>
+            <span class="pill">${inquiry.checkSize}</span>
+            <span class="pill">${inquiry.interestLevel}</span>
+            <span class="pill">${inquiry.accredited ? "Accredited" : "Unverified"}</span>
+          </div>
+          <div class="detail-note">${inquiry.opportunity ? `Primary opportunity: ${inquiry.opportunity.title}` : "General fund review"}${inquiry.timeline ? ` · ${inquiry.timeline}` : ""}</div>
+          ${inquiry.message ? `<p class="card-copy">${inquiry.message}</p>` : ""}
+          <div class="action-row">
+            <button class="btn btn-ghost" onclick="updateInquiry('${inquiry.id}','QUALIFIED',false)">Mark qualified</button>
+            <button class="btn btn-ghost" onclick="updateInquiry('${inquiry.id}','FOLLOW_UP',false)">Follow up</button>
+            <button class="btn btn-primary" onclick="updateInquiry('${inquiry.id}','ROOM_GRANTED',true)">Grant room</button>
+            <button class="btn btn-ghost" onclick="updateInquiry('${inquiry.id}','CLOSED',false)">Close</button>
+          </div>
+          ${inquiry.roomUrl ? `<div class="proof-block" style="margin-top:18px"><div><span class="label">Room URL</span><span class="hash">${window.location.origin}${inquiry.roomUrl}</span></div></div>` : ""}
+          <div class="log-list" id="inquiry-log-${inquiry.id}"></div>
+        </article>
+      `;
+    }
+
+    function renderPipeline() {
+      const grouped = groupDealsByStatus(operatorDeals);
+      operatorPipeline.innerHTML = Object.entries(grouped).map(([label, deals]) => `
+        <section class="operator-panel" style="margin-bottom:24px">
+          <div class="form-panel-head">
+            <div>
+              <div class="eyebrow">${label}</div>
+              <div class="card-title">${deals.length} deals</div>
+            </div>
+          </div>
+          <div class="operator-deal-list">
+            ${deals.length ? deals.map(renderDealCard).join("") : '<div class="empty-state">No deals in this stage.</div>'}
+          </div>
+        </section>
+      `).join("");
+    }
+
+    function renderDiagnostics() {
+      operatorDiagnostics.innerHTML = operatorDeals.length
+        ? operatorDeals.map(renderDealCard).join("")
+        : '<div class="empty-state">No diagnostics found.</div>';
+    }
+
+    function renderCapital() {
+      const grouped = groupInquiriesByStatus(investorInquiries);
+      capitalPipeline.innerHTML = Object.entries(grouped).map(([label, inquiries]) => `
+        <section class="operator-panel" style="margin-bottom:24px">
+          <div class="form-panel-head">
+            <div>
+              <div class="eyebrow">${label}</div>
+              <div class="card-title">${inquiries.length} inquiries</div>
+            </div>
+          </div>
+          <div class="operator-deal-list">
+            ${inquiries.length ? inquiries.map(renderInquiryCard).join("") : '<div class="empty-state">No inquiries in this stage.</div>'}
+          </div>
+        </section>
+      `).join("");
+    }
+
+    function renderHealth() {
+      signalHealth.innerHTML = sourceHealthRows.map((row) => `
+        <div class="health-row">
+          <div>
+            <div class="card-title">${row.source}</div>
+            <div class="detail-note">${row.records}</div>
+          </div>
+          <div class="detail-meta">
+            <span class="runner-status"><span class="health-dot ${row.status}"></span>${row.status}</span>
+            <span class="pill">${row.pulled}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function splitLines(value) {
+      return String(value || "")
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function parseTriples(value) {
+      return splitLines(value).map((line) => {
+        const [label = "", valueText = "", context = ""] = line.split("|").map((item) => item.trim());
+        return { label, value: valueText, context };
+      }).filter((item) => item.label && item.value);
+    }
+
+    function parseFaqs(value) {
+      return splitLines(value).map((line) => {
+        const [question = "", answer = ""] = line.split("|").map((item) => item.trim());
+        return { question, answer };
+      }).filter((item) => item.question && item.answer);
+    }
+
+    function joinLines(items) {
+      return Array.isArray(items) ? items.join("\n") : "";
+    }
+
+    function joinTriples(items) {
+      return Array.isArray(items)
+        ? items.map((item) => [item.label, item.value, item.context].filter(Boolean).join(" | ")).join("\n")
+        : "";
+    }
+
+    function joinFaqs(items) {
+      return Array.isArray(items)
+        ? items.map((item) => `${item.question} | ${item.answer}`).join("\n")
+        : "";
+    }
+
+    function fillWorkspaceForm(workspace) {
+      if (!workspace) return;
+      workspaceName.value = workspace.name || "";
+      workspaceSlug.value = workspace.slug || "";
+      workspaceStrapline.value = workspace.strapline || "";
+      workspaceFundName.value = workspace.fund?.name || "";
+      workspaceTargetRaise.value = workspace.fund?.targetRaise || "";
+      workspaceTargetProfile.value = workspace.fund?.targetProfile || "";
+      workspaceOverview.value = workspace.overview || "";
+      workspaceGeographies.value = joinLines(workspace.fund?.geographies);
+      workspaceThesis.value = joinLines(workspace.fund?.thesis);
+      workspaceMetrics.value = joinTriples(workspace.metrics);
+      workspaceTrackRecord.value = joinTriples(workspace.trackRecord);
+      workspaceFaqs.value = joinFaqs(workspace.faqs);
+    }
+
+    function fillOpportunityForm(opportunity) {
+      editingOpportunityId = opportunity?.id || "";
+      opportunityId.value = editingOpportunityId;
+      opportunityTitle.value = opportunity?.title || "";
+      opportunitySlug.value = opportunity?.slug || "";
+      opportunityMarket.value = opportunity?.market || "";
+      opportunityAssetType.value = opportunity?.assetType || "";
+      opportunityStage.value = opportunity?.stage || "";
+      opportunityTargetEquity.value = opportunity?.targetEquity || "";
+      opportunityTargetHold.value = opportunity?.targetHold || "";
+      opportunitySummary.value = opportunity?.summary || "";
+      opportunityThesis.value = joinLines(opportunity?.thesis);
+      opportunityDiligence.value = joinLines(opportunity?.diligence);
+      opportunityRoomNotes.value = joinLines(opportunity?.roomNotes);
+    }
+
+    function resetOpportunityForm() {
+      editingOpportunityId = "";
+      opportunityForm.reset();
+      opportunityId.value = "";
+    }
+
+    function renderWorkspaceAdmin() {
+      workspaceOpportunityList.innerHTML = workspaceOpportunities.length
+        ? workspaceOpportunities.map((opportunity) => `
+          <article class="deal-card">
+            <div class="deal-card-head">
+              <div>
+                <div class="deal-address">${opportunity.title}</div>
+                <div class="detail-note">${opportunity.market}${opportunity.assetType ? ` · ${opportunity.assetType}` : ""}${opportunity.stage ? ` · ${opportunity.stage}` : ""}</div>
+              </div>
+              <span class="pill">${opportunity.isActive ? "Live" : "Archived"}</span>
+            </div>
+            <p class="card-copy">${opportunity.summary}</p>
+            <div class="signal-summary">
+              ${opportunity.targetEquity ? `<span class="pill">${opportunity.targetEquity}</span>` : ""}
+              ${opportunity.targetHold ? `<span class="pill">${opportunity.targetHold}</span>` : ""}
+              <span class="pill">${opportunity.slug}</span>
+            </div>
+            <div class="action-row">
+              <button class="btn btn-ghost" onclick="editOpportunity('${opportunity.id}')">Edit</button>
+              <button class="btn btn-ghost" onclick="toggleOpportunityStatus('${opportunity.id}', ${opportunity.isActive ? "false" : "true"})">${opportunity.isActive ? "Archive" : "Restore"}</button>
+              <a class="btn btn-primary" href="/capital/${workspaceData?.slug || selectedWorkspaceSlug}/opportunities/${opportunity.slug}" target="_blank" rel="noreferrer">Open public page</a>
+            </div>
+          </article>
+        `).join("")
+        : '<div class="empty-state">No opportunities configured yet.</div>';
+    }
+
+    function renderWorkspaceScope() {
+      workspaceScope.innerHTML = availableWorkspaces.map((workspace) => `
+        <option value="${workspace.slug}">${workspace.name}</option>
+      `).join("");
+      if (selectedWorkspaceSlug) workspaceScope.value = selectedWorkspaceSlug;
+      workspaceScope.closest(".operator-panel").style.display = availableWorkspaces.length > 1 ? "block" : "none";
+    }
+
+    function configureConsoleMode() {
+      if (currentUser?.role === "CLIENT") {
+        ["pipeline", "diagnostics", "health"].forEach((name) => {
+          const button = document.querySelector(`[data-operator-view="${name}"]`);
+          const view = document.getElementById(`operatorView-${name}`);
+          if (button) button.style.display = "none";
+          if (view) view.style.display = "none";
+        });
+        document.querySelector('[data-operator-view="capital"]').click();
+      }
+    }
+
+    function openRunner(deal) {
+      runnerAddress.textContent = deal.address;
+      runnerRows.innerHTML = runnerSources.map((source) => `
+        <div class="runner-row">
+          <div>${source}</div>
+          <div class="runner-status"><span class="spinner"></span><span>Waiting</span></div>
+        </div>
+      `).join("");
+      runnerVerdict.innerHTML = "";
+      runnerPanel.classList.add("open");
+      Array.from(runnerRows.children).forEach((row, index) => {
+        setTimeout(() => {
+          row.querySelector(".runner-status").innerHTML = '<span class="check-dot"></span><span>Resolved</span>';
+        }, 180 * (index + 1));
+      });
+    }
+
+    async function loadOperator() {
+      const workspacesPayload = await StoneBridge.api("/api/operator/workspaces", operatorOptions);
+      availableWorkspaces = workspacesPayload.workspaces || [];
+      if (!selectedWorkspaceSlug && availableWorkspaces.length) {
+        selectedWorkspaceSlug = availableWorkspaces[0].slug;
+      }
+      renderWorkspaceScope();
+
+      const [statsData, dealsData, inquiriesData, workspacePayload] = await Promise.all([
+        StoneBridge.api(scopedUrl("/api/operator/stats"), operatorOptions),
+        StoneBridge.api(scopedUrl("/api/operator/deals"), operatorOptions),
+        StoneBridge.api(scopedUrl("/api/operator/inquiries"), operatorOptions),
+        StoneBridge.api(scopedUrl("/api/operator/workspace"), operatorOptions)
+      ]);
+
+      operatorDeals = dealsData.deals || [];
+      investorInquiries = inquiriesData.inquiries || [];
+      workspaceData = workspacePayload.workspace || null;
+      workspaceOpportunities = workspacePayload.opportunities || [];
+
+      operatorStats.innerHTML = `
+        <div class="mini-stat"><div class="mini-stat-value">${statsData.totalDeals}</div><div class="mini-stat-label">Total deals</div></div>
+        <div class="mini-stat"><div class="mini-stat-value">${statsData.completedDeals}</div><div class="mini-stat-label">Completed deals</div></div>
+        <div class="mini-stat"><div class="mini-stat-value">${statsData.signalsFused}</div><div class="mini-stat-label">Signals fused</div></div>
+        <div class="mini-stat"><div class="mini-stat-value">${statsData.riskExposureMapped}</div><div class="mini-stat-label">Risk exposure</div></div>
+      `;
+
+      capitalStats.innerHTML = `
+        <div class="mini-stat"><div class="mini-stat-value">${inquiriesData.totalInquiries}</div><div class="mini-stat-label">Inbound inquiries</div></div>
+        <div class="mini-stat"><div class="mini-stat-value">${inquiriesData.qualifiedCount}</div><div class="mini-stat-label">Qualified / room-ready</div></div>
+        <div class="mini-stat"><div class="mini-stat-value">${inquiriesData.roomGrantedCount}</div><div class="mini-stat-label">Rooms granted</div></div>
+        <div class="mini-stat"><div class="mini-stat-value">${inquiriesData.avgTurnaround}</div><div class="mini-stat-label">Target turnaround</div></div>
+      `;
+
+      renderPipeline();
+      renderDiagnostics();
+      renderCapital();
+      renderHealth();
+      fillWorkspaceForm(workspaceData);
+      renderWorkspaceAdmin();
+      configureConsoleMode();
+    }
+
+    async function saveWorkspace(event) {
+      event.preventDefault();
+      workspaceLog.innerHTML = '<div class="log-line">Saving workspace...</div>';
+      try {
+        await StoneBridge.api(scopedUrl("/api/operator/workspace"), {
+          ...operatorOptions,
+          method: "POST",
+          body: JSON.stringify({
+            id: workspaceData?.id || "",
+            name: workspaceName.value,
+            slug: workspaceSlug.value,
+            strapline: workspaceStrapline.value,
+            overview: workspaceOverview.value,
+            fundName: workspaceFundName.value,
+            targetRaise: workspaceTargetRaise.value,
+            targetProfile: workspaceTargetProfile.value,
+            geographies: splitLines(workspaceGeographies.value),
+            thesis: splitLines(workspaceThesis.value),
+            metrics: parseTriples(workspaceMetrics.value),
+            trackRecord: parseTriples(workspaceTrackRecord.value),
+            faqs: parseFaqs(workspaceFaqs.value)
+          })
+        });
+        workspaceLog.innerHTML += '<div class="log-line">Workspace updated.</div>';
+        await loadOperator();
+      } catch (error) {
+        workspaceLog.innerHTML += `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function saveOpportunity(event) {
+      event.preventDefault();
+      opportunityLog.innerHTML = '<div class="log-line">Saving opportunity...</div>';
+      const endpoint = editingOpportunityId ? `/api/operator/opportunities/${editingOpportunityId}` : "/api/operator/opportunities";
+      try {
+        await StoneBridge.api(scopedUrl(endpoint), {
+          ...operatorOptions,
+          method: "POST",
+          body: JSON.stringify({
+            title: opportunityTitle.value,
+            slug: opportunitySlug.value,
+            market: opportunityMarket.value,
+            assetType: opportunityAssetType.value,
+            stage: opportunityStage.value,
+            targetEquity: opportunityTargetEquity.value,
+            targetHold: opportunityTargetHold.value,
+            summary: opportunitySummary.value,
+            thesis: splitLines(opportunityThesis.value),
+            diligence: splitLines(opportunityDiligence.value),
+            roomNotes: splitLines(opportunityRoomNotes.value)
+          })
+        });
+        opportunityLog.innerHTML += `<div class="log-line">${editingOpportunityId ? "Opportunity updated." : "Opportunity created."}</div>`;
+        resetOpportunityForm();
+        await loadOperator();
+      } catch (error) {
+        opportunityLog.innerHTML += `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    function editOpportunity(id) {
+      const opportunity = workspaceOpportunities.find((candidate) => candidate.id === id);
+      if (!opportunity) return;
+      fillOpportunityForm(opportunity);
+      opportunityLog.innerHTML = '<div class="log-line">Editing selected opportunity.</div>';
+      document.querySelector('[data-operator-view="settings"]').click();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function toggleOpportunityStatus(id, isActive) {
+      opportunityLog.innerHTML = '<div class="log-line">Updating opportunity status...</div>';
+      try {
+        await StoneBridge.api(scopedUrl(`/api/operator/opportunities/${id}/archive`), {
+          ...operatorOptions,
+          method: "POST",
+          body: JSON.stringify({ isActive })
+        });
+        opportunityLog.innerHTML += `<div class="log-line">Opportunity ${isActive ? "restored" : "archived"}.</div>`;
+        await loadOperator();
+      } catch (error) {
+        opportunityLog.innerHTML += `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function runDiag(id) {
+      const deal = operatorDeals.find((candidate) => candidate.id === id);
+      const log = document.getElementById(`log-${id}`);
+      if (!deal) return;
+      openRunner(deal);
+      log.innerHTML = '<div class="log-line">Running diagnostic engine...</div>';
+      try {
+        const response = await StoneBridge.api(`/api/operator/deals/${id}/diagnose`, { ...operatorOptions, method: "POST" });
+        runnerVerdict.innerHTML = StoneBridge.renderScoreTriptych({
+          before: response.diagnostic.riskScore,
+          verdict: response.diagnostic.verdict,
+          after: null,
+          beforeSource: `${response.diagnostic.flagCount} non-low flags`,
+          verdictSource: "Operator review",
+          afterSource: "Memo pending"
+        });
+        StoneBridge.bindScoreAnimations(runnerVerdict);
+        log.innerHTML += '<div class="log-line">Diagnostic completed.</div>';
+        await loadOperator();
+      } catch (error) {
+        log.innerHTML += `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function setVerdict(id, verdict) {
+      const log = document.getElementById(`log-${id}`);
+      log.innerHTML = '<div class="log-line">Setting verdict...</div>';
+      try {
+        await StoneBridge.api(`/api/operator/deals/${id}/verdict`, {
+          ...operatorOptions,
+          method: "POST",
+          body: JSON.stringify({ verdict })
+        });
+        log.innerHTML += '<div class="log-line">Verdict updated.</div>';
+        await loadOperator();
+      } catch (error) {
+        log.innerHTML += `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function deliver(id) {
+      const log = document.getElementById(`log-${id}`);
+      log.innerHTML = '<div class="log-line">Generating memo...</div>';
+      try {
+        await StoneBridge.api(`/api/operator/deals/${id}/deliver`, { ...operatorOptions, method: "POST" });
+        log.innerHTML += '<div class="log-line">Memo delivered.</div>';
+        await loadOperator();
+      } catch (error) {
+        log.innerHTML += `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    async function updateInquiry(id, status, roomAccessGranted) {
+      const log = document.getElementById(`inquiry-log-${id}`);
+      log.innerHTML = '<div class="log-line">Updating inquiry...</div>';
+      try {
+        await StoneBridge.api(scopedUrl(`/api/operator/inquiries/${id}/status`), {
+          ...operatorOptions,
+          method: "POST",
+          body: JSON.stringify({ status, roomAccessGranted })
+        });
+        log.innerHTML += '<div class="log-line">Inquiry updated.</div>';
+        await loadOperator();
+      } catch (error) {
+        log.innerHTML += `<div class="log-line">${error.message}</div>`;
+      }
+    }
+
+    document.querySelectorAll("[data-operator-view]").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-operator-view]").forEach((candidate) => candidate.classList.remove("active"));
+        document.querySelectorAll(".operator-view").forEach((view) => view.classList.remove("active"));
+        button.classList.add("active");
+        document.getElementById(`operatorView-${button.dataset.operatorView}`).classList.add("active");
+      });
+    });
+
+    closeRunner.addEventListener("click", () => runnerPanel.classList.remove("open"));
+    workspaceForm.addEventListener("submit", saveWorkspace);
+    opportunityForm.addEventListener("submit", saveOpportunity);
+    opportunityReset.addEventListener("click", resetOpportunityForm);
+    workspaceScope.addEventListener("change", async () => {
+      selectedWorkspaceSlug = workspaceScope.value;
+      await loadOperator();
+    });
+
+    loadOperator().catch((error) => {
+      operatorPipeline.innerHTML = `<div class="empty-state">${error.message}</div>`;
+      operatorDiagnostics.innerHTML = `<div class="empty-state">${error.message}</div>`;
+      capitalPipeline.innerHTML = `<div class="empty-state">${error.message}</div>`;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/deals">Diagnostics</a>
+      <a class="nav-link" href="/track-record">Track Record</a>
+      <a class="nav-link active" href="/capital/{{workspaceSlug}}">Sponsor Intelligence</a>
+      <a class="nav-link" href="/operator">Operator</a>
+    </div>
+    <div class="nav-actions">
+      <span class="nav-auth">{{authState}}</span>
+    </div>
+  </nav>
+
+  <main class="page-wrap sponsor-shell">
+    <section class="page-section">
+      <div class="container sponsor-grid sponsor-grid-tight">
+        <div>
+          <div class="eyebrow">Private Room</div>
+          <h1 class="page-title display-title" style="font-size:clamp(36px,5vw,58px)" id="roomTitle">Validating access…</h1>
+          <div class="detail-note" id="roomMeta"></div>
+          <div class="sponsor-panel" style="margin-top:24px" id="roomNotes"></div>
+        </div>
+        <aside class="sponsor-panel">
+          <div class="eyebrow">Access State</div>
+          <div class="card-title" id="roomGrantedTo">Checking…</div>
+          <div class="detail-note">This page only renders when sponsor team grants access to a specific inquiry.</div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script>
+    async function loadRoom() {
+      const params = new URLSearchParams(window.location.search);
+      const access = params.get("access");
+      const response = await StoneBridge.api(`/api/sponsor/{{workspaceSlug}}/room/{{slug}}?access=${encodeURIComponent(access || "")}`);
+      roomTitle.textContent = response.opportunity.title;
+      roomMeta.textContent = `${response.opportunity.market} · ${response.opportunity.assetType} · ${response.opportunity.targetEquity}`;
+      roomGrantedTo.textContent = `${response.room.grantedTo}${response.room.firm ? ` · ${response.room.firm}` : ""}`;
+      roomNotes.innerHTML = response.room.notes.map((item) => `<div class="brief-row">${item}</div>`).join("");
+    }
+
+    loadRoom().catch((error) => {
+      roomTitle.textContent = error.message;
+      roomNotes.innerHTML = `<div class="log-line">${error.message}</div>`;
+    });
+  </script>
+</body>
+</html>
