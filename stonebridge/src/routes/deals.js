@@ -8,9 +8,11 @@ const { cancelIntent, captureIntent } = require("../lib/payments");
 const { outcomeToAfterFlags, outcomeToAfterScore } = require("../lib/outcome");
 const { serializeDeal, runDiagnosticForDeal } = require("../lib/deals");
 const { readTokenFromRequest, setAuthCookie, signToken, verifyToken } = require("../lib/auth");
+const { isLikelyAddress, normalizeAddress } = require("../engine/signals/common");
 
 const router = express.Router();
 
+/** Resolves the current user from the auth cookie when present. */
 async function optionalUser(req) {
   try {
     const token = readTokenFromRequest(req);
@@ -22,6 +24,7 @@ async function optionalUser(req) {
   }
 }
 
+/** Loads a deal only if the current user is allowed to see it. */
 async function getAuthorizedDealForUser(user, dealId) {
   const where = user.role === "OPERATOR"
     ? { id: dealId }
@@ -35,6 +38,7 @@ async function getAuthorizedDealForUser(user, dealId) {
   });
 }
 
+/** Loads collaboration records for a deal in a single request bundle. */
 async function buildCollaborationPayload(dealId) {
   const [documents, notes, frictions, summary, timeline] = await Promise.all([
     prisma.dealDocument.findMany({
@@ -72,13 +76,29 @@ async function buildCollaborationPayload(dealId) {
   return { documents, notes, frictions, summary, timeline };
 }
 
+/** Checks whether the current user can edit a collaboration item. */
 function canMutateCollabItem(user, item) {
   return user.role === "OPERATOR" || item.authorId === user.id;
 }
 
+/** Converts an arbitrary field into a trimmed string. */
+function normalizeString(value) {
+  return String(value || "").trim();
+}
+
+/** Converts checkbox or repeated values into a normalized string array. */
+function normalizeStringArray(value) {
+  return Array.isArray(value) ? value.map((item) => normalizeString(item)).filter(Boolean) : [];
+}
+
+/** Validates common email input used by memo requests. */
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 router.post("/diagnose", asyncHandler(async (req, res) => {
-  const address = String(req.body.address || "").trim();
-  if (!address || address.length < 5) {
+  const address = normalizeAddress(req.body.address);
+  if (!isLikelyAddress(address)) {
     return res.redirect("/submit?error=Please enter a valid address");
   }
 
@@ -88,17 +108,16 @@ router.post("/diagnose", asyncHandler(async (req, res) => {
 
     let client = reqUser;
     if (!client) {
-      client = await prisma.user.findUnique({ where: { email: "guest@stonebridge.ai" } });
-      if (!client) {
-        client = await prisma.user.create({
-          data: {
-            email: "guest@stonebridge.ai",
-            password: await bcrypt.hash("guest", 10),
-            name: "Guest",
-            role: "CLIENT"
-          }
-        });
-      }
+      client = await prisma.user.upsert({
+        where: { email: "guest@stonebridge.ai" },
+        update: {},
+        create: {
+          email: "guest@stonebridge.ai",
+          password: await bcrypt.hash("guest", 10),
+          name: "Guest",
+          role: "CLIENT"
+        }
+      });
     }
 
     setAuthCookie(res, signToken(client));
@@ -116,7 +135,10 @@ router.post("/diagnose", asyncHandler(async (req, res) => {
         timeline: {
           create: [
             { event: "DEAL_SUBMITTED", detail: "Address submitted through public diagnostic flow" },
-            { event: "PREVIEW_GENERATED", detail: `Free preview generated. Risk score: ${result.riskScore} | Verdict: ${result.verdict} | Signals: ${result.signals.length}` }
+            {
+              event: "PREVIEW_GENERATED",
+              detail: `Free preview generated. Risk score: ${result.riskScore} | Verdict: ${result.verdict} | Signals: ${result.signals.length}${result.sourceStatus.failed ? ` | Partial source degradation: ${result.sourceStatus.failed}` : ""}`
+            }
           ]
         }
       }
@@ -149,16 +171,16 @@ router.post("/:id/request-memo", asyncHandler(async (req, res) => {
   });
   if (!deal) return sendError(res, 404, "Deal not found");
 
-  const contactName = String(req.body.contactName || "").trim();
-  const email = String(req.body.email || "").trim();
-  const timeline = String(req.body.timeline || "").trim();
-  const goals = String(req.body.goals || "").trim();
+  const contactName = normalizeString(req.body.contactName);
+  const email = normalizeString(req.body.email);
+  const timeline = normalizeString(req.body.timeline);
+  const goals = normalizeString(req.body.goals);
 
   if (!contactName || !email || !goals) {
     return sendError(res, 400, "Contact name, email, and memo scope are required");
   }
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!isValidEmail(email)) {
     return sendError(res, 400, "Enter a valid email address");
   }
 
@@ -183,25 +205,13 @@ router.post("/:id/request-memo", asyncHandler(async (req, res) => {
   });
 }));
 
-router.get("/:id", asyncHandler(async (req, res, next) => {
-  if (req.params.id === "diagnose") return next();
-  const deal = await prisma.deal.findUnique({
-    where: { id: req.params.id },
-    include: {
-      signals: { orderBy: [{ severity: "desc" }, { pulledAt: "desc" }] },
-      timeline: { orderBy: { createdAt: "asc" } },
-      client: { select: { id: true, email: true, name: true } }
-    }
-  });
-  if (!deal) return sendError(res, 404, "Deal not found");
-  return res.json({ deal: serializeDeal(deal) });
-}));
-
 router.use(requireAuth);
 
 router.post("/", asyncHandler(async (req, res) => {
-  const { address, timelineStage, pressurePoint } = req.body;
-  if (!address) return sendError(res, 400, "Address is required");
+  const address = normalizeAddress(req.body.address);
+  const timelineStage = normalizeString(req.body.timelineStage);
+  const pressurePoint = normalizeString(req.body.pressurePoint);
+  if (!isLikelyAddress(address)) return sendError(res, 400, "A full street address is required");
 
   const deal = await prisma.deal.create({
     data: {
@@ -261,10 +271,11 @@ router.post("/:id/documents", asyncHandler(async (req, res) => {
   const deal = await getAuthorizedDealForUser(req.user, req.params.id);
   if (!deal) return sendError(res, 404, "Deal not found");
 
-  const label = String(req.body.label || "").trim();
-  const url = String(req.body.url || "").trim();
-  const kind = String(req.body.kind || "Document").trim();
+  const label = normalizeString(req.body.label);
+  const url = normalizeString(req.body.url);
+  const kind = normalizeString(req.body.kind || "Document");
   if (!label || !url) return sendError(res, 400, "Document label and URL are required");
+  if (!/^https?:\/\//i.test(url)) return sendError(res, 400, "Document URL must start with http or https");
 
   const document = await prisma.dealDocument.create({
     data: {
@@ -292,10 +303,10 @@ router.post("/:id/notes", asyncHandler(async (req, res) => {
   const deal = await getAuthorizedDealForUser(req.user, req.params.id);
   if (!deal) return sendError(res, 404, "Deal not found");
 
-  const title = String(req.body.title || "").trim();
-  const body = String(req.body.body || "").trim();
-  const parentId = String(req.body.parentId || "").trim() || null;
-  const mentions = Array.isArray(req.body.mentions) ? req.body.mentions.map((item) => String(item).trim()).filter(Boolean) : [];
+  const title = normalizeString(req.body.title);
+  const body = normalizeString(req.body.body);
+  const parentId = normalizeString(req.body.parentId) || null;
+  const mentions = normalizeStringArray(req.body.mentions);
   if (!title || !body) return sendError(res, 400, "Note title and body are required");
   if (parentId) {
     const parentNote = await prisma.dealNote.findFirst({ where: { id: parentId, dealId: deal.id } });
@@ -341,9 +352,9 @@ router.post("/:id/notes/:noteId", asyncHandler(async (req, res) => {
   if (!existing) return sendError(res, 404, "Note not found");
   if (!canMutateCollabItem(req.user, existing)) return sendError(res, 403, "Cannot edit this note");
 
-  const title = String(req.body.title || "").trim();
-  const body = String(req.body.body || "").trim();
-  const mentions = Array.isArray(req.body.mentions) ? req.body.mentions.map((item) => String(item).trim()).filter(Boolean) : [];
+  const title = normalizeString(req.body.title);
+  const body = normalizeString(req.body.body);
+  const mentions = normalizeStringArray(req.body.mentions);
   if (!title || !body) return sendError(res, 400, "Note title and body are required");
 
   const note = await prisma.dealNote.update({
@@ -395,9 +406,9 @@ router.post("/:id/frictions", asyncHandler(async (req, res) => {
   const deal = await getAuthorizedDealForUser(req.user, req.params.id);
   if (!deal) return sendError(res, 404, "Deal not found");
 
-  const category = String(req.body.category || "").trim();
-  const observation = String(req.body.observation || "").trim();
-  const impact = String(req.body.impact || "").trim();
+  const category = normalizeString(req.body.category);
+  const observation = normalizeString(req.body.observation);
+  const impact = normalizeString(req.body.impact);
   if (!category || !observation) return sendError(res, 400, "Friction category and observation are required");
 
   const friction = await prisma.dealMarketFriction.create({
@@ -432,9 +443,9 @@ router.post("/:id/frictions/:frictionId", asyncHandler(async (req, res) => {
   if (!existing) return sendError(res, 404, "Market friction item not found");
   if (!canMutateCollabItem(req.user, existing)) return sendError(res, 403, "Cannot edit this market friction item");
 
-  const category = String(req.body.category || "").trim();
-  const observation = String(req.body.observation || "").trim();
-  const impact = String(req.body.impact || "").trim();
+  const category = normalizeString(req.body.category);
+  const observation = normalizeString(req.body.observation);
+  const impact = normalizeString(req.body.impact);
   if (!category || !observation) return sendError(res, 400, "Friction category and observation are required");
 
   const friction = await prisma.dealMarketFriction.update({
@@ -480,10 +491,10 @@ router.post("/:id/summary", asyncHandler(async (req, res) => {
   const deal = await getAuthorizedDealForUser(req.user, req.params.id);
   if (!deal) return sendError(res, 404, "Deal not found");
 
-  const recommendation = String(req.body.recommendation || "").trim();
-  const keyRisks = Array.isArray(req.body.keyRisks) ? req.body.keyRisks.map((item) => String(item).trim()).filter(Boolean) : [];
-  const keyPositives = Array.isArray(req.body.keyPositives) ? req.body.keyPositives.map((item) => String(item).trim()).filter(Boolean) : [];
-  const unresolvedQuestions = Array.isArray(req.body.unresolvedQuestions) ? req.body.unresolvedQuestions.map((item) => String(item).trim()).filter(Boolean) : [];
+  const recommendation = normalizeString(req.body.recommendation);
+  const keyRisks = normalizeStringArray(req.body.keyRisks);
+  const keyPositives = normalizeStringArray(req.body.keyPositives);
+  const unresolvedQuestions = normalizeStringArray(req.body.unresolvedQuestions);
 
   if (!recommendation) return sendError(res, 400, "Recommendation is required");
 

@@ -20,6 +20,7 @@
       <a class="nav-link" href="/operator">Operator</a>
     </div>
     <div class="nav-actions">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">Menu</button>
       <span class="nav-auth">{{authState}}</span>
       <a class="btn btn-primary" href="#investor-intake">Request access</a>
     </div>
@@ -29,9 +30,9 @@
     <section class="sponsor-hero">
       <div class="container sponsor-grid">
         <div>
-          <div class="eyebrow">Sponsor Intelligence</div>
+          <div class="eyebrow">Sponsor Intelligence Overlay</div>
           <h1 class="hero-title" id="sponsorName">Loading sponsor profile…</h1>
-          <p class="hero-sub" id="sponsorOverview">StoneBridge packages track record, opportunities, and investor demand into a cleaner capital formation surface.</p>
+          <p class="hero-sub" id="sponsorOverview">StoneBridge packages track record, opportunities, and investor demand into a cleaner capital formation surface built on top of the core underwriting engine.</p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#opportunityGrid">View opportunities</a>
             <a class="btn btn-ghost" href="#investor-intake">Submit investor fit</a>
@@ -69,6 +70,40 @@
           <h2 class="section-title">Fund and project briefs ready for partner review.</h2>
         </div>
         <div class="sponsor-card-grid" id="opportunityGrid"></div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container sponsor-grid sponsor-grid-tight">
+        <div>
+        <div class="section-head">
+          <div class="eyebrow">Distribution Intelligence</div>
+          <h2 class="section-title">What the current sponsor surface says about partner readiness on top of StoneBridge.</h2>
+        </div>
+
+          <div class="diagnostic-summary">
+            <div class="diagnostic-score-card">
+              <div class="eyebrow">Partner readiness score</div>
+              <div class="diagnostic-score" id="distributionReadinessScore">—</div>
+              <div class="diagnostic-band-label" id="distributionReadinessBand">Loading...</div>
+              <div class="proof-block sponsor-proof" id="distributionMeta"></div>
+            </div>
+
+            <aside class="diagnostic-panel">
+              <div class="eyebrow">Primary constraint</div>
+              <div class="card-title" id="distributionConstraintTitle">Loading…</div>
+              <div class="detail-note" id="distributionConstraintBody"></div>
+            </aside>
+          </div>
+
+          <div class="diagnostic-grid" id="distributionActionGrid"></div>
+        </div>
+
+        <aside class="sponsor-panel">
+          <div class="eyebrow">Channel Design</div>
+          <div class="card-title" id="distributionTrack">Loading…</div>
+          <div class="faq-list" id="distributionLists"></div>
+        </aside>
       </div>
     </section>
 
@@ -194,6 +229,34 @@
         .map((metric) => `<div class="stat-cell"><div class="stat-num">${metric.value}</div><div class="stat-label">${metric.label}</div></div>`)
         .join("");
 
+      distributionReadinessScore.textContent = data.distributionIntelligence.readiness.score;
+      distributionReadinessBand.textContent = `${data.distributionIntelligence.readiness.band} readiness`;
+      distributionMeta.innerHTML = `
+        <div><span class="pk">recommended_track</span><span class="pv">${data.distributionIntelligence.recommendedTrack}</span></div>
+        <div><span class="pk">partner_types</span><span class="pv">${data.distributionIntelligence.partnerTypes.join(", ") || "Needs definition"}</span></div>
+      `;
+      distributionConstraintTitle.textContent = data.distributionIntelligence.primaryConstraint.title;
+      distributionConstraintBody.textContent = data.distributionIntelligence.primaryConstraint.body;
+      distributionTrack.textContent = data.distributionIntelligence.recommendedTrack;
+
+      distributionActionGrid.innerHTML = data.distributionIntelligence.actionPlan.map((item, index) => `
+        <article class="diagnostic-panel">
+          <div class="eyebrow">Action 0${index + 1}</div>
+          <div class="card-copy">${item}</div>
+        </article>
+      `).join("");
+
+      distributionLists.innerHTML = `
+        <div class="faq-item">
+          <div class="faq-question">Ideal partner types</div>
+          <div class="detail-note">${data.distributionIntelligence.partnerTypes.join(", ") || "Still needs to be defined from the sponsor profile."}</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">Missing assets</div>
+          <div class="detail-note">${data.distributionIntelligence.missingAssets.join(", ") || "No obvious packaging gaps from the current workspace."}</div>
+        </div>
+      `;
+
       trackRecordGrid.innerHTML = data.profile.trackRecord.map((item) => `
         <article class="sponsor-card">
           <div class="eyebrow">${item.market}</div>
@@ -260,5 +323,6 @@
       sponsorOverview.textContent = error.message;
     });
   </script>
+  <script src="/js/nav.js"></script>
 </body>
 </html>

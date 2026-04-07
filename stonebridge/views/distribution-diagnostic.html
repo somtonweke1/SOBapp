@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/capital">Sponsor Intelligence</a>
+      <a class="nav-link" href="/track-record">Track Record</a>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">Menu</button>
+      <span class="nav-auth">{{authState}}</span>
+    </div>
+  </nav>
+
+  <main class="app-shell">
+    <section class="page-header">
+      <div class="container">
+        <div class="kicker">StoneBridge Feature</div>
+        <h1 class="page-title display-title">Distribution Partner Diagnostic</h1>
+        <p class="subcopy">Secondary intake surface for ad hoc analysis. The primary product layer now lives inside Sponsor Intelligence, where distribution analysis is generated from the workspace itself.</p>
+      </div>
+    </section>
+
+    <section class="page-section page-section-tight">
+      <div class="container sponsor-grid sponsor-grid-tight">
+        <div class="sponsor-panel">
+          <div class="eyebrow">Diagnostic Intake</div>
+          <div class="card-title">Enter the current fund and partner-channel context.</div>
+          <form action="/distribution-diagnostic" method="POST" class="sponsor-form" style="margin-top:20px">
+            <div class="form-grid">
+              <div class="field-group">
+                <label class="field-label" for="fundName">Fund / Manager Name</label>
+                <input id="fundName" name="fundName" class="input" required value="{{fundName}}">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="assetFocus">Asset / Strategy Focus</label>
+                <input id="assetFocus" name="assetFocus" class="input" placeholder="Self-storage, flex industrial, credit, etc." value="{{assetFocus}}">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="partnerModel">Partner Model</label>
+                <select id="partnerModel" name="partnerModel" class="input" required>
+                  <option value="">Select</option>
+                  <option value="FoF" {{partnerModelFoF}}>Fund of funds</option>
+                  <option value="co-GP" {{partnerModelCoGp}}>Co-GP</option>
+                  <option value="distribution partner" {{partnerModelDistribution}}>Distribution partner</option>
+                  <option value="hybrid" {{partnerModelHybrid}}>Hybrid</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="trackRecord">Track Record Strength</label>
+                <select id="trackRecord" name="trackRecord" class="input" required>
+                  <option value="">Select</option>
+                  <option value="institutional" {{trackRecordInstitutional}}>Institutional / established</option>
+                  <option value="emerging" {{trackRecordEmerging}}>Emerging but credible</option>
+                  <option value="early" {{trackRecordEarly}}>Early / still proving</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="fundraisingGoal">Current Raise Target</label>
+                <input id="fundraisingGoal" name="fundraisingGoal" class="input" placeholder="$10M, $25M, etc." value="{{fundraisingGoal}}">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="outreachState">Current Outreach State</label>
+                <select id="outreachState" name="outreachState" class="input" required>
+                  <option value="">Select</option>
+                  <option value="none" {{outreachStateNone}}>No channel yet</option>
+                  <option value="testing" {{outreachStateTesting}}>Testing a few conversations</option>
+                  <option value="active" {{outreachStateActive}}>Active outreach already running</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="currentConstraint">Current Constraint</label>
+                <select id="currentConstraint" name="currentConstraint" class="input" required>
+                  <option value="">Select</option>
+                  <option value="offer" {{currentConstraintOffer}}>The offer is hard to explain</option>
+                  <option value="materials" {{currentConstraintMaterials}}>Materials are weak or missing</option>
+                  <option value="partner-recruiting" {{currentConstraintRecruiting}}>Need more partner conversations</option>
+                  <option value="conversion" {{currentConstraintConversion}}>Partners are not converting</option>
+                  <option value="distribution" {{currentConstraintDistribution}}>Need a real channel design</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-group" style="margin-top:18px">
+              <label class="field-label">Target Partner Types</label>
+              <div class="chip-row">
+                <label class="chip-option"><input type="checkbox" name="targetPartners" value="RIA / Advisor" {{targetPartnerRia}}>RIA / Advisor</label>
+                <label class="chip-option"><input type="checkbox" name="targetPartners" value="Capital Aggregator" {{targetPartnerAggregator}}>Capital Aggregator</label>
+                <label class="chip-option"><input type="checkbox" name="targetPartners" value="Family Office Network" {{targetPartnerFamilyOffice}}>Family Office Network</label>
+                <label class="chip-option"><input type="checkbox" name="targetPartners" value="Syndicator" {{targetPartnerSyndicator}}>Syndicator</label>
+                <label class="chip-option"><input type="checkbox" name="targetPartners" value="FoF Manager" {{targetPartnerFof}}>FoF Manager</label>
+              </div>
+            </div>
+
+            <div class="field-group" style="margin-top:18px">
+              <label class="field-label">Existing Partner Materials</label>
+              <div class="chip-row">
+                <label class="chip-option"><input type="checkbox" name="materials" value="deck" {{materialDeck}}>Deck</label>
+                <label class="chip-option"><input type="checkbox" name="materials" value="one-pager" {{materialOnePager}}>One-pager</label>
+                <label class="chip-option"><input type="checkbox" name="materials" value="faq" {{materialFaq}}>FAQ</label>
+                <label class="chip-option"><input type="checkbox" name="materials" value="diligence memo" {{materialMemo}}>Diligence memo</label>
+              </div>
+            </div>
+
+            <div class="field-group" style="margin-top:18px">
+              <label class="field-label" for="notes">Additional Context</label>
+              <textarea id="notes" name="notes" class="input textarea" placeholder="What are partners currently struggling to understand or place?">{{notes}}</textarea>
+            </div>
+
+            <div class="action-row">
+              <button class="btn btn-primary" type="submit">Run diagnostic</button>
+            </div>
+          </form>
+        </div>
+
+        <aside class="sponsor-panel">
+          <div class="eyebrow">What It Produces</div>
+          <div class="card-title">A concrete answer to what needs fixing first.</div>
+          <div class="faq-list">
+            <div class="faq-item">
+              <div class="faq-question">Primary bottleneck</div>
+              <div class="detail-note">Is the issue the offer, the materials, partner recruiting, or conversion?</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question">Readiness score</div>
+              <div class="detail-note">How prepared the offer is for a third-party distribution relationship today.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question">Recommended track</div>
+              <div class="detail-note">Whether the next move is readiness buildout, offer rework, or partner activation.</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    {{{resultSection}}}
+  </main>
+  <script src="/js/nav.js"></script>
+</body>
+</html>

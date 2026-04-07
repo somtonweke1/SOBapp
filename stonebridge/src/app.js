@@ -14,6 +14,7 @@ const publicRoutes = require("./routes/public");
 const sponsorRoutes = require("./routes/sponsor");
 const { listActiveWorkspaces } = require("./lib/sponsor");
 const { SITE_DESCRIPTION, SITE_TITLE } = require("./lib/site");
+const { analyzeDistributionDiagnostic, normalizeList } = require("./lib/distribution-diagnostic");
 const { startJobs } = require("./jobs");
 
 const app = express();
@@ -30,6 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(publicPath));
 app.use("/memos", express.static(path.resolve(__dirname, "..", "memos")));
 
+/** Resolves the authenticated user and suppresses seeded demo identities. */
 async function getCurrentUser(req) {
   try {
     const token = readTokenFromRequest(req);
@@ -46,6 +48,7 @@ async function getCurrentUser(req) {
   }
 }
 
+/** Merges global page metadata with route-specific view data. */
 function buildPageData(base = {}) {
   return {
     brand: "STONEBRIDGE AI",
@@ -57,6 +60,7 @@ function buildPageData(base = {}) {
   };
 }
 
+/** Formats the nav auth state for guests, operators, and clients. */
 function formatAuthState(user, fallback = "Login") {
   if (!user) return fallback;
   if (user.email === "guest@stonebridge.ai") return "Preview session";
@@ -64,11 +68,82 @@ function formatAuthState(user, fallback = "Login") {
   return user.name || user.email;
 }
 
+/** Formats a memo delivery duration into a compact hour string. */
 function formatAvgDeliveryHours(value) {
   if (!Number.isFinite(value) || value <= 0) return "—";
   return `${Math.round(value)}h`;
 }
 
+/** Marks a checkbox input as checked when its value is present. */
+function isChecked(list, value) {
+  return list.includes(value) ? "checked" : "";
+}
+
+/** Marks a select option as selected when it matches the current value. */
+function isSelected(actual, expected) {
+  return actual === expected ? "selected" : "";
+}
+
+/** Renders the standalone distribution diagnostic result block. */
+function renderDistributionDiagnosticResult(input, result) {
+  if (!result) return "";
+
+  const diagnosisHtml = result.diagnosis.map((item) => `
+    <article class="diagnostic-panel">
+      <div class="eyebrow">${item.title}</div>
+      <div class="card-copy">${item.body}</div>
+    </article>
+  `).join("");
+
+  const actionsHtml = result.nextActions.map((item) => `
+    <div class="diagnostic-list-item">${item}</div>
+  `).join("");
+
+  return `
+    <section class="page-section diagnostic-band">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Diagnostic Output</div>
+          <h2 class="section-title">${input.fundName || "Fund"} needs a clearer ${result.primaryConstraint.toLowerCase()} path.</h2>
+          <p class="subcopy">This output is generated from the intake you provided. It is meant to tell you what to fix first before adding more fundraising conversations.</p>
+        </div>
+
+        <div class="diagnostic-summary">
+          <div class="diagnostic-score-card">
+            <div class="eyebrow">Distribution readiness score</div>
+            <div class="diagnostic-score">${result.readinessScore}</div>
+            <div class="diagnostic-band-label">${result.readinessBand} readiness</div>
+            <div class="proof-block" style="margin-top:18px">
+              <div><span class="pk">primary_constraint</span><span class="pv">${result.primaryConstraint}</span></div>
+              <div><span class="pk">recommended_track</span><span class="pv">${result.trackRecommendation}</span></div>
+              <div><span class="pk">partner_model</span><span class="pv">${input.partnerModel || "Not specified"}</span></div>
+            </div>
+          </div>
+
+          <aside class="diagnostic-panel">
+            <div class="eyebrow">Recommended next move</div>
+            <div class="card-title">${result.trackRecommendation}</div>
+            <div class="card-copy">Use this track if the goal is to make the offer easier for the right capital partners to understand, trust, and place.</div>
+          </aside>
+        </div>
+
+        <div class="diagnostic-grid">
+          ${diagnosisHtml}
+        </div>
+
+        <div class="diagnostic-panel" style="margin-top:24px">
+          <div class="eyebrow">Immediate next actions</div>
+          <div class="diagnostic-list">${actionsHtml}</div>
+          <div class="action-row">
+            <a class="btn btn-primary" href="mailto:somton@jhu.edu?subject=Distribution%20Partner%20Diagnostic%20Follow-Up">Discuss this diagnostic</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+/** Detects whether a deal has advanced into the paid memo lifecycle. */
 function isPaidMemoDeal(deal) {
   return Boolean(
     deal?.memoDeliveredAt ||
@@ -80,6 +155,7 @@ function isPaidMemoDeal(deal) {
   );
 }
 
+/** Detects seeded demo deals that should be excluded from public metrics. */
 function isDemoDeal(deal) {
   const memoHash = String(deal?.memoHash || "").toLowerCase();
   const paymentIntentId = String(deal?.paymentIntentId || "").toLowerCase();
@@ -212,6 +288,7 @@ app.get("/register", (req, res) => {
   res.send(renderTemplate("register", buildPageData({ title: `${SITE_TITLE} | Register` })));
 });
 
+/** Renders an authenticated app view with the standard page metadata. */
 async function renderAuthedPage(req, res, view, extra = {}, role) {
   const user = await getCurrentUser(req);
   if (role === "OPERATOR") {
@@ -229,6 +306,7 @@ async function renderAuthedPage(req, res, view, extra = {}, role) {
   })));
 }
 
+/** Maps detailed deal statuses into list-level filter buckets. */
 function getDealFilterBucket(status) {
   switch (status) {
     case "COMPLETED":
@@ -244,6 +322,7 @@ function getDealFilterBucket(status) {
   }
 }
 
+/** Formats payment state into client-facing commercial language. */
 function formatPaymentStatus(status) {
   switch (status) {
     case "UNPAID":
@@ -261,6 +340,7 @@ function formatPaymentStatus(status) {
   }
 }
 
+/** Summarizes where a deal currently sits in the free-preview to paid-memo path. */
 function describeCommercialState(deal) {
   if (deal.status === "COMPLETED") {
     return {
@@ -298,6 +378,70 @@ app.get("/submit", async (req, res) => {
     userJson: JSON.stringify(user || null)
   })));
 });
+
+app.get("/distribution-diagnostic", async (req, res) => {
+  const user = await getCurrentUser(req);
+  res.send(renderTemplate("distribution-diagnostic", buildPageData({
+    title: `${SITE_TITLE} | Distribution Partner Diagnostic`,
+    authState: formatAuthState(user, "Run diagnostic"),
+    userJson: JSON.stringify(user || null),
+    resultSection: ""
+  })));
+});
+
+app.post("/distribution-diagnostic", async (req, res) => {
+  const user = await getCurrentUser(req);
+  const input = {
+    fundName: String(req.body.fundName || "").trim(),
+    assetFocus: String(req.body.assetFocus || "").trim(),
+    partnerModel: String(req.body.partnerModel || "").trim(),
+    trackRecord: String(req.body.trackRecord || "").trim(),
+    fundraisingGoal: String(req.body.fundraisingGoal || "").trim(),
+    outreachState: String(req.body.outreachState || "").trim(),
+    currentConstraint: String(req.body.currentConstraint || "").trim(),
+    targetPartners: normalizeList(req.body.targetPartners),
+    materials: normalizeList(req.body.materials),
+    notes: String(req.body.notes || "").trim()
+  };
+
+  const result = analyzeDistributionDiagnostic(input);
+
+  res.send(renderTemplate("distribution-diagnostic", buildPageData({
+    title: `${SITE_TITLE} | Distribution Partner Diagnostic`,
+    authState: formatAuthState(user, "Run diagnostic"),
+    userJson: JSON.stringify(user || null),
+    fundName: input.fundName,
+    assetFocus: input.assetFocus,
+    fundraisingGoal: input.fundraisingGoal,
+    notes: input.notes,
+    partnerModelFoF: isSelected(input.partnerModel, "FoF"),
+    partnerModelCoGp: isSelected(input.partnerModel, "co-GP"),
+    partnerModelDistribution: isSelected(input.partnerModel, "distribution partner"),
+    partnerModelHybrid: isSelected(input.partnerModel, "hybrid"),
+    trackRecordInstitutional: isSelected(input.trackRecord, "institutional"),
+    trackRecordEmerging: isSelected(input.trackRecord, "emerging"),
+    trackRecordEarly: isSelected(input.trackRecord, "early"),
+    outreachStateNone: isSelected(input.outreachState, "none"),
+    outreachStateTesting: isSelected(input.outreachState, "testing"),
+    outreachStateActive: isSelected(input.outreachState, "active"),
+    currentConstraintOffer: isSelected(input.currentConstraint, "offer"),
+    currentConstraintMaterials: isSelected(input.currentConstraint, "materials"),
+    currentConstraintRecruiting: isSelected(input.currentConstraint, "partner-recruiting"),
+    currentConstraintConversion: isSelected(input.currentConstraint, "conversion"),
+    currentConstraintDistribution: isSelected(input.currentConstraint, "distribution"),
+    targetPartnerRia: isChecked(input.targetPartners, "RIA / Advisor"),
+    targetPartnerAggregator: isChecked(input.targetPartners, "Capital Aggregator"),
+    targetPartnerFamilyOffice: isChecked(input.targetPartners, "Family Office Network"),
+    targetPartnerSyndicator: isChecked(input.targetPartners, "Syndicator"),
+    targetPartnerFof: isChecked(input.targetPartners, "FoF Manager"),
+    materialDeck: isChecked(input.materials, "deck"),
+    materialOnePager: isChecked(input.materials, "one-pager"),
+    materialFaq: isChecked(input.materials, "faq"),
+    materialMemo: isChecked(input.materials, "diligence memo"),
+    resultSection: renderDistributionDiagnosticResult(input, result)
+  })));
+});
+
 app.get("/deals", async (req, res) => {
   const user = await getCurrentUser(req);
   if (!user) return res.redirect("/login");
@@ -331,7 +475,7 @@ app.get("/deals", async (req, res) => {
           <span class="v-badge ${verdictClass(deal.verdict)}">${verdictLabel(deal.verdict)}</span>
         </div>
         <div class="triptych">
-          <div class="tol">
+          <div class="t-col">
             <div class="t-label">Risk score at intake</div>
             <div class="t-score ${verdictClass(deal.verdict)}">${deal.riskScoreBefore || "—"}</div>
             <div class="t-unit">/ 100</div>
@@ -435,7 +579,7 @@ app.get("/deals/:id", async (req, res) => {
       </div>
     `).join("");
 
-    const allSources = ["Baltimore City Open Data", "Maryland SDAT", "SAM.gov", "eMMA", "Baltimore 311", "City Infrastructure"];
+    const allSources = ["Baltimore City Open Data", "Maryland SDAT", "SAM.gov", "eMMA", "Baltimore 311", "Baltimore Infrastructure Data"];
     const sourcesHtml = allSources.map((src) => {
       const used = deal.signalSources && deal.signalSources.includes(src);
       return `

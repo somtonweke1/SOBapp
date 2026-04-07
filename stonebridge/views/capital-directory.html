@@ -20,6 +20,7 @@
       <a class="nav-link" href="/operator">Operator</a>
     </div>
     <div class="nav-actions">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">Menu</button>
       <span class="nav-auth">{{authState}}</span>
       <a class="btn btn-primary" href="/register">Create sponsor workspace</a>
     </div>
@@ -28,9 +29,9 @@
   <main class="page-wrap sponsor-shell">
     <section class="sponsor-hero">
       <div class="container">
-        <div class="eyebrow">Sponsor Intelligence SaaS</div>
-        <h1 class="hero-title">Multi-tenant sponsor portals for capital formation.</h1>
-        <p class="hero-sub">Each workspace gets a public investor surface, opportunity briefs, gated rooms, and an owner-managed console.</p>
+        <div class="eyebrow">StoneBridge Overlay Layer</div>
+        <h1 class="hero-title">Sponsor intelligence built on top of the deal engine.</h1>
+        <p class="hero-sub">These workspaces are secondary surfaces layered on top of StoneBridge's core housing-deal diagnostics and memo workflow. They package sponsor, opportunity, and capital context after the underwriting engine has already done its work.</p>
       </div>
     </section>
 
@@ -64,5 +65,6 @@
       `).join("")
       : '<div class="empty-state"><div>No sponsor workspaces are live yet.</div><div class="empty-state-action"><a class="btn btn-ghost" href="/register">Create sponsor workspace</a></div></div>';
   </script>
+  <script src="/js/nav.js"></script>
 </body>
 </html>

@@ -1,32 +1,4 @@
-const crypto = require("crypto");
-const { buildSignal } = require("./common");
-
-function addressSeed(address) {
-  return parseInt(
-    crypto.createHash("sha256").update(address.toLowerCase().trim()).digest("hex").slice(0, 8),
-    16
-  );
-}
-
-function seededRandom(seed, index) {
-  const value = Math.sin(seed + index) * 10000;
-  return value - Math.floor(value);
-}
-
-function severityFromValue(value) {
-  if (value < 0.3) return "LOW";
-  if (value < 0.6) return "MEDIUM";
-  if (value < 0.85) return "HIGH";
-  return "CRITICAL";
-}
-
-async function fetchWithTimeout(url, options = {}) {
-  if (typeof fetch === "function") {
-    return fetch(url, options);
-  }
-  const mod = await import("node-fetch");
-  return mod.default(url, options);
-}
+const { addressSeed, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
 
 function parseUtilitySignals(rows, url) {
   const complaintCount = rows.length;
@@ -117,7 +89,7 @@ function mockUtilitySignals(address) {
       const labelPick = Math.floor(seededRandom(seed, scenario.labelIndex) * scenario.labelOptions.length);
       const valuePick = Math.floor(seededRandom(seed, scenario.labelIndex + 20) * scenario.valueOptions.length);
       return buildSignal({
-        source: "Baltimore 311",
+        source: "Baltimore 311 (estimated)",
         category: "UTILITY",
         label: scenario.labelOptions[labelPick],
         value: scenario.valueOptions[valuePick],

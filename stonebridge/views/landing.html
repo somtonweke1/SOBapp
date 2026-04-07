@@ -13,13 +13,14 @@
   <nav class="nav">
     <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
     <div class="nav-links">
-      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link active" href="/">Home</a>
       <a class="nav-link" href="/submit">Diagnostics</a>
       <a class="nav-link" href="/track-record">Track Record</a>
       <a class="nav-link" href="/capital">Sponsor Intelligence</a>
       <a class="nav-link" href="/operator">Operator</a>
     </div>
     <div class="nav-actions">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">Menu</button>
       <span class="nav-auth">{{authState}}</span>
     </div>
   </nav>
@@ -61,9 +62,9 @@
             <p class="card-copy">Not a dashboard screenshot. A memo with signal citations, evidence links, underwriting questions, and the next diligence move tied to the actual address.</p>
           </article>
           <article class="value-card">
-            <div class="eyebrow">Why it converts</div>
-            <h2 class="card-title">It moves the decision, or it should not get billed.</h2>
-            <p class="card-copy">The commercial promise is simple: if StoneBridge cannot materially sharpen the decision, the engagement should not feel worth a contract.</p>
+            <div class="eyebrow">What sits on top</div>
+            <h2 class="card-title">Sponsor and capital layers come after the diagnosis.</h2>
+            <p class="card-copy">StoneBridge can package sponsor, partner, and capital workflow intelligence on top of the core engine, but the primary product is still the housing-deal decision and memo.</p>
           </article>
         </div>
       </div>
@@ -74,11 +75,11 @@
         <div class="offer-card">
           <div class="offer-copy">
             <div class="eyebrow">Commercial path</div>
-            <h2 class="section-title">Proof first. Memo second. Retainer after that.</h2>
+            <h2 class="section-title">Proof first. Memo second. Overlay features after that.</h2>
             <div class="brief-list">
               <div class="brief-row">Free preview: enter a Baltimore address and inspect the public signal layer.</div>
               <div class="brief-row">$2,500 memo: written decision brief delivered within 24 hours for a live deal.</div>
-              <div class="brief-row">Ongoing support: retained diligence, monitoring, and sponsor-facing packet work when the deal needs continued attention.</div>
+              <div class="brief-row">Overlay workflows: sponsor packaging, partner-facing surfaces, and capital formation support built on top of StoneBridge once the deal engine is already in motion.</div>
             </div>
           </div>
           <div class="offer-side">
@@ -91,5 +92,6 @@
       </div>
     </section>
   </div>
+  <script src="/js/nav.js"></script>
 </body>
 </html>

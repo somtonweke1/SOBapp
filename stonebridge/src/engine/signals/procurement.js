@@ -1,33 +1,5 @@
-const crypto = require("crypto");
 const { config } = require("../../lib/config");
-const { buildSignal, zipFromAddress } = require("./common");
-
-function addressSeed(address) {
-  return parseInt(
-    crypto.createHash("sha256").update(address.toLowerCase().trim()).digest("hex").slice(0, 8),
-    16
-  );
-}
-
-function seededRandom(seed, index) {
-  const value = Math.sin(seed + index) * 10000;
-  return value - Math.floor(value);
-}
-
-function severityFromValue(value) {
-  if (value < 0.3) return "LOW";
-  if (value < 0.6) return "MEDIUM";
-  if (value < 0.85) return "HIGH";
-  return "CRITICAL";
-}
-
-async function fetchWithTimeout(url, options = {}) {
-  if (typeof fetch === "function") {
-    return fetch(url, options);
-  }
-  const mod = await import("node-fetch");
-  return mod.default(url, options);
-}
+const { addressSeed, buildSignal, fetchWithTimeout, seededRandom, severityFromValue, zipFromAddress } = require("./common");
 
 function parseProcurementSignals(data, zip, url) {
   const opportunities = data.opportunitiesData || data.opportunities || [];
@@ -89,7 +61,7 @@ function mockProcurementSignals(address) {
       const labelPick = Math.floor(seededRandom(seed, scenario.labelIndex) * scenario.labelOptions.length);
       const valuePick = Math.floor(seededRandom(seed, scenario.labelIndex + 20) * scenario.valueOptions.length);
       return buildSignal({
-        source: scenario.severityIndex === 33 ? "SAM.gov" : "eMMA",
+        source: scenario.severityIndex === 33 ? "SAM.gov (estimated)" : "eMMA (estimated)",
         category: "PROCUREMENT",
         label: scenario.labelOptions[labelPick],
         value: scenario.valueOptions[valuePick],

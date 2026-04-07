@@ -3,6 +3,7 @@ const { prisma } = require("./prisma");
 const { diagnose } = require("../engine/diagnose");
 const { generateMemo } = require("../engine/memo");
 
+/** Serializes a deal while hiding raw memo filesystem paths. */
 function serializeDeal(deal) {
   return {
     ...deal,
@@ -10,6 +11,7 @@ function serializeDeal(deal) {
   };
 }
 
+/** Runs the diagnostic engine for a stored deal and persists the normalized result. */
 async function runDiagnosticForDeal(dealId) {
   const deal = await prisma.deal.findUnique({ where: { id: dealId } });
   if (!deal) throw Object.assign(new Error("Deal not found"), { statusCode: 404 });
@@ -23,6 +25,9 @@ async function runDiagnosticForDeal(dealId) {
 
   await prisma.$transaction([
     prisma.signal.deleteMany({ where: { dealId } }),
+    prisma.signal.createMany({
+      data: result.signals.map(signal => ({ ...signal, dealId }))
+    }),
     prisma.deal.update({
       where: { id: dealId },
       data: {
@@ -37,18 +42,15 @@ async function runDiagnosticForDeal(dealId) {
       data: {
         dealId,
         event: "DIAGNOSTIC_COMPLETED",
-        detail: `Risk score ${result.riskScore}; ${result.flagCount} non-low flags; derived verdict ${result.verdict}`
+        detail: `Risk score ${result.riskScore}; ${result.flagCount} non-low flags; derived verdict ${result.verdict}${result.sourceStatus.failed ? `; ${result.sourceStatus.failed} source failures` : ""}`
       }
     })
   ]);
 
-  await prisma.signal.createMany({
-    data: result.signals.map(signal => ({ ...signal, dealId }))
-  });
-
   return result;
 }
 
+/** Generates and records the memo artifact for a diagnosed deal. */
 async function deliverMemoForDeal(dealId) {
   const deal = await prisma.deal.findUnique({
     where: { id: dealId },
@@ -76,6 +78,7 @@ async function deliverMemoForDeal(dealId) {
   return memo;
 }
 
+/** Aggregates public-facing platform stats from persisted deal records. */
 async function getPlatformStats() {
   const [completed, total, signals, released] = await Promise.all([
     prisma.deal.count({ where: { status: "COMPLETED" } }),
@@ -90,10 +93,10 @@ async function getPlatformStats() {
   return {
     totalDeals: total,
     completedDeals: completed,
-    signalsFused: Math.max(334, signals),
-    entitiesCrossReferenced: Math.max(236, Math.floor(signals * 0.7)),
-    riskExposureMapped: `$${Math.max(540000000, (released._sum.amountCents || 0) * 220).toLocaleString()}`,
-    confidenceScore: "99%"
+    signalsFused: signals,
+    entitiesCrossReferenced: Math.floor(signals * 0.7),
+    riskExposureMapped: `$${((released._sum.amountCents || 0) * 220).toLocaleString()}`,
+    confidenceScore: total > 0 ? `${Math.min(99, Math.max(0, Math.round((completed / total) * 100)))}%` : "0%"
   };
 }
 

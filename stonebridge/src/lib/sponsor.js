@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const { prisma } = require("./prisma");
+const { buildDistributionIntelligence } = require("./sponsor-distribution");
 
 function createAccessCode() {
   return crypto.randomBytes(12).toString("hex");
@@ -126,7 +127,8 @@ async function getWorkspaceOverview(slug) {
 
   return {
     profile: serializeWorkspace(workspace),
-    opportunities: workspace.opportunities.map(serializeOpportunity)
+    opportunities: workspace.opportunities.map(serializeOpportunity),
+    distributionIntelligence: buildDistributionIntelligence(serializeWorkspace(workspace), workspace.opportunities.map(serializeOpportunity))
   };
 }
 

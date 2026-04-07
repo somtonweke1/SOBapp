@@ -14,12 +14,13 @@
     <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
     <div class="nav-links">
       <a class="nav-link" href="/">Home</a>
-      <a class="nav-link active" href="/deals">Diagnostics</a>
+      <a class="nav-link active" href="/submit">Diagnostics</a>
       <a class="nav-link" href="/track-record">Track Record</a>
       <a class="nav-link" href="/capital">Sponsor Intelligence</a>
       <a class="nav-link" href="/operator">Operator</a>
     </div>
     <div class="nav-actions">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">Menu</button>
       <span class="nav-auth">{{authState}}</span>
     </div>
   </nav>
@@ -124,5 +125,6 @@
       document.getElementById('diagnose-btn').disabled = true;
     });
   </script>
+  <script src="/js/nav.js"></script>
 </body>
 </html>
