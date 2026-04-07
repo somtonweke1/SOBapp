@@ -7,7 +7,7 @@
   <meta name="description" content="{{description}}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/app.css?v={{assetVersion}}">
 </head>
 <body>
   <nav class="nav">
@@ -43,7 +43,7 @@
     </section>
   </main>
 
-  <script src="/js/app.js"></script>
+  <script src="/js/app.js?v={{assetVersion}}"></script>
   <script>
     async function loadRoom() {
       const params = new URLSearchParams(window.location.search);
@@ -60,6 +60,6 @@
       roomNotes.innerHTML = `<div class="log-line">${error.message}</div>`;
     });
   </script>
-  <script src="/js/nav.js"></script>
+  <script src="/js/nav.js?v={{assetVersion}}"></script>
 </body>
 </html>

@@ -1,0 +1,23 @@
+# Optional: add GitHub secret RAILWAY_DEPLOY_HOOK_URL from Railway → Service → Settings → Deploy → Deploy Hook.
+# Without the secret, this workflow is a no-op and does not fail the build.
+name: Stonebridge Railway redeploy
+on:
+  push:
+    branches: [main]
+    paths:
+      - "stonebridge/**"
+      - ".github/workflows/stonebridge-railway.yml"
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: POST deploy hook
+        env:
+          HOOK: ${{ secrets.RAILWAY_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "RAILWAY_DEPLOY_HOOK_URL not set — skipping (Railway may still auto-deploy from GitHub)."
+            exit 0
+          fi
+          curl -fsS -X POST "$HOOK"

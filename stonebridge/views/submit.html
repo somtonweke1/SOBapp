@@ -7,7 +7,7 @@
   <meta name="description" content="{{description}}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/app.css?v={{assetVersion}}">
 </head>
 <body>
   <nav class="nav">
@@ -106,7 +106,7 @@
     </div>
   </div>
 
-  <script src="/js/app.js"></script>
+  <script src="/js/app.js?v={{assetVersion}}"></script>
   <script>
     StoneBridge.setQueryError('submit-error');
     document.querySelectorAll('.chip[data-addr]').forEach(function(chip) {
@@ -125,6 +125,6 @@
       document.getElementById('diagnose-btn').disabled = true;
     });
   </script>
-  <script src="/js/nav.js"></script>
+  <script src="/js/nav.js?v={{assetVersion}}"></script>
 </body>
 </html>
