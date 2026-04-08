@@ -1,3 +1,4 @@
+/** Maryland SDAT / lien-style signals from HTML scrape or deterministic fallback. */
 const { addressSeed, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
 
 function parseLienSignals(html, url) {

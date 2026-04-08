@@ -1,3 +1,4 @@
+/** City infrastructure exposure signals (Socrata or deterministic fallback). */
 const { addressSeed, baltimoreOpenDataHeaders, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
 
 function parseInfrastructureSignals(rows, url) {

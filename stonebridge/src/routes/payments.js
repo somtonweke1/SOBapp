@@ -5,6 +5,7 @@ const { requireAuth } = require("../middleware/auth");
 const { cancelIntent, captureIntent, createHeldIntent } = require("../lib/payments");
 const { isValidDealId } = require("../lib/validation");
 
+/** Authenticated Stripe PaymentIntent lifecycle for deal holds and capture/refund. */
 const router = express.Router();
 
 router.use(requireAuth);
@@ -51,6 +52,7 @@ router.post("/create-intent", asyncHandler(async (req, res) => {
 }));
 
 router.post("/capture/:dealId", asyncHandler(async (req, res) => {
+  if (!isValidDealId(req.params.dealId)) return sendError(res, 400, "Invalid deal id");
   const deal = await prisma.deal.findFirst({
     where: { id: req.params.dealId, clientId: req.user.id }
   });

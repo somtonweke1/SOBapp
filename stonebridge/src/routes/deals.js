@@ -1,3 +1,4 @@
+/** Client deal CRUD, collaboration, and the public `POST /diagnose` preview flow. */
 const express = require("express");
 const bcrypt = require("bcrypt");
 const fs = require("fs");

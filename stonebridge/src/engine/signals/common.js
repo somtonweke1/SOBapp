@@ -1,3 +1,4 @@
+/** Shared helpers for address normalization, deterministic seeds, and Baltimore Open Data headers. */
 const crypto = require("crypto");
 const { config } = require("../../lib/config");
 

@@ -1,3 +1,4 @@
+/** Operator console API (global operator code, workspace owner, or `x-operator-access-code`). */
 const express = require("express");
 const { prisma } = require("../lib/prisma");
 const { config } = require("../lib/config");
@@ -5,8 +6,15 @@ const { asyncHandler, sendError } = require("../lib/http");
 const { requireAuth } = require("../middleware/auth");
 const { deliverMemoForDeal, getPlatformStats, runDiagnosticForDeal, serializeDeal } = require("../lib/deals");
 const { getActiveWorkspace, getInquiryAnalytics, getWorkspaceByOwnerId, serializeInquiry, serializeOpportunity, serializeWorkspace, serializeWorkspaceSummary } = require("../lib/sponsor");
+const { isValidDealId } = require("../lib/validation");
 
 const router = express.Router();
+
+/** Rejects malformed cuid-style ids on routes that use `:id` (deals, inquiries, opportunities). */
+router.param("id", (req, res, next, id) => {
+  if (!isValidDealId(id)) return sendError(res, 400, "Invalid id");
+  next();
+});
 
 router.use(requireAuth, asyncHandler(async (req, res, next) => {
   const accessCode = req.headers["x-operator-access-code"] || req.query.code;

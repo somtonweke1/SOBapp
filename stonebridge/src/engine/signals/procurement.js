@@ -1,3 +1,4 @@
+/** Federal procurement adjacency signals (SAM.gov when keyed, else deterministic fallback). */
 const { config } = require("../../lib/config");
 const { addressSeed, buildSignal, fetchWithTimeout, seededRandom, severityFromValue, zipFromAddress } = require("./common");
 

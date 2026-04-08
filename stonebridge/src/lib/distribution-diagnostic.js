@@ -1,3 +1,6 @@
+/** Deterministic scoring for the fundraising distribution-partner diagnostic form. */
+
+/** Normalizes checkbox-style multi values from HTML forms into a string array. */
 function normalizeList(value) {
   if (Array.isArray(value)) {
     return value.map((item) => String(item).trim()).filter(Boolean);
@@ -8,10 +11,12 @@ function normalizeList(value) {
   return [];
 }
 
+/** Adds `points` to `parts` when `condition` is truthy. */
 function addScore(parts, condition, points) {
   return condition ? parts + points : parts;
 }
 
+/** Scores a distribution-partner intake into a readiness band, constraint label, and next actions. */
 function analyzeDistributionDiagnostic(input) {
   const targetPartners = normalizeList(input.targetPartners);
   const materials = normalizeList(input.materials);

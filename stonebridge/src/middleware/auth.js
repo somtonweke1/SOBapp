@@ -1,6 +1,7 @@
 const { prisma } = require("../lib/prisma");
 const { readTokenFromRequest, verifyToken } = require("../lib/auth");
 
+/** Express middleware that requires a valid JWT and attaches `req.user`. */
 async function requireAuth(req, res, next) {
   try {
     const token = readTokenFromRequest(req);

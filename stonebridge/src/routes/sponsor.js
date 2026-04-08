@@ -1,3 +1,4 @@
+/** Public and authenticated JSON for sponsor workspaces, opportunities, and investor inquiries. */
 const express = require("express");
 const { prisma } = require("../lib/prisma");
 const { asyncHandler, sendError } = require("../lib/http");

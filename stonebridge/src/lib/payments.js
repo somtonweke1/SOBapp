@@ -1,5 +1,6 @@
 const { stripe } = require("./config");
 
+/** Throws a 500-class error when Stripe is not configured. */
 function assertStripe() {
   if (!stripe) {
     const error = new Error("Stripe is not configured. Set STRIPE_SECRET_KEY to enable payment holds.");
@@ -8,6 +9,7 @@ function assertStripe() {
   }
 }
 
+/** Creates a manual-capture PaymentIntent for a deal hold. */
 async function createHeldIntent({ amount, currency = "usd", dealId, customerEmail, paymentMethodId }) {
   assertStripe();
   const payload = {
@@ -27,11 +29,13 @@ async function createHeldIntent({ amount, currency = "usd", dealId, customerEmai
   return stripe.paymentIntents.create(payload);
 }
 
+/** Captures a previously authorized PaymentIntent. */
 async function captureIntent(paymentIntentId) {
   assertStripe();
   return stripe.paymentIntents.capture(paymentIntentId);
 }
 
+/** Cancels an uncaptured PaymentIntent (refund path). */
 async function cancelIntent(paymentIntentId) {
   assertStripe();
   return stripe.paymentIntents.cancel(paymentIntentId);

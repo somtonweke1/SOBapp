@@ -1,3 +1,4 @@
+/** Ownership context signals from SDAT HTML or deterministic fallback. */
 const { addressSeed, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
 
 function parseOwnershipSignals(html, url) {

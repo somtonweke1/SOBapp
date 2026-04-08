@@ -1,5 +1,7 @@
+/** Baltimore property parcel and code-enforcement signals (live Socrata or deterministic fallback). */
 const { addressSeed, baltimoreOpenDataHeaders, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
 
+/** Maps Socrata rows to at most two normalized property signals. */
 function parsePropertySignals(rows, address, url) {
   if (!Array.isArray(rows) || rows.length === 0) return [];
   const row = rows[0];

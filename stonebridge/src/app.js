@@ -15,6 +15,7 @@ const sponsorRoutes = require("./routes/sponsor");
 const { listActiveWorkspaces } = require("./lib/sponsor");
 const { SITE_DESCRIPTION, SITE_TITLE } = require("./lib/site");
 const { analyzeDistributionDiagnostic, normalizeList } = require("./lib/distribution-diagnostic");
+const { isDemoDeal } = require("./lib/deal-demo");
 const { startJobs } = require("./jobs");
 
 const app = express();
@@ -148,16 +149,6 @@ function isPaidMemoDeal(deal) {
     deal?.status === "OUTCOME_WINDOW" ||
     deal?.status === "COMPLETED"
   );
-}
-
-/** Detects seeded demo deals that should be excluded from public metrics. */
-function isDemoDeal(deal) {
-  const memoHash = String(deal?.memoHash || "").toLowerCase();
-  const paymentIntentId = String(deal?.paymentIntentId || "").toLowerCase();
-  return memoHash.startsWith("seeded-") ||
-    memoHash.startsWith("prod-demo-") ||
-    paymentIntentId.startsWith("pi_seed_") ||
-    paymentIntentId.startsWith("pi_demo_");
 }
 
 app.get("/healthz", async (_req, res) => {

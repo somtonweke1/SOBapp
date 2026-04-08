@@ -6,6 +6,7 @@ const { signToken, setAuthCookie } = require("../lib/auth");
 const { requireAuth } = require("../middleware/auth");
 const { isValidEmail, isValidWorkspaceSlug, normalizeEmail } = require("../lib/validation");
 
+/** JSON routes for registration, login, and session (`/me`). */
 const router = express.Router();
 
 const MIN_PASSWORD_LENGTH = 8;
@@ -69,7 +70,9 @@ router.post("/register", asyncHandler(async (req, res) => {
 
 router.post("/login", asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const user = await prisma.user.findUnique({ where: { email: String(email || "").toLowerCase() } });
+  const emailNorm = normalizeEmail(email);
+  if (!isValidEmail(emailNorm)) return sendError(res, 400, "Enter a valid email address");
+  const user = await prisma.user.findUnique({ where: { email: emailNorm } });
   if (!user) return sendError(res, 401, "Invalid credentials");
 
   const valid = await bcrypt.compare(password || "", user.password);

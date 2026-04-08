@@ -1,7 +1,9 @@
+/** Sponsor workspace, opportunity, and inquiry helpers (serialization and Prisma queries). */
 const crypto = require("crypto");
 const { prisma } = require("./prisma");
 const { buildDistributionIntelligence } = require("./sponsor-distribution");
 
+/** Generates a random hex string for sponsor-room access codes. */
 function createAccessCode() {
   return crypto.randomBytes(12).toString("hex");
 }

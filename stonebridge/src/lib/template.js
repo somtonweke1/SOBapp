@@ -9,7 +9,15 @@ function loadTemplate(name) {
   if (process.env.NODE_ENV === "production" && cache.has(name)) {
     return cache.get(name);
   }
-  const content = fs.readFileSync(filePath, "utf8");
+  let content;
+  try {
+    content = fs.readFileSync(filePath, "utf8");
+  } catch (error) {
+    const err = new Error(`Template not found or unreadable: ${name} (${error.code || error.message})`);
+    err.statusCode = 500;
+    err.cause = error;
+    throw err;
+  }
   cache.set(name, content);
   return content;
 }

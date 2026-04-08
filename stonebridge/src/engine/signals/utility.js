@@ -1,3 +1,4 @@
+/** Baltimore 311 utility-adjacent service signals (live API or deterministic fallback). */
 const { addressSeed, baltimoreOpenDataHeaders, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
 
 function parseUtilitySignals(rows, url) {
