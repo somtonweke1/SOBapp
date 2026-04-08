@@ -4,7 +4,8 @@ const cors = require("cors");
 const crypto = require("crypto");
 const { prisma } = require("./lib/prisma");
 const { config } = require("./lib/config");
-const { renderTemplate, escapeHtml } = require("./lib/template");
+const { renderTemplate, escapeHtml, buildHeadSocialHtml } = require("./lib/template");
+const { getPublicBaseUrl } = require("./lib/public-url");
 const { loadSessionUser, hideDemoPublicUser } = require("./lib/request-user");
 const authRoutes = require("./routes/auth");
 const dealRoutes = require("./routes/deals");
@@ -23,6 +24,13 @@ const publicPath = path.resolve(__dirname, "..", "public");
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  next();
+});
 app.use((req, res, next) => {
   if (req.path.startsWith("/css/") || req.path.startsWith("/js/")) {
     res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
@@ -51,9 +59,23 @@ function buildPageData(base = {}) {
     pageScript: "",
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
+    headSocial: "",
     assetVersion,
     ...base
   };
+}
+
+/** Page metadata with canonical URL and social tags when `PUBLIC_BASE_URL` or Railway domain is set. */
+function basePageData(path, overrides = {}) {
+  const title = overrides.title ?? SITE_TITLE;
+  const description = overrides.description ?? SITE_DESCRIPTION;
+  const metaPath = path && path !== "" ? path : "/";
+  return buildPageData({
+    ...overrides,
+    title,
+    description,
+    headSocial: buildHeadSocialHtml({ path: metaPath, title, description })
+  });
 }
 
 /** Formats the nav auth state for guests, operators, and clients. */
@@ -199,7 +221,7 @@ app.get("/", async (req, res, next) => {
       }, 0) / memoDeals.length
       : 0;
     const riskExposure = Math.round(memoDeals.reduce((sum, deal) => sum + (deal.amountCents || 0), 0) / 100000);
-    const html = renderTemplate("landing", buildPageData({
+    const html = renderTemplate("landing", basePageData("/", {
       title: SITE_TITLE,
       authState: formatAuthState(user, "Login"),
       userJson: JSON.stringify(user || null),
@@ -217,7 +239,7 @@ app.get("/", async (req, res, next) => {
 
 app.get("/preview", async (req, res) => {
   const user = await getCurrentUser(req);
-  res.send(renderTemplate("preview", buildPageData({
+  res.send(renderTemplate("preview", basePageData("/preview", {
     title: `${SITE_TITLE} | Preview`,
     authState: formatAuthState(user, "Login"),
     userJson: JSON.stringify(user || null)
@@ -230,7 +252,7 @@ app.get("/capital", async (req, res) => {
   if (user?.ownedWorkspaces?.[0]?.slug) {
     return res.redirect(`/capital/${user.ownedWorkspaces[0].slug}`);
   }
-  res.send(renderTemplate("capital-directory", buildPageData({
+  res.send(renderTemplate("capital-directory", basePageData("/capital", {
     title: `${SITE_TITLE} | Sponsor Intelligence`,
     authState: formatAuthState(user, "Investor access"),
     userJson: JSON.stringify(user || null),
@@ -240,29 +262,35 @@ app.get("/capital", async (req, res) => {
 
 app.get("/capital/:workspaceSlug/opportunities/:slug", async (req, res) => {
   const user = await getCurrentUser(req);
-  res.send(renderTemplate("opportunity", buildPageData({
+  res.send(renderTemplate("opportunity", basePageData(
+    `/capital/${req.params.workspaceSlug}/opportunities/${req.params.slug}`,
+    {
     title: `${SITE_TITLE} | Opportunity Brief`,
     authState: formatAuthState(user, "Investor access"),
     userJson: JSON.stringify(user || null),
     workspaceSlug: req.params.workspaceSlug,
     slug: req.params.slug
-  })));
+  }
+  )));
 });
 
 app.get("/capital/:workspaceSlug/room/:slug", async (req, res) => {
   const user = await getCurrentUser(req);
-  res.send(renderTemplate("room", buildPageData({
+  res.send(renderTemplate("room", basePageData(
+    `/capital/${req.params.workspaceSlug}/room/${req.params.slug}`,
+    {
     title: `${SITE_TITLE} | Private Room`,
     authState: formatAuthState(user, "Private room"),
     userJson: JSON.stringify(user || null),
     workspaceSlug: req.params.workspaceSlug,
     slug: req.params.slug
-  })));
+  }
+  )));
 });
 
 app.get("/capital/:workspaceSlug", async (req, res) => {
   const user = await getCurrentUser(req);
-  res.send(renderTemplate("sponsor", buildPageData({
+  res.send(renderTemplate("sponsor", basePageData(`/capital/${req.params.workspaceSlug}`, {
     title: `${SITE_TITLE} | Sponsor Intelligence`,
     authState: formatAuthState(user, "Investor access"),
     userJson: JSON.stringify(user || null),
@@ -271,11 +299,11 @@ app.get("/capital/:workspaceSlug", async (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.send(renderTemplate("login", buildPageData({ title: `${SITE_TITLE} | Login` })));
+  res.send(renderTemplate("login", basePageData("/login", { title: `${SITE_TITLE} | Login` })));
 });
 
 app.get("/register", (req, res) => {
-  res.send(renderTemplate("register", buildPageData({ title: `${SITE_TITLE} | Register` })));
+  res.send(renderTemplate("register", basePageData("/register", { title: `${SITE_TITLE} | Register` })));
 });
 
 /** Renders an authenticated app view with the standard page metadata. */
@@ -288,7 +316,7 @@ async function renderAuthedPage(req, res, view, extra = {}, role) {
     if (!user) return res.redirect("/login");
     if (role && user.role !== role) return res.status(403).send("Forbidden");
   }
-  return res.send(renderTemplate(view, buildPageData({
+  return res.send(renderTemplate(view, basePageData(extra.path || "/", {
     title: extra.title || SITE_TITLE,
     authState: formatAuthState(user, "Operator access code"),
     userJson: JSON.stringify(user || null),
@@ -422,7 +450,7 @@ function renderPaymentSectionHtml(deal) {
 
 app.get("/submit", async (req, res) => {
   const user = await getCurrentUser(req);
-  res.send(renderTemplate("submit", buildPageData({
+  res.send(renderTemplate("submit", basePageData("/submit", {
     title: `${SITE_TITLE} | Diagnostics`,
     stripePublishableKey: "",
     authState: formatAuthState(user, "Start free preview"),
@@ -432,7 +460,7 @@ app.get("/submit", async (req, res) => {
 
 app.get("/distribution-diagnostic", async (req, res) => {
   const user = await getCurrentUser(req);
-  res.send(renderTemplate("distribution-diagnostic", buildPageData({
+  res.send(renderTemplate("distribution-diagnostic", basePageData("/distribution-diagnostic", {
     title: `${SITE_TITLE} | Distribution Partner Diagnostic`,
     authState: formatAuthState(user, "Run diagnostic"),
     userJson: JSON.stringify(user || null),
@@ -458,7 +486,7 @@ app.post("/distribution-diagnostic", async (req, res) => {
 
   const result = analyzeDistributionDiagnostic(input);
 
-  res.send(renderTemplate("distribution-diagnostic", buildPageData({
+  res.send(renderTemplate("distribution-diagnostic", basePageData("/distribution-diagnostic", {
     title: `${SITE_TITLE} | Distribution Partner Diagnostic`,
     authState: formatAuthState(user, "Run diagnostic"),
     userJson: JSON.stringify(user || null),
@@ -554,7 +582,7 @@ app.get("/deals", async (req, res) => {
   const activeMemos = deals.filter((deal) => ["DIAGNOSING", "MEMO_DELIVERED", "OUTCOME_WINDOW"].includes(deal.status)).length;
   const confirmedOutcomes = deals.filter((deal) => deal.status === "COMPLETED").length;
 
-  res.send(renderTemplate("deals", buildPageData({
+  res.send(renderTemplate("deals", basePageData("/deals", {
     title: `${SITE_TITLE} | Your Diagnostics`,
     authState: formatAuthState(user),
     userJson: JSON.stringify(user),
@@ -584,7 +612,15 @@ app.get("/deals/:id", async (req, res) => {
     });
 
     if (!deal) {
-      return res.status(404).send("Deal not found");
+      return res.status(404).send(
+        renderTemplate(
+          "page-404",
+          basePageData(`/deals/${dealId}`, {
+            title: `${SITE_TITLE} | Deal not found`,
+            description: "This diagnostic record does not exist or you do not have access."
+          })
+        )
+      );
     }
 
     const signalsBySeverity = {
@@ -676,7 +712,7 @@ app.get("/deals/:id", async (req, res) => {
     const meaning = meaningMap[deal.verdict] || meaningMap.CAUTION;
     const commercialState = describeCommercialState(deal);
 
-    res.send(renderTemplate("deal-detail", buildPageData({
+    res.send(renderTemplate("deal-detail", basePageData(`/deals/${deal.id}`, {
       title: `${SITE_TITLE} | ${deal.address}`,
       authState: formatAuthState(user),
       userJson: JSON.stringify(user || null),
@@ -739,7 +775,7 @@ app.get("/track-record", async (req, res) => {
     `).join("")
     : '<div class="empty-state"><div>No completed deals are in the ledger yet.</div><div>This ledger only fills after StoneBridge delivers paid memos and those deals reach confirmed outcomes.</div><div class="empty-state-action"><a class="btn btn-ghost" href="/submit">Start with a live address</a></div></div>';
 
-  res.send(renderTemplate("track-record", buildPageData({
+  res.send(renderTemplate("track-record", basePageData("/track-record", {
     title: `${SITE_TITLE} | Track Record`,
     authState: formatAuthState(user, "Login"),
     userJson: JSON.stringify(user || null),
@@ -756,7 +792,7 @@ app.get("/operator", async (req, res) => {
   const hasCode = req.query.code === config.operatorAccessCode;
   const canAccess = hasCode || user?.role === "OPERATOR" || Boolean(user?.ownedWorkspaces?.length);
   if (!canAccess) return res.redirect("/login");
-  return res.send(renderTemplate("operator", buildPageData({
+  return res.send(renderTemplate("operator", basePageData("/operator", {
     title: `${SITE_TITLE} | Operator`,
     authState: formatAuthState(user, "Operator access code"),
     userJson: JSON.stringify(user || null),
@@ -794,6 +830,57 @@ app.get("/health", async (_req, res) => {
 
 app.get("/_health", (_req, res) => {
   res.json({ status: "ok", publicPath });
+});
+
+app.get("/robots.txt", (_req, res) => {
+  const base = getPublicBaseUrl();
+  const body = base
+    ? `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`
+    : "User-agent: *\nAllow: /\n";
+  res.type("text/plain").send(body);
+});
+
+app.get("/sitemap.xml", (_req, res) => {
+  const base = getPublicBaseUrl();
+  if (!base) {
+    return res
+      .type("application/xml")
+      .send('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+  }
+  const paths = [
+    "/",
+    "/submit",
+    "/track-record",
+    "/preview",
+    "/login",
+    "/register",
+    "/capital",
+    "/distribution-diagnostic"
+  ];
+  const items = paths
+    .map((p) => `  <url><loc>${escapeHtml(base + p)}</loc><changefreq>weekly</changefreq></url>`)
+    .join("\n");
+  res.type("application/xml").send(
+    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${items}\n</urlset>`
+  );
+});
+
+app.use((req, res) => {
+  if (req.path.startsWith("/api/")) {
+    return res.status(404).json({ error: "Not found" });
+  }
+  if (req.method !== "GET" && req.method !== "HEAD") {
+    return res.status(404).type("text/plain").send("Not found");
+  }
+  res.status(404).send(
+    renderTemplate(
+      "page-404",
+      basePageData(req.path, {
+        title: `${SITE_TITLE} | Page not found`,
+        description: "This page does not exist on StoneBridge."
+      })
+    )
+  );
 });
 
 app.use((error, req, res, _next) => {

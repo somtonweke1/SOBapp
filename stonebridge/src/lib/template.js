@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { getPublicBaseUrl } = require("./public-url");
 
 const cache = new Map();
 
@@ -39,4 +40,26 @@ function renderTemplate(name, data = {}) {
   return html;
 }
 
-module.exports = { renderTemplate, escapeHtml };
+/** Injects canonical + Open Graph + Twitter Card tags when a public base URL is known. */
+function buildHeadSocialHtml({ path = "/", title, description }) {
+  const base = getPublicBaseUrl();
+  if (!base) return "";
+  const p = path.startsWith("/") ? path : `/${path}`;
+  const canonicalUrl = `${base}${p === "//" ? "/" : p}`;
+  const t = escapeHtml(title);
+  const d = escapeHtml(description);
+  const u = escapeHtml(canonicalUrl);
+  return `
+  <link rel="canonical" href="${u}">
+  <meta name="theme-color" content="#1A1916">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="${u}">
+  <meta property="og:title" content="${t}">
+  <meta property="og:description" content="${d}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${t}">
+  <meta name="twitter:description" content="${d}">`;
+}
+
+module.exports = { renderTemplate, escapeHtml, buildHeadSocialHtml };
