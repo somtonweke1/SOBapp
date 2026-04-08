@@ -21,51 +21,62 @@
       <a class="nav-link active" href="/capital">Sponsor Intelligence</a>
       <a class="nav-link" href="/operator">Operator</a>
     </div>
-    <div class="nav-actions">
+    <div class="nav-actions nav-actions--split">
       <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">Menu</button>
       <span class="nav-auth">{{authState}}</span>
-      <a class="btn btn-primary" href="/register">Create sponsor workspace</a>
+      <a class="btn btn-primary nav-cta" href="/register">Create workspace</a>
     </div>
   </nav>
 
-  <main class="page-wrap sponsor-shell">
-    <section class="sponsor-hero">
+  <main class="page-wrap sponsor-shell capital-page">
+    <section class="sponsor-hero sponsor-hero--directory">
       <div class="container">
-        <div class="eyebrow">StoneBridge Overlay Layer</div>
-        <h1 class="hero-title">Sponsor intelligence built on top of the deal engine.</h1>
-        <p class="hero-sub">These workspaces are secondary surfaces layered on top of StoneBridge's core housing-deal diagnostics and memo workflow. They package sponsor, opportunity, and capital context after the underwriting engine has already done its work.</p>
+        <p class="eyebrow">After the diagnosis</p>
+        <h1 class="hero-title">Sponsor intelligence on top of the deal engine.</h1>
+        <p class="hero-sub">These portals are for capital formation: thesis, opportunities, and investor-ready rooms. They assume the <strong>Baltimore address work</strong> already ran through StoneBridge—this layer packages who you are for LPs and partners, not generic CRM fluff.</p>
       </div>
     </section>
 
-    <section class="page-section">
+    <section class="page-section page-section--capital-grid">
       <div class="container">
-        <div class="section-head">
-          <div class="eyebrow">Live Workspaces</div>
-          <h2 class="section-title">Open a sponsor portal.</h2>
+        <div class="section-head section-head--tight">
+          <div class="eyebrow">Live workspaces</div>
+          <h2 class="section-title">Open a portal</h2>
+          <p class="section-sub section-sub--inline">Each card is a sponsor-facing site with its own URL. No workspace yet—create one and link it to your fund.</p>
         </div>
         <div class="sponsor-card-grid" id="workspaceDirectory"></div>
       </div>
     </section>
   </main>
 
+  <script src="/js/app.js?v={{assetVersion}}"></script>
   <script>
+    const esc = (v) => (window.StoneBridge && StoneBridge.escapeHtml ? StoneBridge.escapeHtml(String(v ?? "")) : String(v ?? ""));
     const workspaces = {{{workspacesJson}}};
-    workspaceDirectory.innerHTML = workspaces.length
+    const root = document.getElementById("workspaceDirectory");
+    root.innerHTML = workspaces.length
       ? workspaces.map((workspace) => `
         <article class="sponsor-card sponsor-card-accent">
-          <div class="eyebrow">${workspace.slug}</div>
-          <div class="card-title">${workspace.name}</div>
-          <div class="detail-note">${workspace.strapline || ""}</div>
-          <p class="card-copy">${workspace.fundName || ""}${workspace.targetRaise ? ` · ${workspace.targetRaise}` : ""}</p>
+          <div class="eyebrow">${esc(workspace.slug)}</div>
+          <div class="card-title">${esc(workspace.name)}</div>
+          <div class="detail-note">${esc(workspace.strapline || "")}</div>
+          <p class="card-copy">${esc(workspace.fundName || "")}${workspace.targetRaise ? ` · ${esc(workspace.targetRaise)}` : ""}</p>
           <div class="signal-summary">
-            ${workspace.targetProfile ? `<span class="pill">${workspace.targetProfile}</span>` : ""}
+            ${workspace.targetProfile ? `<span class="pill">${esc(workspace.targetProfile)}</span>` : ""}
           </div>
           <div class="action-row">
-            <a class="btn btn-primary" href="/capital/${workspace.slug}">View portal →</a>
+            <a class="btn btn-primary" href="/capital/${encodeURIComponent(workspace.slug)}">Open portal →</a>
           </div>
         </article>
       `).join("")
-      : '<div class="empty-state"><div>No sponsor workspaces are live yet.</div><div class="empty-state-action"><a class="btn btn-ghost" href="/register">Create sponsor workspace</a></div></div>';
+      : `<div class="empty-state empty-state--wide">
+          <div class="empty-state-title">No public workspaces yet</div>
+          <div>When a sponsor workspace is published, it appears here as a branded portal. You can create one if you run capital or IR.</div>
+          <div class="empty-state-action">
+            <a class="btn btn-primary" href="/register">Create sponsor workspace</a>
+            <a class="btn btn-ghost" href="/submit">Run a deal diagnostic first</a>
+          </div>
+        </div>`;
   </script>
   <script src="/js/nav.js?v={{assetVersion}}"></script>
 </body>

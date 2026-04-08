@@ -254,6 +254,8 @@ app.get("/capital", async (req, res) => {
   }
   res.send(renderTemplate("capital-directory", basePageData("/capital", {
     title: `${SITE_TITLE} | Sponsor Intelligence`,
+    description:
+      "Investor-ready sponsor portals on top of StoneBridge: thesis, opportunities, and private rooms after the core Baltimore deal diagnosis.",
     authState: formatAuthState(user, "Investor access"),
     userJson: JSON.stringify(user || null),
     workspacesJson: JSON.stringify(workspaces)
@@ -451,7 +453,9 @@ function renderPaymentSectionHtml(deal) {
 app.get("/submit", async (req, res) => {
   const user = await getCurrentUser(req);
   res.send(renderTemplate("submit", basePageData("/submit", {
-    title: `${SITE_TITLE} | Diagnostics`,
+    title: `${SITE_TITLE} | Run diagnostics`,
+    description:
+      "Free Baltimore address screen: risk score and Proceed / Caution / Escalate from public records in seconds. Upgrade to the $2,500 memo when the deal is live.",
     stripePublishableKey: "",
     authState: formatAuthState(user, "Start free preview"),
     userJson: JSON.stringify(user || null)
@@ -769,14 +773,16 @@ app.get("/track-record", async (req, res) => {
         <div class="track-cell track-address">${escapeHtml(deal.address)}</div>
         <div class="track-cell"><span class="v-badge ${verdictClass(deal.verdict)}">${deal.verdict || "PENDING"}</span></div>
         <div class="track-cell track-status">${deal.outcomeConfirmedAt ? "Confirmed" : "Pending"}</div>
-        <div class="track-cell track-date">${new Date(deal.createdAt).toLocaleDateString()}</div>
+        <div class="track-cell track-date">${deal.memoDeliveredAt ? new Date(deal.memoDeliveredAt).toLocaleString() : new Date(deal.createdAt).toLocaleString()}</div>
         <div class="track-cell"><span class="hash-chip">${deal.memoHash ? `${deal.memoHash.slice(0, 12)}…` : "—"}</span></div>
       </div>
     `).join("")
-    : '<div class="empty-state"><div>No completed deals are in the ledger yet.</div><div>This ledger only fills after StoneBridge delivers paid memos and those deals reach confirmed outcomes.</div><div class="empty-state-action"><a class="btn btn-ghost" href="/submit">Start with a live address</a></div></div>';
+    : '<div class="empty-state"><div class="empty-state-title">No rows in the ledger yet</div><div>Completed deals appear here after memo delivery and a confirmed outcome. Run a live address to start the pipeline.</div><div class="empty-state-action"><a class="btn btn-primary" href="/submit">Run a free preview</a></div></div>';
 
   res.send(renderTemplate("track-record", basePageData("/track-record", {
     title: `${SITE_TITLE} | Track Record`,
+    description:
+      "Public ledger of completed StoneBridge engagements: verdicts, memo hashes, and outcomes—addresses only, no client names.",
     authState: formatAuthState(user, "Login"),
     userJson: JSON.stringify(user || null),
     totalMemos: deliveredDeals.length,
@@ -794,6 +800,8 @@ app.get("/operator", async (req, res) => {
   if (!canAccess) return res.redirect("/login");
   return res.send(renderTemplate("operator", basePageData("/operator", {
     title: `${SITE_TITLE} | Operator`,
+    description:
+      "StoneBridge operator console: pipeline, diagnostics queue, capital fit, and signal health for Baltimore deal memos and sponsor workspaces.",
     authState: formatAuthState(user, "Operator access code"),
     userJson: JSON.stringify(user || null),
     accessCodeHash: crypto.createHash("sha256").update(config.operatorAccessCode).digest("hex")

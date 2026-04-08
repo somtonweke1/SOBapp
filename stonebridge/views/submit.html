@@ -27,52 +27,54 @@
     </div>
   </nav>
 
-  <div class="page-wrap">
+  <div class="page-wrap submit-page">
     <div class="submit-hero">
       <div class="container-sm">
-        <p class="eyebrow">Deal Diagnostics</p>
-        <h1 class="submit-title">Start with the address.<br>Buy the memo when the pressure is real.</h1>
-        <p class="submit-sub">We read Baltimore public records, stack the signals, and return a risk score with a Proceed / Caution / Escalate verdict in seconds—so you know whether a full written memo is worth the fee.</p>
+        <p class="eyebrow">Baltimore · live public records</p>
+        <h1 class="submit-title">Run the address.<br><em>Get the verdict before you wire capital.</em></h1>
+        <p class="submit-sub">One full street address pulls the signal stack—liens, ownership friction, procurement, infrastructure—into a single risk score and a Proceed / Caution / Escalate call. If the screen is boring, you walk away. If it isn’t, you already know the memo is justified.</p>
       </div>
     </div>
 
     <div class="submit-form-wrap">
       <div class="container-sm">
+        <div class="submit-step-label"><span class="submit-step-num">1</span> Free screen</div>
         <div class="submit-offer-strip">
           <div class="submit-offer-card">
-            <div class="eyebrow">Free preview</div>
-            <div class="submit-offer-title">Run the screen first.</div>
-            <div class="submit-offer-copy">Check whether the address shows enough friction, signal density, or hidden risk to justify deeper work.</div>
+            <div class="eyebrow">What you get free</div>
+            <div class="submit-offer-title">Verdict + score + signals</div>
+            <div class="submit-offer-copy">Enough to decide whether this deal deserves a committee conversation—not a vague “report coming soon.”</div>
           </div>
           <div class="submit-offer-card submit-offer-card-accent">
-            <div class="eyebrow">Paid deliverable</div>
-            <div class="submit-offer-title">$2,500 decision memo.</div>
-            <div class="submit-offer-copy">Proceed / Caution / Escalate recommendation, written rationale, evidence links, and next diligence questions within 24 hours.</div>
+            <div class="eyebrow">When pressure is real</div>
+            <div class="submit-offer-title">$2,500 · 24-hour memo</div>
+            <div class="submit-offer-copy">Written rationale, citations, evidence links, and the next diligence questions tied to this address—not a screenshot of a dashboard.</div>
           </div>
         </div>
 
         <div id="submit-error"></div>
 
-        <form action="/api/deals/diagnose" method="POST" id="diagnose-form">
+        <form action="/api/deals/diagnose" method="POST" id="diagnose-form" aria-label="Run Baltimore address diagnostic">
+          <label class="visually-hidden" for="address-input">Street address in Baltimore, Maryland</label>
           <div class="address-field-wrap">
             <input
               type="text"
               name="address"
               id="address-input"
               class="address-input"
-              placeholder="e.g. 1401 Hull St, Baltimore MD 21230"
-              autocomplete="off"
+              placeholder="Full address, e.g. 1401 Hull St, Baltimore MD 21230"
+              autocomplete="street-address"
               autofocus
               required
             >
             <button type="submit" class="diagnose-btn" id="diagnose-btn">
               <span class="diagnose-btn-text">Run free preview</span>
-              <span class="diagnose-btn-arrow">→</span>
+              <span class="diagnose-btn-arrow" aria-hidden="true">→</span>
             </button>
           </div>
 
           <div class="quick-chips">
-            <span class="chips-label">Try an example:</span>
+            <span class="chips-label">Sample addresses</span>
             <button type="button" class="chip" data-addr="1401 Hull St, Baltimore MD 21230">1401 Hull St</button>
             <button type="button" class="chip" data-addr="820 N Eutaw St, Baltimore MD 21201">820 N Eutaw</button>
             <button type="button" class="chip" data-addr="2801 Maryland Ave, Baltimore MD 21218">2801 Maryland Ave</button>
@@ -80,29 +82,53 @@
           </div>
         </form>
 
-        <div class="loading-state" id="loading-state" style="display:none">
-          <div class="loading-spinner"></div>
-          <div class="loading-text">Reading public records for <strong id="loading-address"></strong>...</div>
+        <div class="loading-state" id="loading-state" style="display:none" role="status" aria-live="polite">
+          <div class="loading-spinner" aria-hidden="true"></div>
+          <div class="loading-text">Pulling records for <strong id="loading-address"></strong></div>
+          <p class="loading-hint">This usually finishes in a few seconds. You will land on your full diagnostic page when ready.</p>
           <div class="loading-sources">
-            <span class="loading-src">Baltimore City Open Data</span>
-            <span class="loading-src">Maryland SDAT</span>
+            <span class="loading-src">City open data</span>
+            <span class="loading-src">SDAT</span>
             <span class="loading-src">SAM.gov</span>
-            <span class="loading-src">Baltimore 311</span>
+            <span class="loading-src">311</span>
           </div>
         </div>
 
-        <div class="submit-trust">
-          <div class="trust-item"><span class="trust-icon">⏱</span><span>Results in under 10 seconds</span></div>
-          <div class="trust-item"><span class="trust-icon">🔒</span><span>Public records are read directly, not entered by hand</span></div>
-          <div class="trust-item"><span class="trust-icon">📋</span><span>Paid memo available when the screen reveals real risk</span></div>
+        <div class="submit-trust submit-trust--pillars">
+          <div class="trust-pillar">
+            <span class="trust-pillar-mark" aria-hidden="true">01</span>
+            <div>
+              <div class="trust-pillar-title">Speed</div>
+              <p class="trust-pillar-desc">Score and verdict while the address is still on your screen—not after a sales call.</p>
+            </div>
+          </div>
+          <div class="trust-pillar">
+            <span class="trust-pillar-mark" aria-hidden="true">02</span>
+            <div>
+              <div class="trust-pillar-title">Source-backed</div>
+              <p class="trust-pillar-desc">Signals tie to public datasets; nothing is copy-pasted from a generic checklist.</p>
+            </div>
+          </div>
+          <div class="trust-pillar">
+            <span class="trust-pillar-mark" aria-hidden="true">03</span>
+            <div>
+              <div class="trust-pillar-title">Clear upgrade path</div>
+              <p class="trust-pillar-desc">The paid memo is the same deal, deeper—only when the free screen earns it.</p>
+            </div>
+          </div>
         </div>
 
         <div class="submit-proof">
           <div class="proof-block">
-            <div><span class="pk">free_preview</span><span class="pv">Public signals, preliminary verdict, source trace</span></div>
-            <div><span class="pk">paid_memo</span><span class="pv">$2,500, 24-hour turnaround, written decision brief</span></div>
-            <div><span class="pk">best_for</span><span class="pv">Acquisition, refinance, rehab, lender, and vendor-signature decisions</span></div>
+            <div><span class="pk">free_preview</span><span class="pv">Risk score, verdict, signal table, source trace</span></div>
+            <div><span class="pk">paid_memo</span><span class="pv">$2,500 · 24h · written decision brief</span></div>
+            <div><span class="pk">best_for</span><span class="pv">Acquisition, refinance, rehab, lender IC, LOI windows</span></div>
           </div>
+        </div>
+
+        <div class="submit-footer-links">
+          <a class="submit-footer-link" href="/track-record">Track record — completed outcomes on the ledger</a>
+          <a class="submit-footer-link" href="/">How StoneBridge works</a>
         </div>
       </div>
     </div>
@@ -125,6 +151,7 @@
       document.querySelector('.quick-chips').style.display = 'none';
       document.getElementById('loading-state').style.display = 'block';
       document.getElementById('diagnose-btn').disabled = true;
+      document.getElementById('diagnose-form').setAttribute('aria-busy', 'true');
     });
   </script>
   <script src="/js/nav.js?v={{assetVersion}}"></script>
