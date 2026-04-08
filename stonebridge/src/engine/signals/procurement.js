@@ -90,6 +90,7 @@ async function checkProcurementAdjacency(address) {
     console.log(`[signals:procurement] live data - ${signals.length} signals derived`);
     return signals;
   } catch (error) {
+    console.warn("[signals:procurement] live fetch failed, using estimated signals:", error.message);
     return mockProcurementSignals(address);
   }
 }

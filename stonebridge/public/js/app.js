@@ -7,7 +7,15 @@ window.StoneBridge = {
     });
     const type = response.headers.get("content-type") || "";
     const data = type.includes("application/json") ? await response.json() : await response.text();
-    if (!response.ok) throw new Error(data.error || data || "Request failed");
+    if (!response.ok) {
+      const message =
+        typeof data === "object" && data && data.error
+          ? data.error
+          : typeof data === "string" && data.trim()
+            ? data.trim()
+            : "Request failed";
+      throw new Error(message);
+    }
     return data;
   },
   formatDate(value) {
@@ -96,9 +104,11 @@ window.StoneBridge = {
     const error = params.get("error");
     if (!error) return;
     const container = document.getElementById(containerId);
-    if (container) {
-      container.innerHTML = `<div class="error-banner">${error}</div>`;
-    }
+    if (!container) return;
+    const banner = document.createElement("div");
+    banner.className = "error-banner";
+    banner.textContent = error;
+    container.appendChild(banner);
   },
   parseRoomUrl(path) {
     if (!path) return "";

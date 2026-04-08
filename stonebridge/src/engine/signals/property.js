@@ -1,6 +1,7 @@
-const { addressSeed, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
+const { addressSeed, baltimoreOpenDataHeaders, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
 
 function parsePropertySignals(rows, address, url) {
+  if (!Array.isArray(rows) || rows.length === 0) return [];
   const row = rows[0];
   const signals = [];
   const violationCount = Number(row.codeviolationcount || row.openviolationcount || 0);
@@ -116,13 +117,17 @@ async function checkPropertyRecords(address) {
   try {
     const encoded = encodeURIComponent(address);
     const url = `https://data.baltimorecity.gov/resource/5qtz-d274.json?$limit=5&$q=${encoded}`;
-    const response = await fetchWithTimeout(url, { signal: AbortSignal.timeout(4000) });
+    const response = await fetchWithTimeout(url, {
+      signal: AbortSignal.timeout(4000),
+      headers: baltimoreOpenDataHeaders()
+    });
     if (!response.ok) throw new Error(`API error: ${response.status}`);
     const rows = await response.json();
     if (!Array.isArray(rows) || rows.length === 0) throw new Error("No results");
     console.log(`[signals:property] live data - ${rows.length} records`);
     return parsePropertySignals(rows, address, url);
   } catch (error) {
+    console.warn("[signals:property] live fetch failed, using estimated signals:", error.message);
     return mockPropertySignals(address);
   }
 }

@@ -15,7 +15,7 @@ function parseLienSignals(html, url) {
     }));
   }
 
-  if (normalized.includes("tax")) {
+  if (/\b(tax|taxes)\b/.test(normalized)) {
     signals.push(buildSignal({
       source: "Maryland SDAT",
       category: "LIEN",
@@ -111,6 +111,7 @@ async function checkLiens(address) {
     console.log("[signals:liens] live data - SDAT page loaded");
     return parseLienSignals(html, url);
   } catch (error) {
+    console.warn("[signals:liens] live fetch failed, using estimated signals:", error.message);
     return mockLienSignals(address);
   }
 }

@@ -122,6 +122,7 @@ async function checkOwnershipContext(address) {
     console.log("[signals:ownership] live data - SDAT ownership page loaded");
     return parseOwnershipSignals(html, url);
   } catch (error) {
+    console.warn("[signals:ownership] live fetch failed, using estimated signals:", error.message);
     return mockOwnershipSignals(address);
   }
 }

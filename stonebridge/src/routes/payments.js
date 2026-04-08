@@ -3,6 +3,7 @@ const { prisma } = require("../lib/prisma");
 const { asyncHandler, sendError } = require("../lib/http");
 const { requireAuth } = require("../middleware/auth");
 const { cancelIntent, captureIntent, createHeldIntent } = require("../lib/payments");
+const { isValidDealId } = require("../lib/validation");
 
 const router = express.Router();
 
@@ -10,10 +11,18 @@ router.use(requireAuth);
 
 router.post("/create-intent", asyncHandler(async (req, res) => {
   const { dealId, paymentMethodId } = req.body;
+  if (!isValidDealId(dealId)) return sendError(res, 400, "Invalid deal id");
+  if (paymentMethodId != null && typeof paymentMethodId !== "string") {
+    return sendError(res, 400, "paymentMethodId must be a string when provided");
+  }
+
   const deal = await prisma.deal.findFirst({
     where: { id: dealId, clientId: req.user.id }
   });
   if (!deal) return sendError(res, 404, "Deal not found");
+  if (!deal.amountCents || deal.amountCents < 1) {
+    return sendError(res, 400, "Deal has no chargeable amount configured");
+  }
 
   const intent = await createHeldIntent({
     amount: deal.amountCents,
@@ -55,6 +64,7 @@ router.post("/capture/:dealId", asyncHandler(async (req, res) => {
 }));
 
 router.post("/refund/:dealId", asyncHandler(async (req, res) => {
+  if (!isValidDealId(req.params.dealId)) return sendError(res, 400, "Invalid deal id");
   const deal = await prisma.deal.findFirst({
     where: { id: req.params.dealId, clientId: req.user.id }
   });

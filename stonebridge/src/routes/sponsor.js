@@ -12,6 +12,7 @@ const {
   serializeOpportunity,
   serializeWorkspace
 } = require("../lib/sponsor");
+const { isValidEmail, isValidWorkspaceSlug } = require("../lib/validation");
 
 const router = express.Router();
 
@@ -19,6 +20,11 @@ router.get("/workspaces", asyncHandler(async (_req, res) => {
   const workspaces = await listActiveWorkspaces();
   res.json({ workspaces });
 }));
+
+router.param("workspaceSlug", (req, res, next, slug) => {
+  if (!isValidWorkspaceSlug(slug)) return sendError(res, 400, "Invalid workspace slug");
+  next();
+});
 
 router.get("/:workspaceSlug/overview", asyncHandler(async (req, res) => {
   const [completedDeals, releasedCapital] = await Promise.all([
@@ -63,6 +69,8 @@ router.post("/:workspaceSlug/inquiries", asyncHandler(async (req, res) => {
   if (!name || !email || !investorType || !checkSize || !interestLevel) {
     return sendError(res, 400, "Name, email, investor type, check size, and interest level are required");
   }
+  const emailNorm = String(email).trim().toLowerCase();
+  if (!isValidEmail(emailNorm)) return sendError(res, 400, "Enter a valid email address");
 
   const workspace = await getWorkspaceBySlug(req.params.workspaceSlug);
   if (!workspace) return sendError(res, 404, "No sponsor workspace configured");
@@ -72,7 +80,7 @@ router.post("/:workspaceSlug/inquiries", asyncHandler(async (req, res) => {
   const inquiry = await prisma.investorInquiry.create({
     data: {
       name: String(name).trim(),
-      email: String(email).trim().toLowerCase(),
+      email: emailNorm,
       firm: String(firm || "").trim() || null,
       investorType: String(investorType).trim(),
       checkSize: String(checkSize).trim(),

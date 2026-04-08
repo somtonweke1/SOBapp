@@ -4,8 +4,8 @@ const cors = require("cors");
 const crypto = require("crypto");
 const { prisma } = require("./lib/prisma");
 const { config } = require("./lib/config");
-const { renderTemplate } = require("./lib/template");
-const { readTokenFromRequest, verifyToken } = require("./lib/auth");
+const { renderTemplate, escapeHtml } = require("./lib/template");
+const { loadSessionUser, hideDemoPublicUser } = require("./lib/request-user");
 const authRoutes = require("./routes/auth");
 const dealRoutes = require("./routes/deals");
 const operatorRoutes = require("./routes/operator");
@@ -19,12 +19,6 @@ const { startJobs } = require("./jobs");
 
 const app = express();
 const publicPath = path.resolve(__dirname, "..", "public");
-const DEMO_EMAILS = new Set([
-  "amira@harborcap.com",
-  "jonah@rowhousefund.com",
-  "talia@monumentlending.com"
-]);
-
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -37,21 +31,10 @@ app.use((req, res, next) => {
 app.use(express.static(publicPath));
 app.use("/memos", express.static(path.resolve(__dirname, "..", "memos")));
 
-/** Resolves the authenticated user and suppresses seeded demo identities. */
+/** Resolves the authenticated user for HTML pages and suppresses seeded demo identities. */
 async function getCurrentUser(req) {
-  try {
-    const token = readTokenFromRequest(req);
-    if (!token) return null;
-    const payload = verifyToken(token);
-    const user = await prisma.user.findUnique({
-      where: { id: payload.sub },
-      include: { ownedWorkspaces: { select: { id: true, slug: true, name: true }, orderBy: { createdAt: "asc" }, take: 1 } }
-    });
-    if (user?.email && DEMO_EMAILS.has(user.email.toLowerCase())) return null;
-    return user;
-  } catch {
-    return null;
-  }
+  const user = await loadSessionUser(req, { includeWorkspaces: true });
+  return hideDemoPublicUser(user);
 }
 
 /** Merges global page metadata with route-specific view data. */
@@ -196,45 +179,49 @@ app.get("/healthz", async (_req, res) => {
   }
 });
 
-app.get("/", async (req, res) => {
-  const user = await getCurrentUser(req);
-  const allDeals = await prisma.deal.findMany({
-    select: {
-      amountCents: true,
-      createdAt: true,
-      memoDeliveredAt: true,
-      memoHash: true,
-      paymentStatus: true,
-      paymentIntentId: true,
-      riskScoreBefore: true,
-      status: true
-    }
-  });
-  const realDeals = allDeals.filter((deal) => !isDemoDeal(deal));
-  const memoDeals = realDeals.filter(isPaidMemoDeal);
-  const completed = realDeals.filter((deal) => deal.status === "COMPLETED").length;
-  const avgRiskScore = realDeals.length
-    ? realDeals.reduce((sum, deal) => sum + (deal.riskScoreBefore || 0), 0) / realDeals.length
-    : 0;
-  const averageDeliveryHours = memoDeals.length
-    ? memoDeals.reduce((sum, deal) => {
-      const deliveredAt = deal.memoDeliveredAt ? new Date(deal.memoDeliveredAt).getTime() : new Date(deal.createdAt).getTime();
-      const createdAt = new Date(deal.createdAt).getTime();
-      return sum + Math.max(0, (deliveredAt - createdAt) / 36e5);
-    }, 0) / memoDeals.length
-    : 0;
-  const riskExposure = Math.round(memoDeals.reduce((sum, deal) => sum + (deal.amountCents || 0), 0) / 100000);
-  const html = renderTemplate("landing", buildPageData({
-    title: SITE_TITLE,
-    authState: formatAuthState(user, "Login"),
-    userJson: JSON.stringify(user || null),
-    totalMemos: memoDeals.length,
-    totalDeals: completed,
-    riskExposure,
-    avgDelivery: formatAvgDeliveryHours(averageDeliveryHours),
-    avgRiskScore: Math.round(avgRiskScore || 0)
-  }));
-  res.send(html);
+app.get("/", async (req, res, next) => {
+  try {
+    const user = await getCurrentUser(req);
+    const allDeals = await prisma.deal.findMany({
+      select: {
+        amountCents: true,
+        createdAt: true,
+        memoDeliveredAt: true,
+        memoHash: true,
+        paymentStatus: true,
+        paymentIntentId: true,
+        riskScoreBefore: true,
+        status: true
+      }
+    });
+    const realDeals = allDeals.filter((deal) => !isDemoDeal(deal));
+    const memoDeals = realDeals.filter(isPaidMemoDeal);
+    const completed = realDeals.filter((deal) => deal.status === "COMPLETED").length;
+    const avgRiskScore = realDeals.length
+      ? realDeals.reduce((sum, deal) => sum + (deal.riskScoreBefore || 0), 0) / realDeals.length
+      : 0;
+    const averageDeliveryHours = memoDeals.length
+      ? memoDeals.reduce((sum, deal) => {
+        const deliveredAt = deal.memoDeliveredAt ? new Date(deal.memoDeliveredAt).getTime() : new Date(deal.createdAt).getTime();
+        const createdAt = new Date(deal.createdAt).getTime();
+        return sum + Math.max(0, (deliveredAt - createdAt) / 36e5);
+      }, 0) / memoDeals.length
+      : 0;
+    const riskExposure = Math.round(memoDeals.reduce((sum, deal) => sum + (deal.amountCents || 0), 0) / 100000);
+    const html = renderTemplate("landing", buildPageData({
+      title: SITE_TITLE,
+      authState: formatAuthState(user, "Login"),
+      userJson: JSON.stringify(user || null),
+      totalMemos: memoDeals.length,
+      totalDeals: completed,
+      riskExposure,
+      avgDelivery: formatAvgDeliveryHours(averageDeliveryHours),
+      avgRiskScore: Math.round(avgRiskScore || 0)
+    }));
+    res.send(html);
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.get("/preview", async (req, res) => {
@@ -403,17 +390,18 @@ app.get("/distribution-diagnostic", async (req, res) => {
 
 app.post("/distribution-diagnostic", async (req, res) => {
   const user = await getCurrentUser(req);
+  const shortText = (value, max) => String(value || "").trim().slice(0, max);
   const input = {
-    fundName: String(req.body.fundName || "").trim(),
-    assetFocus: String(req.body.assetFocus || "").trim(),
-    partnerModel: String(req.body.partnerModel || "").trim(),
-    trackRecord: String(req.body.trackRecord || "").trim(),
-    fundraisingGoal: String(req.body.fundraisingGoal || "").trim(),
-    outreachState: String(req.body.outreachState || "").trim(),
-    currentConstraint: String(req.body.currentConstraint || "").trim(),
-    targetPartners: normalizeList(req.body.targetPartners),
-    materials: normalizeList(req.body.materials),
-    notes: String(req.body.notes || "").trim()
+    fundName: shortText(req.body.fundName, 200),
+    assetFocus: shortText(req.body.assetFocus, 500),
+    partnerModel: shortText(req.body.partnerModel, 120),
+    trackRecord: shortText(req.body.trackRecord, 80),
+    fundraisingGoal: shortText(req.body.fundraisingGoal, 120),
+    outreachState: shortText(req.body.outreachState, 80),
+    currentConstraint: shortText(req.body.currentConstraint, 80),
+    targetPartners: normalizeList(req.body.targetPartners).map((item) => shortText(item, 120)),
+    materials: normalizeList(req.body.materials).map((item) => shortText(item, 80)),
+    notes: shortText(req.body.notes, 4000)
   };
 
   const result = analyzeDistributionDiagnostic(input);
@@ -719,17 +707,46 @@ app.use("/api/public", publicRoutes);
 app.use("/api/sponsor", sponsorRoutes);
 
 app.get("/health", async (_req, res) => {
-  const userCount = await prisma.user.count().catch(() => null);
-  res.json({ ok: true, userCount });
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    const userCount = await prisma.user.count();
+    res.json({
+      ok: true,
+      service: "stonebridge-web",
+      database: "reachable",
+      userCount,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(503).json({
+      ok: false,
+      service: "stonebridge-web",
+      database: "unreachable",
+      error: "database_unavailable",
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 app.get("/_health", (_req, res) => {
   res.json({ status: "ok", publicPath });
 });
 
-app.use((error, _req, res, _next) => {
+app.use((error, req, res, _next) => {
   const status = error.statusCode || 500;
-  res.status(status).json({ error: error.message || "Internal Server Error" });
+  const message = error.message || "Internal Server Error";
+  const wantsHtml = typeof req.accepts === "function" && req.accepts("html") && !req.path.startsWith("/api/");
+  if (wantsHtml) {
+    return res.status(status).type("html").send(
+      `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Error</title>` +
+        `<meta name="viewport" content="width=device-width, initial-scale=1">` +
+        `<link rel="stylesheet" href="/css/app.css" /></head><body class="app-shell">` +
+        `<div class="container" style="padding:48px 24px"><h1 class="page-title">Something went wrong</h1>` +
+        `<p class="subcopy">${escapeHtml(message)}</p><p><a class="btn btn-primary" href="/">Return home</a></p></div></body></html>`
+    );
+  }
+  res.status(status).json({ error: message });
 });
 
 if (require.main === module) {

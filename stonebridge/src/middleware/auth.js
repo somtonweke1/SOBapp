@@ -10,7 +10,8 @@ async function requireAuth(req, res, next) {
     if (!user) return res.status(401).json({ error: "Invalid token" });
     req.user = user;
     next();
-  } catch {
+  } catch (error) {
+    if (process.env.NODE_ENV !== "test") console.warn("[requireAuth]", error.message);
     res.status(401).json({ error: "Invalid token" });
   }
 }

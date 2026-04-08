@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const PDFDocument = require("pdfkit");
 const { prisma } = require("../lib/prisma");
 
-/** Maps signal categories to the next diligence actions the memo should recommend. */
+/** Maps signal categories to diligence actions referenced in the generated PDF memo. */
 function nextStepsForSignals(signals) {
   const categories = [...new Set(signals.map(signal => signal.category))];
   const steps = [];
@@ -17,19 +17,23 @@ function nextStepsForSignals(signals) {
   return steps.length ? steps : ["Proceed with standard diligence and lender package review."];
 }
 
-/** Generates, hashes, and records the PDF memo for a deal. */
+/** Writes a PDF memo for the deal, persists its hash and path on the deal row, and records a timeline event. */
 async function generateMemo(deal, signals) {
   const normalizedSignals = Array.isArray(signals) ? signals : [];
   const memoDir = path.join(process.cwd(), "memos");
-  fs.mkdirSync(memoDir, { recursive: true });
+  await fs.promises.mkdir(memoDir, { recursive: true });
   const filePath = path.join(memoDir, `${deal.id}.pdf`);
   const doc = new PDFDocument({ margin: 48 });
   const stream = fs.createWriteStream(filePath);
   doc.pipe(stream);
 
+  const safeAddress = String(deal.address || "").replace(/\s+/g, " ").trim();
+  const city = String(deal.city || "Baltimore").trim();
+  const state = String(deal.state || "MD").trim();
+
   doc.fontSize(22).text("StoneBridge AI — Deal Risk Memo");
   doc.moveDown(0.4);
-  doc.fontSize(12).text(`Address: ${deal.address}, ${deal.city}, ${deal.state}`);
+  doc.fontSize(12).text(`Address: ${safeAddress}, ${city}, ${state}`);
   doc.text(`Intake timestamp: ${deal.createdAt.toISOString()}`);
   doc.text(`Risk score before: ${deal.riskScoreBefore}`);
   doc.text(`Flag count before: ${deal.flagCountBefore}`);
@@ -54,14 +58,15 @@ async function generateMemo(deal, signals) {
   nextStepsForSignals(normalizedSignals).forEach((step, index) => doc.text(`${index + 1}. ${step}`));
   doc.moveDown();
   doc.text(`StoneBridge attribution: StoneBridge AI delivered this memo at ${new Date().toISOString()}.`);
-  doc.end();
 
   await new Promise((resolve, reject) => {
-    stream.on("finish", resolve);
-    stream.on("error", reject);
+    stream.once("finish", resolve);
+    stream.once("error", reject);
+    doc.once("error", reject);
+    doc.end();
   });
 
-  const memoContent = fs.readFileSync(filePath);
+  const memoContent = await fs.promises.readFile(filePath);
   const hash = crypto.createHash("sha256").update(memoContent).digest("hex");
 
   await prisma.deal.update({

@@ -42,7 +42,7 @@ async function runDiagnosticForDeal(dealId) {
       data: {
         dealId,
         event: "DIAGNOSTIC_COMPLETED",
-        detail: `Risk score ${result.riskScore}; ${result.flagCount} non-low flags; derived verdict ${result.verdict}${result.sourceStatus.failed ? `; ${result.sourceStatus.failed} source failures` : ""}`
+        detail: `Risk score ${result.riskScore}; ${result.flagCount} non-low flags; derived verdict ${result.verdict}${result.sourceStatus.rejected ? `; ${result.sourceStatus.rejected} source rejections` : ""}${result.sourceStatus.estimatedSignalCount ? `; ${result.sourceStatus.estimatedSignalCount} estimated signals` : ""}${result.dataQuality?.scoreCappedForEstimatedOnly ? "; score capped (estimated-only)" : ""}`
       }
     })
   ]);

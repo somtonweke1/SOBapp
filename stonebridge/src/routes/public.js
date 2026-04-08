@@ -1,7 +1,9 @@
 const express = require("express");
 const { prisma } = require("../lib/prisma");
-const { asyncHandler } = require("../lib/http");
-const { diagnose } = require("../engine/diagnose");
+const { asyncHandler, sendError } = require("../lib/http");
+const { diagnose, riskBandLabel } = require("../engine/diagnose");
+const { normalizeAddress, isLikelyAddress } = require("../engine/signals/common");
+const { clampAddress, MAX_ADDRESS_LENGTH } = require("../lib/validation");
 
 const router = express.Router();
 
@@ -35,12 +37,24 @@ router.get("/track-record", asyncHandler(async (_req, res) => {
 }));
 
 router.get("/preview/:address", asyncHandler(async (req, res) => {
-  const address = decodeURIComponent(req.params.address);
+  const raw = decodeURIComponent(req.params.address || "");
+  const normalized = normalizeAddress(raw);
+  if (normalized.length > MAX_ADDRESS_LENGTH) {
+    return sendError(res, 400, "Address parameter exceeds maximum length");
+  }
+  const address = clampAddress(normalized);
+  if (!address || address.length < 10) {
+    return sendError(res, 400, "Address parameter is missing or too short");
+  }
+  if (!isLikelyAddress(address)) {
+    return sendError(res, 400, "Address must include a street number and street type (e.g. St, Ave)");
+  }
   const diagnostic = await diagnose(address);
   res.json({
     address,
     topSignals: diagnostic.signals.slice(0, 3),
-    blurredRiskBand: diagnostic.riskScore >= 65 ? "High risk band" : diagnostic.riskScore >= 35 ? "Moderate risk band" : "Lower risk band"
+    blurredRiskBand: riskBandLabel(diagnostic.riskScore),
+    sourceStatus: diagnostic.sourceStatus
   });
 }));
 

@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const Stripe = require("stripe");
 
+/** Populates `process.env` from a repo-root `.env` file when those keys are not already set. */
 function loadEnv() {
   const envPath = path.join(process.cwd(), ".env");
   if (!fs.existsSync(envPath)) return;

@@ -3,6 +3,7 @@ const path = require("path");
 
 const cache = new Map();
 
+/** Reads and caches `views/<name>.html` from disk (cached in production). */
 function loadTemplate(name) {
   const filePath = path.join(process.cwd(), "views", `${name}.html`);
   if (process.env.NODE_ENV === "production" && cache.has(name)) {
@@ -22,6 +23,7 @@ function escapeHtml(value) {
     .replace(/'/g, "&#39;");
 }
 
+/** Replaces `{{key}}` (escaped) and `{{{key}}}` (raw) placeholders in a template file. */
 function renderTemplate(name, data = {}) {
   let html = loadTemplate(name);
   html = html.replace(/\{\{\{(\w+)\}\}\}/g, (_, key) => String(data[key] ?? ""));

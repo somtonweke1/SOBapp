@@ -5,23 +5,30 @@ const { prisma } = require("../lib/prisma");
 const { asyncHandler, sendError } = require("../lib/http");
 const { requireAuth } = require("../middleware/auth");
 const { cancelIntent, captureIntent } = require("../lib/payments");
-const { outcomeToAfterFlags, outcomeToAfterScore } = require("../lib/outcome");
+const { outcomeToAfterFlags, outcomeToAfterScore, normalizeOutcome } = require("../lib/outcome");
 const { serializeDeal, runDiagnosticForDeal } = require("../lib/deals");
-const { readTokenFromRequest, setAuthCookie, signToken, verifyToken } = require("../lib/auth");
+const { setAuthCookie, signToken } = require("../lib/auth");
+const { loadSessionUser, hideDemoPublicUser } = require("../lib/request-user");
 const { isLikelyAddress, normalizeAddress } = require("../engine/signals/common");
+const {
+  clampAddress,
+  clampNote,
+  isValidDealId,
+  isValidEmail,
+  MAX_ADDRESS_LENGTH
+} = require("../lib/validation");
 
 const router = express.Router();
 
-/** Resolves the current user from the auth cookie when present. */
+router.param("id", (req, res, next, id) => {
+  if (!isValidDealId(id)) return sendError(res, 400, "Invalid deal id");
+  next();
+});
+
+/** Resolves the session user for public flows, hiding demo identities like the HTML shell. */
 async function optionalUser(req) {
-  try {
-    const token = readTokenFromRequest(req);
-    if (!token) return null;
-    const payload = verifyToken(token);
-    return prisma.user.findUnique({ where: { id: payload.sub } });
-  } catch {
-    return null;
-  }
+  const user = await loadSessionUser(req);
+  return hideDemoPublicUser(user);
 }
 
 /** Loads a deal only if the current user is allowed to see it. */
@@ -91,13 +98,12 @@ function normalizeStringArray(value) {
   return Array.isArray(value) ? value.map((item) => normalizeString(item)).filter(Boolean) : [];
 }
 
-/** Validates common email input used by memo requests. */
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
 router.post("/diagnose", asyncHandler(async (req, res) => {
-  const address = normalizeAddress(req.body.address);
+  const normalized = normalizeAddress(req.body.address);
+  if (normalized.length > MAX_ADDRESS_LENGTH) {
+    return res.redirect("/submit?error=Address is too long");
+  }
+  const address = clampAddress(normalized);
   if (!isLikelyAddress(address)) {
     return res.redirect("/submit?error=Please enter a valid address");
   }
@@ -122,41 +128,45 @@ router.post("/diagnose", asyncHandler(async (req, res) => {
 
     setAuthCookie(res, signToken(client));
 
-    const deal = await prisma.deal.create({
-      data: {
-        address,
-        clientId: client.id,
-        status: "PENDING",
-        verdict: result.verdict,
-        riskScoreBefore: result.riskScore,
-        flagCountBefore: result.flagCount,
-        signalSources: [...new Set(result.signals.map(signal => signal.source))],
-        paymentStatus: "UNPAID",
-        timeline: {
-          create: [
-            { event: "DEAL_SUBMITTED", detail: "Address submitted through public diagnostic flow" },
-            {
-              event: "PREVIEW_GENERATED",
-              detail: `Free preview generated. Risk score: ${result.riskScore} | Verdict: ${result.verdict} | Signals: ${result.signals.length}${result.sourceStatus.failed ? ` | Partial source degradation: ${result.sourceStatus.failed}` : ""}`
-            }
-          ]
+    const deal = await prisma.$transaction(async (tx) => {
+      const created = await tx.deal.create({
+        data: {
+          address,
+          clientId: client.id,
+          status: "PENDING",
+          verdict: result.verdict,
+          riskScoreBefore: result.riskScore,
+          flagCountBefore: result.flagCount,
+          signalSources: [...new Set(result.signals.map((signal) => signal.source))],
+          paymentStatus: "UNPAID",
+          timeline: {
+            create: [
+              { event: "DEAL_SUBMITTED", detail: "Address submitted through public diagnostic flow" },
+              {
+                event: "PREVIEW_GENERATED",
+                detail: `Free preview generated. Risk score: ${result.riskScore} | Verdict: ${result.verdict} | Signals: ${result.signals.length}${result.sourceStatus.rejected ? ` | Source rejections: ${result.sourceStatus.rejected}` : ""}${result.sourceStatus.estimatedSignalCount ? ` | Estimated signals: ${result.sourceStatus.estimatedSignalCount}` : ""}${result.dataQuality?.scoreCappedForEstimatedOnly ? " | Score capped (estimated-only preview)" : ""}`
+              }
+            ]
+          }
         }
-      }
-    });
-
-    if (result.signals.length) {
-      await prisma.signal.createMany({
-        data: result.signals.map((sig) => ({
-          dealId: deal.id,
-          source: sig.source,
-          category: sig.category,
-          label: sig.label,
-          severity: sig.severity,
-          value: sig.value || sig.label,
-          url: sig.url || null
-        }))
       });
-    }
+
+      if (result.signals.length) {
+        await tx.signal.createMany({
+          data: result.signals.map((sig) => ({
+            dealId: created.id,
+            source: sig.source,
+            category: sig.category,
+            label: sig.label,
+            severity: sig.severity,
+            value: sig.value || sig.label,
+            url: sig.url || null
+          }))
+        });
+      }
+
+      return created;
+    });
 
     return res.redirect(`/deals/${deal.id}`);
   } catch (error) {
@@ -208,7 +218,9 @@ router.post("/:id/request-memo", asyncHandler(async (req, res) => {
 router.use(requireAuth);
 
 router.post("/", asyncHandler(async (req, res) => {
-  const address = normalizeAddress(req.body.address);
+  const normalized = normalizeAddress(req.body.address);
+  if (normalized.length > MAX_ADDRESS_LENGTH) return sendError(res, 400, "Address is too long");
+  const address = clampAddress(normalized);
   const timelineStage = normalizeString(req.body.timelineStage);
   const pressurePoint = normalizeString(req.body.pressurePoint);
   if (!isLikelyAddress(address)) return sendError(res, 400, "A full street address is required");
@@ -243,7 +255,21 @@ router.get("/", asyncHandler(async (req, res) => {
   const deals = await prisma.deal.findMany({
     where: { clientId: req.user.id },
     orderBy: { createdAt: "desc" },
-    include: { signals: true, timeline: { orderBy: { createdAt: "asc" } } }
+    include: {
+      signals: {
+        select: {
+          id: true,
+          source: true,
+          category: true,
+          label: true,
+          severity: true,
+          value: true,
+          url: true,
+          pulledAt: true
+        }
+      },
+      timeline: { orderBy: { createdAt: "asc" }, take: 120 }
+    }
   });
   res.json({ deals: deals.map(serializeDeal) });
 }));
@@ -543,6 +569,7 @@ router.post("/:id/documents/:documentId", asyncHandler(async (req, res) => {
   const url = String(req.body.url || "").trim();
   const kind = String(req.body.kind || "Document").trim();
   if (!label || !url) return sendError(res, 400, "Document label and URL are required");
+  if (!/^https?:\/\//i.test(url)) return sendError(res, 400, "Document URL must start with http or https");
 
   const document = await prisma.dealDocument.update({
     where: { id: existing.id },
@@ -584,7 +611,11 @@ router.delete("/:id/documents/:documentId", asyncHandler(async (req, res) => {
 }));
 
 router.post("/:id/confirm-outcome", asyncHandler(async (req, res) => {
-  const { outcome = "RENEGOTIATED", note = "Client confirmed memo was decision-grade" } = req.body;
+  const bodyOutcome = req.body?.outcome;
+  const outcome = normalizeOutcome(typeof bodyOutcome === "string" ? bodyOutcome : "RENEGOTIATED");
+  const note = clampNote(req.body?.note ?? "Client confirmed memo was decision-grade");
+  if (!outcome) return sendError(res, 400, "Outcome must be PROCEEDED, RENEGOTIATED, or KILLED");
+
   const deal = await prisma.deal.findFirst({
     where: { id: req.params.id, clientId: req.user.id }
   });
@@ -617,7 +648,7 @@ router.post("/:id/confirm-outcome", asyncHandler(async (req, res) => {
 }));
 
 router.post("/:id/dispute", asyncHandler(async (req, res) => {
-  const { note = "Client disputed memo quality" } = req.body;
+  const note = clampNote(req.body?.note ?? "Client disputed memo quality");
   const deal = await prisma.deal.findFirst({
     where: { id: req.params.id, clientId: req.user.id }
   });

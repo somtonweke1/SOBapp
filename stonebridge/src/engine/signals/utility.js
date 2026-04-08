@@ -1,4 +1,4 @@
-const { addressSeed, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
+const { addressSeed, baltimoreOpenDataHeaders, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
 
 function parseUtilitySignals(rows, url) {
   const complaintCount = rows.length;
@@ -106,13 +106,17 @@ async function checkUtilityAnomalies(address) {
   try {
     const query = encodeURIComponent(address);
     const url = `https://data.baltimorecity.gov/resource/9agw-sxsr.json?$limit=8&$q=${query}`;
-    const response = await fetchWithTimeout(url, { signal: AbortSignal.timeout(4000) });
+    const response = await fetchWithTimeout(url, {
+      signal: AbortSignal.timeout(4000),
+      headers: baltimoreOpenDataHeaders()
+    });
     if (!response.ok) throw new Error(`API error: ${response.status}`);
     const rows = await response.json();
     if (!Array.isArray(rows) || rows.length === 0) throw new Error("No results");
     console.log(`[signals:utility] live data - ${rows.length} records`);
     return parseUtilitySignals(rows, url);
   } catch (error) {
+    console.warn("[signals:utility] live fetch failed, using estimated signals:", error.message);
     return mockUtilitySignals(address);
   }
 }

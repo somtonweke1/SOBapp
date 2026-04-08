@@ -10,43 +10,52 @@ function thirtyDaysAgo() {
 
 function startJobs() {
   cron.schedule("0 6 * * *", async () => {
-    const deals = await prisma.deal.findMany({
-      where: {
-        status: { in: ["MEMO_DELIVERED", "OUTCOME_WINDOW"] },
-        paymentStatus: "HELD",
-        memoDeliveredAt: { lte: thirtyDaysAgo() },
-        paymentIntentId: { not: null }
-      }
-    });
+    try {
+      const deals = await prisma.deal.findMany({
+        where: {
+          status: { in: ["MEMO_DELIVERED", "OUTCOME_WINDOW"] },
+          paymentStatus: "HELD",
+          memoDeliveredAt: { lte: thirtyDaysAgo() },
+          paymentIntentId: { not: null }
+        }
+      });
 
-    for (const deal of deals) {
-      try {
-        await captureIntent(deal.paymentIntentId);
-        await prisma.deal.update({
-          where: { id: deal.id },
-          data: {
-            status: "COMPLETED",
-            paymentStatus: "RELEASED",
-            outcomeConfirmedAt: new Date(),
-            outcomeNote: deal.outcomeNote || "Auto-captured after 30-day confirmation window"
+      for (const deal of deals) {
+        try {
+          await captureIntent(deal.paymentIntentId);
+          await prisma.deal.update({
+            where: { id: deal.id },
+            data: {
+              status: "COMPLETED",
+              paymentStatus: "RELEASED",
+              outcomeConfirmedAt: new Date(),
+              outcomeNote: deal.outcomeNote || "Auto-captured after 30-day confirmation window"
+            }
+          });
+          await prisma.timelineEvent.create({
+            data: {
+              dealId: deal.id,
+              event: "PAYMENT_AUTO_CAPTURED",
+              detail: "30-day outcome window expired; payment captured automatically"
+            }
+          });
+        } catch (error) {
+          console.error("[jobs] auto-capture failed", deal.id, error.message);
+          try {
+            await prisma.timelineEvent.create({
+              data: {
+                dealId: deal.id,
+                event: "AUTO_CAPTURE_FAILED",
+                detail: error.message
+              }
+            });
+          } catch (timelineError) {
+            console.error("[jobs] could not record AUTO_CAPTURE_FAILED", deal.id, timelineError.message);
           }
-        });
-        await prisma.timelineEvent.create({
-          data: {
-            dealId: deal.id,
-            event: "PAYMENT_AUTO_CAPTURED",
-            detail: "30-day outcome window expired; payment captured automatically"
-          }
-        });
-      } catch (error) {
-        await prisma.timelineEvent.create({
-          data: {
-            dealId: deal.id,
-            event: "AUTO_CAPTURE_FAILED",
-            detail: error.message
-          }
-        });
+        }
       }
+    } catch (error) {
+      console.error("[jobs] daily auto-capture batch failed:", error.message);
     }
   });
 }

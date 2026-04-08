@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const { config } = require("../../lib/config");
 
 /** Derives a stable hash seed from an address string. */
 function addressSeed(address) {
@@ -30,6 +31,11 @@ async function fetchWithTimeout(url, options = {}) {
   }
   const mod = await import("node-fetch");
   return mod.default(url, options);
+}
+
+/** Adds Socrata `X-App-Token` when `BALTIMORE_OPEN_DATA_APP_TOKEN` is configured. */
+function baltimoreOpenDataHeaders() {
+  return config.baltimoreAppToken ? { "X-App-Token": config.baltimoreAppToken } : {};
 }
 
 /** Picks a deterministic integer from an address hash range. */
@@ -74,6 +80,7 @@ module.exports = {
   seededRandom,
   severityFromValue,
   fetchWithTimeout,
+  baltimoreOpenDataHeaders,
   pickNumber,
   pickOne,
   normalizeAddress,
