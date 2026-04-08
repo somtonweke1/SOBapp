@@ -359,6 +359,42 @@ function describeCommercialState(deal) {
   };
 }
 
+/** Returns true when a canonical source name appears in persisted signal source strings (including estimated variants). */
+function sourceWasUsed(signalSources, canonicalName) {
+  const cn = String(canonicalName).trim();
+  return (signalSources || []).some((s) => {
+    const t = String(s).trim();
+    if (t === cn) return true;
+    if (t.startsWith(`${cn} (`)) return true;
+    return t.replace(/\s*\(estimated\)\s*$/i, "").trim() === cn;
+  });
+}
+
+/** Label for the sources grid: read vs not queried, and estimated when applicable. */
+function sourceStatusLabel(signalSources, canonicalName) {
+  if (!sourceWasUsed(signalSources, canonicalName)) return "Not queried";
+  const cn = String(canonicalName).trim();
+  const match = (signalSources || []).find((s) => {
+    const t = String(s).trim();
+    return t === cn || t.startsWith(`${cn} (`) || t.replace(/\s*\(estimated\)\s*$/i, "").trim() === cn;
+  });
+  if (match && /\bestimated\b/i.test(match)) return "Read · estimated";
+  return "Read";
+}
+
+function formatTimelineTitle(raw) {
+  return String(raw || "")
+    .replace(/_/g, " ")
+    .trim()
+    .replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+}
+
+function formatTimelineWhen(iso) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+}
+
 app.get("/submit", async (req, res) => {
   const user = await getCurrentUser(req);
   res.send(renderTemplate("submit", buildPageData({
@@ -451,12 +487,12 @@ app.get("/deals", async (req, res) => {
     : "Pending";
 
   const dealsHtml = deals.length === 0
-    ? `<div class="empty-state"><div>No diagnostics yet.</div><div>Your workspace is clean. Start with one address and turn the first useful screen into a paid memo only when the deal pressure is real.</div><div class="empty-state-action"><a href="/submit" class="btn btn-primary">Run your first preview</a></div></div>`
+    ? `<div class="empty-state"><div class="empty-state-title">No saved diagnostics yet</div><div>Run a free preview on an address—when the screen shows real friction, upgrade to the paid memo from the same flow.</div><div class="empty-state-action"><a href="/submit" class="btn btn-primary">Run your first preview</a></div></div>`
     : deals.map((deal) => `
       <a href="/deals/${deal.id}" class="deal-card ${verdictClass(deal.verdict)}" data-filter-status="${getDealFilterBucket(deal.status)}">
         <div class="deal-card-head">
           <div>
-            <div class="deal-address">${deal.address}</div>
+            <div class="deal-address">${escapeHtml(deal.address)}</div>
             <div class="deal-meta-row">
               <span class="deal-meta">${new Date(deal.createdAt).toLocaleDateString()}</span>
               <span class="deal-meta">${deal.signals.length} signals</span>
@@ -485,7 +521,6 @@ app.get("/deals", async (req, res) => {
         </div>
         <div class="deal-card-foot">
           <span class="deal-escrow-tag">${formatPaymentStatus(deal.paymentStatus)}</span>
-          <span class="v-badge ${verdictClass(deal.verdict)}">${verdictLabel(deal.verdict)}</span>
         </div>
       </a>
     `).join("");
@@ -541,9 +576,9 @@ app.get("/deals/:id", async (req, res) => {
       if (!group.length) return "";
       const rows = group.map((sig) => `
         <div class="signal-row">
-          <div class="signal-source-chip">${sig.source}</div>
-          <div class="signal-label">${sig.label}</div>
-          <div class="signal-category">${sig.category.replace(/_/g, " ")}</div>
+          <div class="signal-source-chip">${escapeHtml(sig.source)}</div>
+          <div class="signal-label">${escapeHtml(sig.label)}</div>
+          <div class="signal-category">${escapeHtml(String(sig.category).replace(/_/g, " "))}</div>
         </div>
       `).join("");
       return `
@@ -562,22 +597,33 @@ app.get("/deals/:id", async (req, res) => {
       <div class="tl-item">
         <div class="tl-dot done">✓</div>
         <div class="tl-content">
-          <div class="tl-title">${event.event.replace(/_/g, " ")}</div>
-          <div class="tl-sub">${new Date(event.createdAt).toISOString()}</div>
-          ${event.hash ? `<div class="tl-hash">${event.hash}</div>` : ""}
-          ${event.detail ? `<div class="tl-detail">${event.detail}</div>` : ""}
+          <div class="tl-title">${escapeHtml(formatTimelineTitle(event.event))}</div>
+          <div class="tl-sub">${escapeHtml(formatTimelineWhen(event.createdAt))}</div>
+          ${event.hash ? `<div class="tl-hash">${escapeHtml(event.hash)}</div>` : ""}
+          ${event.detail ? `<div class="tl-detail">${escapeHtml(event.detail)}</div>` : ""}
         </div>
       </div>
     `).join("");
 
+    const estimatedSignalCount = deal.signals.filter((s) => /\bestimated\b/i.test(String(s.source || ""))).length;
+    const srcCount = (deal.signalSources || []).length;
+    const signalSectionSub = estimatedSignalCount
+      ? `${deal.signals.length} signal${deal.signals.length === 1 ? "" : "s"} · ${estimatedSignalCount} estimated (directional) · ${srcCount} source${srcCount === 1 ? "" : "s"} read`
+      : `${deal.signals.length} signal${deal.signals.length === 1 ? "" : "s"} across ${srcCount} public data source${srcCount === 1 ? "" : "s"}`;
+
+    const qualityBannerHtml = estimatedSignalCount
+      ? `<div class="quality-strip" role="status"><div class="quality-strip-inner"><span class="quality-strip-label">Data quality</span><p class="quality-strip-copy">This run includes <strong>${estimatedSignalCount}</strong> signal${estimatedSignalCount === 1 ? "" : "s"} labeled <strong>estimated</strong> (preview or fallback). Treat the score as directional; confirm with live sources before committing capital.</p></div></div>`
+      : "";
+
     const allSources = ["Baltimore City Open Data", "Maryland SDAT", "SAM.gov", "eMMA", "Baltimore 311", "Baltimore Infrastructure Data"];
     const sourcesHtml = allSources.map((src) => {
-      const used = deal.signalSources && deal.signalSources.includes(src);
+      const used = sourceWasUsed(deal.signalSources, src);
+      const status = sourceStatusLabel(deal.signalSources, src);
       return `
         <div class="source-card-item ${used ? "source-used" : "source-unused"}">
           <div class="source-card-dot"></div>
-          <div class="source-card-name">${src}</div>
-          <div class="source-card-status">${used ? "Read" : "No signals"}</div>
+          <div class="source-card-name">${escapeHtml(src)}</div>
+          <div class="source-card-status">${status}</div>
         </div>
       `;
     }).join("");
@@ -617,10 +663,12 @@ app.get("/deals/:id", async (req, res) => {
       flagCount: deal.flagCountBefore || 0,
       signalCount: deal.signals.length,
       sourceCount: (deal.signalSources || []).length,
-      createdAt: new Date(deal.createdAt).toISOString(),
+      signalSectionSub,
+      createdAtDisplay: new Date(deal.createdAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }),
       signalsHtml,
       timelineHtml,
       sourcesHtml,
+      qualityBannerHtml,
       meaningClass: meaning.cls,
       meaningIcon: meaning.icon,
       meaningTitle: meaning.title,
@@ -656,7 +704,7 @@ app.get("/track-record", async (req, res) => {
   const rowsHtml = completedDeals.length
     ? completedDeals.map((deal) => `
       <div class="track-row">
-        <div class="track-cell track-address">${deal.address}</div>
+        <div class="track-cell track-address">${escapeHtml(deal.address)}</div>
         <div class="track-cell"><span class="v-badge ${verdictClass(deal.verdict)}">${deal.verdict || "PENDING"}</span></div>
         <div class="track-cell track-status">${deal.outcomeConfirmedAt ? "Confirmed" : "Pending"}</div>
         <div class="track-cell track-date">${new Date(deal.createdAt).toLocaleDateString()}</div>

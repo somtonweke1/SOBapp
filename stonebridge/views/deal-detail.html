@@ -48,6 +48,7 @@
             <div class="meaning-desc">{{meaningDesc}}</div>
           </div>
         </div>
+        {{{qualityBannerHtml}}}
       </div>
     </div>
 
@@ -64,7 +65,7 @@
     <div class="result-signals">
       <div class="container">
         <h2 class="section-title">Signal breakdown</h2>
-        <p class="section-sub">{{signalCount}} signals identified across {{sourceCount}} public data sources</p>
+        <p class="section-sub">{{signalSectionSub}}</p>
         {{{signalsHtml}}}
       </div>
     </div>
@@ -292,7 +293,7 @@
           <div><span class="pk">risk_score &nbsp;</span><span class="pv">{{riskScore}}</span></div>
           <div><span class="pk">verdict &nbsp;&nbsp;&nbsp;&nbsp;</span><span class="pv">{{dealVerdict}}</span></div>
           <div><span class="pk">signals &nbsp;&nbsp;&nbsp;&nbsp;</span><span class="pv">{{signalCount}}</span></div>
-          <div><span class="pk">diagnosed_at </span><span class="pv pv-date">{{createdAt}}</span></div>
+          <div><span class="pk">diagnosed_at </span><span class="pv pv-date">{{createdAtDisplay}}</span></div>
           <div><span class="pk">status &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="pv pv-ok">DIAGNOSTIC COMPLETE</span></div>
         </div>
       </div>

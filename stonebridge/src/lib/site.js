@@ -1,6 +1,7 @@
 /** Default HTML `<title>` and OpenGraph-style description strings for public pages. */
 const SITE_TITLE = "StoneBridge AI | Baltimore Deal Diagnostics";
-const SITE_DESCRIPTION = "Submit a Baltimore address and get a risk score and Proceed/Caution/Escalate verdict in seconds from public records.";
+const SITE_DESCRIPTION =
+  "Baltimore address diagnostics from public records: risk score, Proceed / Caution / Escalate verdict, and source-backed signals—free preview first, written memo when the deal is live.";
 
 module.exports = {
   SITE_TITLE,

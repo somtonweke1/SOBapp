@@ -28,10 +28,10 @@
   <main class="app-shell">
     <section class="page-header">
       <div class="container">
-        <div class="kicker">Client Deal List</div>
-        <h1 class="page-title display-title" style="font-size:clamp(40px,5vw,64px)">Your Diagnostics</h1>
-        <p class="subcopy">Locked diagnostic scores, memo status, confirmed outcomes, and source-backed verdicts for every active Baltimore deal.</p>
-        <div class="mini-stats-grid" id="dealMiniStats" style="grid-template-columns:repeat(3,1fr);margin-top:28px">
+        <div class="kicker">Diagnostics workspace</div>
+        <h1 class="page-title display-title page-title--deals">Your diagnostics</h1>
+        <p class="subcopy">Every saved run: verdict, risk score, memo and payment state, and outcome—so you can reopen a deal without re-explaining it.</p>
+        <div class="mini-stats-grid mini-stats-grid--three" id="dealMiniStats">
           <div class="mini-stat"><div class="mini-stat-value">{{totalDeals}}</div><div class="mini-stat-label">Total Deals</div></div>
           <div class="mini-stat"><div class="mini-stat-value">{{activeMemos}}</div><div class="mini-stat-label">Active Memos</div></div>
           <div class="mini-stat"><div class="mini-stat-value">{{confirmedOutcomes}}</div><div class="mini-stat-label">Confirmed Outcomes</div></div>
@@ -64,7 +64,7 @@
         var emptyState = document.createElement('div');
         emptyState.id = 'dealFilterEmptyState';
         emptyState.className = 'empty-state';
-        emptyState.textContent = 'No diagnostics match this status filter.';
+        emptyState.innerHTML = '<div class="empty-state-title">Nothing in this view</div><div>Switch to <strong>All</strong> or run a new preview from <a href="/submit">Diagnostics</a>.</div>';
         emptyState.style.display = 'none';
         dealList.appendChild(emptyState);
         return emptyState;
