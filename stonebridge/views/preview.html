@@ -79,7 +79,7 @@
         riskBand.textContent = data.blurredRiskBand;
         previewResults.innerHTML = (data.topSignals || []).map((signal) => StoneBridge.renderSignal(signal)).join("");
       } catch (error) {
-        previewLog.innerHTML += `<div class="log-line">${error.message}</div>`;
+        previewLog.innerHTML += `<div class="log-line">${StoneBridge.escapeHtml(error.message)}</div>`;
       }
     });
   </script>

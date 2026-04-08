@@ -176,9 +176,15 @@ router.post("/diagnose", asyncHandler(async (req, res) => {
   }
 }));
 
+router.use(requireAuth);
+
+/** Memo intake after authentication so `req.user` is set and ownership is enforced. */
 router.post("/:id/request-memo", asyncHandler(async (req, res) => {
   const deal = await prisma.deal.findFirst({
-    where: { id: req.params.id, clientId: req.user.id }
+    where:
+      req.user.role === "OPERATOR"
+        ? { id: req.params.id }
+        : { id: req.params.id, clientId: req.user.id }
   });
   if (!deal) return sendError(res, 404, "Deal not found");
 
@@ -215,8 +221,6 @@ router.post("/:id/request-memo", asyncHandler(async (req, res) => {
     nextStep: "Memo request captured. StoneBridge can now scope the paid 24-hour memo for this address."
   });
 }));
-
-router.use(requireAuth);
 
 router.post("/", asyncHandler(async (req, res) => {
   const normalized = normalizeAddress(req.body.address);

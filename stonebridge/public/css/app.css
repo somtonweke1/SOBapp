@@ -160,6 +160,9 @@ button,input,select,textarea{font:inherit}
 .memo-price{font-family:var(--f-mono);font-size:40px;font-weight:600;color:var(--ink);line-height:1}
 .memo-price-note{font-family:var(--f-mono);font-size:10px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase;margin-top:6px}
 .memo-guarantee{font-size:11px;color:var(--ink-3);margin-top:12px;font-style:italic;font-family:var(--f-display)}
+.payment-hold-panel{margin-top:24px}
+.payment-start-wrap{margin-top:8px}
+.payment-hold-form{margin-top:8px}
 .proof-block{background:var(--white);border:1px solid var(--border);padding:20px 24px;font-family:var(--f-mono);font-size:12px;line-height:2.2;margin-top:24px}
 .pk{color:var(--ink-3);margin-right:16px}.pv{color:var(--ink)}.pv-date{color:var(--ink-2)}.pv-ok{color:var(--proceed-lit);font-weight:600}
 .proof-note{font-size:12px;color:var(--ink-3);margin-top:12px;font-style:italic}

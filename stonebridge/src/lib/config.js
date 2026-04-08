@@ -28,6 +28,7 @@ const config = {
   baltimoreAppToken: process.env.BALTIMORE_OPEN_DATA_APP_TOKEN || "",
   samGovApiKey: process.env.SAM_GOV_API_KEY || "",
   stripeSecretKey: process.env.STRIPE_SECRET_KEY || "",
+  stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY || "",
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || ""
 };
 

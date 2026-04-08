@@ -395,6 +395,31 @@ function formatTimelineWhen(iso) {
   return d.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
 }
 
+/** HTML block for optional Stripe card hold before memo intake (raw template fragment). */
+function renderPaymentSectionHtml(deal) {
+  const canPayOnline = Boolean(config.stripeSecretKey && config.stripePublishableKey);
+  if (deal.paymentStatus !== "UNPAID") return "";
+  if (canPayOnline) {
+    return `
+<section class="collab-panel payment-hold-panel" id="paymentHoldPanel" data-stripe-key="${escapeHtml(config.stripePublishableKey)}">
+  <div class="eyebrow">Secure memo hold</div>
+  <div class="card-title">Place a $2,500 card authorization</div>
+  <p class="detail-note">This authorizes a hold on your card; capture is separate from memo delivery and follows your agreement with StoneBridge.</p>
+  <div id="paymentStartWrap" class="payment-start-wrap">
+    <button type="button" class="btn btn-primary" id="paymentPrepareBtn">Continue to secure card</button>
+  </div>
+  <form id="paymentHoldForm" class="payment-hold-form" style="display:none" autocomplete="off">
+    <div id="payment-element-mount"></div>
+    <div class="action-row" style="margin-top:16px">
+      <button type="submit" class="btn btn-primary" id="paymentSubmitBtn">Authorize $2,500 hold</button>
+    </div>
+    <div class="log-list" id="paymentHoldLog"></div>
+  </form>
+</section>`;
+  }
+  return `<p class="detail-note memo-billing-fallback">Memo billing: submit the intake form below. A card hold will appear here once Stripe keys are configured on the server.</p>`;
+}
+
 app.get("/submit", async (req, res) => {
   const user = await getCurrentUser(req);
   res.send(renderTemplate("submit", buildPageData({
@@ -676,7 +701,8 @@ app.get("/deals/:id", async (req, res) => {
       commercialStateTitle: commercialState.title,
       commercialStateDesc: commercialState.description,
       memoDelivered: deal.memoDeliveredAt ? "true" : "",
-      paymentStatus: deal.paymentStatus
+      paymentStatus: deal.paymentStatus,
+      paymentSectionHtml: renderPaymentSectionHtml(deal)
     })));
   } catch (err) {
     console.error("[deal-detail]", err);
@@ -748,12 +774,10 @@ app.use("/api/sponsor", sponsorRoutes);
 app.get("/health", async (_req, res) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
-    const userCount = await prisma.user.count();
     res.json({
       ok: true,
       service: "stonebridge-web",
       database: "reachable",
-      userCount,
       timestamp: new Date().toISOString()
     });
   } catch (error) {

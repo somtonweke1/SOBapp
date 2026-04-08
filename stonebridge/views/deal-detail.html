@@ -239,9 +239,10 @@
           <div class="memo-cta-right">
             <div class="memo-price">$2,500</div>
             <div class="memo-price-note">Decision-grade written brief</div>
-            <div class="memo-guarantee" style="margin-top:20px">Use the form below to request the paid memo for this exact address.</div>
+            <div class="memo-guarantee" style="margin-top:20px">Use the card hold (when available) and intake form below to lock the paid memo for this exact address.</div>
           </div>
         </div>
+        {{{paymentSectionHtml}}}
         <form id="memoRequestForm" class="collab-panel" style="margin-top:24px">
           <div class="form-panel-head">
             <div>
@@ -311,6 +312,72 @@
     const scoreTarget = document.getElementById("score-target");
     const memoRequestForm = document.getElementById("memoRequestForm");
     const memoRequestLog = document.getElementById("memoRequestLog");
+    const esc = (value) => (window.StoneBridge && StoneBridge.escapeHtml ? StoneBridge.escapeHtml(value) : String(value ?? ""));
+
+    function loadStripeJs() {
+      return new Promise((resolve, reject) => {
+        if (window.Stripe) return resolve();
+        const script = document.createElement("script");
+        script.src = "https://js.stripe.com/v3/";
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error("Could not load Stripe"));
+        document.head.appendChild(script);
+      });
+    }
+
+    async function initPaymentHold() {
+      const panel = document.getElementById("paymentHoldPanel");
+      const prepareBtn = document.getElementById("paymentPrepareBtn");
+      const form = document.getElementById("paymentHoldForm");
+      const log = document.getElementById("paymentHoldLog");
+      const mount = document.getElementById("payment-element-mount");
+      const startWrap = document.getElementById("paymentStartWrap");
+      if (!panel || !prepareBtn || !form || !log || !mount || !startWrap) return;
+      const publishableKey = panel.dataset.stripeKey;
+      if (!publishableKey) return;
+      let stripe;
+      let elements;
+      prepareBtn.addEventListener("click", async () => {
+        log.innerHTML = "";
+        prepareBtn.disabled = true;
+        try {
+          await loadStripeJs();
+          stripe = window.Stripe(publishableKey);
+          const { clientSecret } = await StoneBridge.api("/api/payments/create-intent", {
+            method: "POST",
+            body: JSON.stringify({ dealId })
+          });
+          elements = stripe.elements({ clientSecret });
+          const paymentElement = elements.create("payment");
+          paymentElement.mount(mount);
+          startWrap.style.display = "none";
+          form.style.display = "block";
+        } catch (error) {
+          log.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
+          prepareBtn.disabled = false;
+        }
+      });
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const btn = document.getElementById("paymentSubmitBtn");
+        if (!stripe || !elements) return;
+        btn.disabled = true;
+        log.innerHTML = "";
+        try {
+          const { error } = await stripe.confirmPayment({
+            elements,
+            confirmParams: { return_url: window.location.href }
+          });
+          if (error) log.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
+          else window.location.reload();
+        } catch (error) {
+          log.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    }
+    initPaymentHold();
     if (scoreTarget && window.StoneBridge && typeof StoneBridge.animateNumber === "function") {
       StoneBridge.animateNumber(scoreTarget, Number(scoreTarget.dataset.score || 0));
     } else if (scoreTarget) {
@@ -318,7 +385,7 @@
     }
 
     function renderAuthor(author) {
-      return author?.name || author?.email || "StoneBridge user";
+      return esc(author?.name || author?.email || "StoneBridge user");
     }
 
     function splitLines(value) {
@@ -361,13 +428,13 @@
       documentList.innerHTML = filtered.map((item) => `
         <article class="brief-row collab-item">
           <div class="collab-item-head">
-            <span class="pill">${item.kind}</span>
+            <span class="pill">${esc(item.kind)}</span>
             <span class="detail-note">${StoneBridge.formatDate(item.createdAt)}</span>
           </div>
-          <div class="card-title collab-item-title">${item.label}</div>
+          <div class="card-title collab-item-title">${esc(item.label)}</div>
           <div class="detail-note">${renderAuthor(item.author)}</div>
           <div class="action-row" style="margin-top:12px">
-            <a class="btn btn-ghost" href="${item.url}" target="_blank" rel="noreferrer">Open link</a>
+            <a class="btn btn-ghost" href="${StoneBridge.safeHref(item.url)}" target="_blank" rel="noreferrer">Open link</a>
             ${canManage(item) ? `<button class="btn btn-ghost" onclick="editDocument('${item.id}')">Edit</button>` : ""}
             ${canManage(item) ? `<button class="btn btn-ghost" onclick="deleteDocument('${item.id}')">Delete</button>` : ""}
           </div>
@@ -385,8 +452,8 @@
                 <span class="pill">Reply</span>
                 <span class="detail-note">${StoneBridge.formatDate(reply.createdAt)}</span>
               </div>
-              <div class="card-copy">${reply.body}</div>
-              ${reply.mentions?.length ? `<div class="signal-summary">${reply.mentions.map((mention) => `<span class="pill">${mention}</span>`).join("")}</div>` : ""}
+              <div class="card-copy">${esc(reply.body)}</div>
+              ${reply.mentions?.length ? `<div class="signal-summary">${reply.mentions.map((mention) => `<span class="pill">${esc(mention)}</span>`).join("")}</div>` : ""}
               <div class="detail-note">${renderAuthor(reply.author)}</div>
               <div class="action-row">
                 ${canManage(reply) ? `<button class="btn btn-ghost" onclick="editNote('${reply.id}')">Edit</button>` : ""}
@@ -410,12 +477,12 @@
             <span class="pill">Note</span>
             <span class="detail-note">${StoneBridge.formatDate(item.createdAt)}</span>
           </div>
-          <div class="card-title collab-item-title">${item.title}</div>
-          <p class="card-copy">${item.body}</p>
-          ${item.mentions?.length ? `<div class="signal-summary">${item.mentions.map((mention) => `<span class="pill">${mention}</span>`).join("")}</div>` : ""}
+          <div class="card-title collab-item-title">${esc(item.title)}</div>
+          <p class="card-copy">${esc(item.body)}</p>
+          ${item.mentions?.length ? `<div class="signal-summary">${item.mentions.map((mention) => `<span class="pill">${esc(mention)}</span>`).join("")}</div>` : ""}
           <div class="detail-note">${renderAuthor(item.author)}</div>
           <div class="action-row">
-            <button class="btn btn-ghost" onclick="replyToNote('${item.id}', '${item.title.replace(/'/g, "\\'")}')">Reply</button>
+            <button class="btn btn-ghost" onclick="replyToNote('${item.id}')">Reply</button>
             ${canManage(item) ? `<button class="btn btn-ghost" onclick="editNote('${item.id}')">Edit</button>` : ""}
             ${canManage(item) ? `<button class="btn btn-ghost" onclick="deleteNote('${item.id}')">Delete</button>` : ""}
           </div>
@@ -430,11 +497,11 @@
       frictionList.innerHTML = filtered.map((item) => `
         <article class="brief-row collab-item">
           <div class="collab-item-head">
-            <span class="pill">${item.category}</span>
+            <span class="pill">${esc(item.category)}</span>
             <span class="detail-note">${StoneBridge.formatDate(item.createdAt)}</span>
           </div>
-          <p class="card-copy">${item.observation}</p>
-          ${item.impact ? `<div class="detail-note">Impact: ${item.impact}</div>` : ""}
+          <p class="card-copy">${esc(item.observation)}</p>
+          ${item.impact ? `<div class="detail-note">Impact: ${esc(item.impact)}</div>` : ""}
           <div class="detail-note">${renderAuthor(item.author)}</div>
           <div class="action-row">
             ${canManage(item) ? `<button class="btn btn-ghost" onclick="editFriction('${item.id}')">Edit</button>` : ""}
@@ -451,9 +518,9 @@
         <div class="tl-item">
           <div class="tl-dot done">✓</div>
           <div class="tl-content">
-            <div class="tl-title">${StoneBridge.capitalize(String(item.event || "").replace(/_/g, " "))}</div>
+            <div class="tl-title">${esc(StoneBridge.capitalize(String(item.event || "").replace(/_/g, " ")))}</div>
             <div class="tl-sub">${StoneBridge.formatDate(item.createdAt)}</div>
-            ${item.detail ? `<div class="tl-detail">${item.detail}</div>` : ""}
+            ${item.detail ? `<div class="tl-detail">${esc(item.detail)}</div>` : ""}
           </div>
         </div>
       `).join("");
@@ -471,7 +538,7 @@
           <div class="triptych triptych-inline">
             <div class="t-col">
               <div class="t-label">Recommendation</div>
-              <div class="t-verdict ${StoneBridge.verdictClass(summary.recommendation)}">${StoneBridge.capitalize(summary.recommendation)}</div>
+              <div class="t-verdict ${StoneBridge.verdictClass(summary.recommendation)}">${esc(StoneBridge.capitalize(summary.recommendation))}</div>
               <div class="t-unit">${renderAuthor(summary.updatedBy)}</div>
             </div>
             <div class="t-sep">→</div>
@@ -490,16 +557,16 @@
           <div class="collab-summary-grid">
             <div class="sponsor-panel">
               <div class="eyebrow">Key Risks</div>
-              <div class="brief-list">${(summary.keyRisks || []).map((item) => `<div class="brief-row">${item}</div>`).join("") || '<div class="empty-state">No risks logged.</div>'}</div>
+              <div class="brief-list">${(summary.keyRisks || []).map((item) => `<div class="brief-row">${esc(item)}</div>`).join("") || '<div class="empty-state">No risks logged.</div>'}</div>
             </div>
             <div class="sponsor-panel">
               <div class="eyebrow">Key Positives</div>
-              <div class="brief-list">${(summary.keyPositives || []).map((item) => `<div class="brief-row">${item}</div>`).join("") || '<div class="empty-state">No positives logged.</div>'}</div>
+              <div class="brief-list">${(summary.keyPositives || []).map((item) => `<div class="brief-row">${esc(item)}</div>`).join("") || '<div class="empty-state">No positives logged.</div>'}</div>
             </div>
           </div>
           <div class="sponsor-panel" style="margin-top:18px">
             <div class="eyebrow">Unresolved Questions</div>
-            <div class="brief-list">${(summary.unresolvedQuestions || []).map((item) => `<div class="brief-row">${item}</div>`).join("") || '<div class="empty-state">No unresolved questions logged.</div>'}</div>
+            <div class="brief-list">${(summary.unresolvedQuestions || []).map((item) => `<div class="brief-row">${esc(item)}</div>`).join("") || '<div class="empty-state">No unresolved questions logged.</div>'}</div>
           </div>
         `;
       }
@@ -536,7 +603,7 @@
         documentLog.innerHTML = '<div class="log-line">Document added.</div>';
         await loadCollaboration();
       } catch (error) {
-        documentLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+        documentLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
       }
     }
 
@@ -557,7 +624,7 @@
         noteLog.innerHTML = '<div class="log-line">Note added.</div>';
         await loadCollaboration();
       } catch (error) {
-        noteLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+        noteLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
       }
     }
 
@@ -578,7 +645,7 @@
         frictionLog.innerHTML = '<div class="log-line">Market friction logged.</div>';
         await loadCollaboration();
       } catch (error) {
-        frictionLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+        frictionLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
       }
     }
 
@@ -598,7 +665,7 @@
         summaryLog.innerHTML = '<div class="log-line">Decision summary updated.</div>';
         await loadCollaboration();
       } catch (error) {
-        summaryLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+        summaryLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
       }
     }
 
@@ -640,7 +707,7 @@
         documentLog.innerHTML = '<div class="log-line">Document updated.</div>';
         await loadCollaboration();
       } catch (error) {
-        documentLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+        documentLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
       }
     }
 
@@ -652,7 +719,7 @@
         documentLog.innerHTML = '<div class="log-line">Document removed.</div>';
         await loadCollaboration();
       } catch (error) {
-        documentLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+        documentLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
       }
     }
 
@@ -673,7 +740,7 @@
         noteLog.innerHTML = '<div class="log-line">Note updated.</div>';
         await loadCollaboration();
       } catch (error) {
-        noteLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+        noteLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
       }
     }
 
@@ -685,11 +752,13 @@
         noteLog.innerHTML = '<div class="log-line">Note removed.</div>';
         await loadCollaboration();
       } catch (error) {
-        noteLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+        noteLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
       }
     }
 
-    async function replyToNote(parentId, title) {
+    async function replyToNote(parentId) {
+      const parent = findNote(parentId);
+      const title = parent?.title || "Note";
       const body = window.prompt(`Reply to "${title}"`);
       if (!body) return;
       const mentions = window.prompt("Mentions (comma separated)", "");
@@ -707,7 +776,7 @@
         noteLog.innerHTML = '<div class="log-line">Reply added.</div>';
         await loadCollaboration();
       } catch (error) {
-        noteLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+        noteLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
       }
     }
 
@@ -728,7 +797,7 @@
         frictionLog.innerHTML = '<div class="log-line">Market friction updated.</div>';
         await loadCollaboration();
       } catch (error) {
-        frictionLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+        frictionLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
       }
     }
 
@@ -740,7 +809,7 @@
         frictionLog.innerHTML = '<div class="log-line">Market friction removed.</div>';
         await loadCollaboration();
       } catch (error) {
-        frictionLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+        frictionLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
       }
     }
 
@@ -757,10 +826,10 @@
             goals: memoGoals.value
           })
         });
-        memoRequestLog.innerHTML = `<div class="log-line">${response.nextStep}</div>`;
+        memoRequestLog.innerHTML = `<div class="log-line">${esc(response.nextStep)}</div>`;
         memoRequestForm.reset();
       } catch (error) {
-        memoRequestLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+        memoRequestLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
       }
     }
 
@@ -777,10 +846,10 @@
       renderSummary(collabState.summary, collabState.timeline);
     });
     loadCollaboration().catch((error) => {
-      documentLog.innerHTML = `<div class="log-line">${error.message}</div>`;
-      noteLog.innerHTML = `<div class="log-line">${error.message}</div>`;
-      frictionLog.innerHTML = `<div class="log-line">${error.message}</div>`;
-      summaryLog.innerHTML = `<div class="log-line">${error.message}</div>`;
+      documentLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
+      noteLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
+      frictionLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
+      summaryLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
     });
   </script>
   <script src="/js/nav.js?v={{assetVersion}}"></script>

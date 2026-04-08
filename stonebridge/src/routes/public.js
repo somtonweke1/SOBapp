@@ -29,17 +29,20 @@ router.get("/track-record", asyncHandler(async (_req, res) => {
     }
   });
   const deals = rawDeals.filter((deal) => !isDemoDeal(deal));
+  const totalMemoValueCents = deals.reduce((sum, deal) => sum + (deal.amountCents || 0), 0);
   res.json({
     stats: {
       totalMemos: deals.length,
-      verdictAccuracy: deals.length ? Math.round((deals.filter(deal => !!deal.outcomeNote).length / deals.length) * 100) : 0,
-      totalRiskExposureDiagnosed: `$${(deals.reduce((sum, deal) => sum + deal.amountCents, 0) * 30).toLocaleString()}`
+      verdictAccuracy: deals.length
+        ? Math.round((deals.filter((deal) => Boolean(deal.outcomeNote)).length / deals.length) * 100)
+        : 0,
+      totalRiskExposureDiagnosed: `$${Math.round(totalMemoValueCents / 100).toLocaleString()}`
     },
     deals: deals.map((deal) => ({
       id: deal.id,
       address: deal.address.replace(/\d{1,4}/, "####"),
       verdict: deal.verdict,
-      outcomeNote: deal.outcomeNote,
+      hasOutcomeNote: Boolean(deal.outcomeNote),
       memoDeliveredAt: deal.memoDeliveredAt,
       outcomeConfirmedAt: deal.outcomeConfirmedAt,
       riskScoreBefore: deal.riskScoreBefore,

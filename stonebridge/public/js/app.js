@@ -113,5 +113,48 @@ window.StoneBridge = {
   parseRoomUrl(path) {
     if (!path) return "";
     return path.startsWith("http") ? path : path;
+  },
+  escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  },
+  safeHref(url) {
+    try {
+      const u = new URL(String(url).trim());
+      return u.protocol === "http:" || u.protocol === "https:" ? u.href : "#";
+    } catch {
+      return "#";
+    }
+  },
+  severityBadgeClass(severity) {
+    const v = String(severity || "").toLowerCase();
+    if (v === "critical" || v === "high") return "escalate";
+    if (v === "medium") return "caution";
+    if (v === "low") return "proceed";
+    return "pending";
+  },
+  renderSignal(signal) {
+    const badge = StoneBridge.severityBadgeClass(signal.severity);
+    const sevLabel = StoneBridge.escapeHtml(String(signal.severity || "").toUpperCase());
+    const cat = StoneBridge.escapeHtml(String(signal.category || "").replace(/_/g, " "));
+    const src = StoneBridge.escapeHtml(signal.source || "");
+    const lbl = StoneBridge.escapeHtml(signal.label || "");
+    const link = signal.url
+      ? `<a href="${StoneBridge.safeHref(signal.url)}" target="_blank" rel="noreferrer" class="btn-ghost" style="font-size:11px">Open source</a>`
+      : "";
+    return `
+    <div class="scenario-signal" style="border:1px solid var(--border);padding:14px 16px;margin-bottom:12px;background:var(--white)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div class="signal-source-chip">${src}</div>
+        <span class="v-badge ${badge}">${sevLabel}</span>
+      </div>
+      <div class="signal-label" style="margin-top:10px">${lbl}</div>
+      <div class="signal-category" style="margin-top:6px;text-align:left">${cat}</div>
+      ${link ? `<div style="margin-top:10px">${link}</div>` : ""}
+    </div>
+  `;
   }
 };
