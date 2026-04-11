@@ -64,22 +64,42 @@ async function geocodeAddress(address, city = 'Baltimore', state = 'MD') {
  * @param {Array<{address: string, city: string, state: string}>} addresses
  * @returns {Promise<Array<{address: string, latitude: number, longitude: number} | null>>}
  */
+/** Geocodes multiple addresses sequentially with rate limiting and error tracking. */
 async function geocodeBatch(addresses) {
   const results = [];
+  const errors = [];
 
   for (const addr of addresses) {
     const result = await geocodeAddress(addr.address, addr.city, addr.state);
 
-    results.push(result ? {
-      address: addr.address,
-      ...result,
-    } : null);
+    if (result) {
+      results.push({
+        address: addr.address,
+        ...result,
+      });
+    } else {
+      results.push(null);
+      errors.push({
+        address: addr.address,
+        city: addr.city,
+        state: addr.state,
+        error: 'Geocoding failed - address not found or API error'
+      });
+    }
 
     // Rate limiting: wait 1 second between requests (Nominatim usage policy)
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    if (addresses.indexOf(addr) < addresses.length - 1) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
   }
 
-  return results;
+  return {
+    results,
+    errors,
+    successCount: results.filter(r => r !== null).length,
+    failureCount: errors.length,
+    total: addresses.length
+  };
 }
 
 module.exports = {

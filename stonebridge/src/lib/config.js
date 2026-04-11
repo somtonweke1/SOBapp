@@ -6,15 +6,21 @@ const Stripe = require("stripe");
 function loadEnv() {
   const envPath = path.join(process.cwd(), ".env");
   if (!fs.existsSync(envPath)) return;
-  const content = fs.readFileSync(envPath, "utf8");
-  for (const line of content.split(/\r?\n/)) {
-    if (!line || line.trim().startsWith("#")) continue;
-    const index = line.indexOf("=");
-    if (index === -1) continue;
-    const key = line.slice(0, index).trim();
-    const rawValue = line.slice(index + 1).trim();
-    const value = rawValue.replace(/^"(.*)"$/, "$1");
-    if (!(key in process.env)) process.env[key] = value;
+
+  try {
+    const content = fs.readFileSync(envPath, "utf8");
+    for (const line of content.split(/\r?\n/)) {
+      if (!line || line.trim().startsWith("#")) continue;
+      const index = line.indexOf("=");
+      if (index === -1) continue;
+      const key = line.slice(0, index).trim();
+      const rawValue = line.slice(index + 1).trim();
+      const value = rawValue.replace(/^"(.*)"$/, "$1");
+      if (!(key in process.env)) process.env[key] = value;
+    }
+  } catch (error) {
+    console.error("[config] Failed to load .env file:", error.message);
+    // Non-fatal: continue with environment variables only
   }
 }
 
@@ -31,6 +37,16 @@ const config = {
   stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY || "",
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || ""
 };
+
+// Validate critical configuration in production
+if (process.env.NODE_ENV === "production") {
+  if (!config.jwtSecret || config.jwtSecret === "change-me") {
+    throw new Error("FATAL: JWT_SECRET must be set to a secure value in production");
+  }
+  if (!config.databaseUrl) {
+    throw new Error("FATAL: DATABASE_URL must be set in production");
+  }
+}
 
 const stripe = config.stripeSecretKey ? new Stripe(config.stripeSecretKey) : null;
 

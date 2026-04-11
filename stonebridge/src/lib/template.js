@@ -6,6 +6,13 @@ const cache = new Map();
 
 /** Reads and caches `views/<name>.html` from disk (cached in production). */
 function loadTemplate(name) {
+  // Validate template name to prevent path traversal attacks
+  if (!name || typeof name !== 'string' || !/^[a-zA-Z0-9_-]+$/.test(name)) {
+    const err = new Error(`Invalid template name: ${name}`);
+    err.statusCode = 400;
+    throw err;
+  }
+
   const filePath = path.join(process.cwd(), "views", `${name}.html`);
   if (process.env.NODE_ENV === "production" && cache.has(name)) {
     return cache.get(name);

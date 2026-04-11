@@ -76,6 +76,36 @@ function zipFromAddress(address) {
   return match ? match[1] : `212${pickNumber(address, 8, 2, 0, 9)}`;
 }
 
+/**
+ * Generates mock signals from scenario definitions using deterministic selection.
+ * @param {string} address - Property address for seeding
+ * @param {Array} scenarios - Array of scenario objects with category, labelIndex, severityIndex, labelOptions, valueOptions
+ * @param {string} source - Signal source name (e.g., "Maryland SDAT (estimated)")
+ * @param {string} url - Evidence URL
+ * @param {number} baseIndex - Starting index for filtering (default: 10)
+ * @param {number} maxSignals - Maximum number of signals to return (default: 2)
+ * @returns {Array} Array of signal objects
+ */
+function generateMockSignals(address, scenarios, source, url, baseIndex = 10, maxSignals = 2) {
+  const seed = addressSeed(address);
+
+  return scenarios
+    .filter((_, index) => seededRandom(seed, index + baseIndex) > 0.6)
+    .slice(0, maxSignals)
+    .map((scenario) => {
+      const labelPick = Math.floor(seededRandom(seed, scenario.labelIndex) * scenario.labelOptions.length);
+      const valuePick = Math.floor(seededRandom(seed, scenario.labelIndex + 20) * scenario.valueOptions.length);
+      return buildSignal({
+        source,
+        category: scenario.category,
+        label: scenario.labelOptions[labelPick],
+        value: scenario.valueOptions[valuePick],
+        severity: severityFromValue(seededRandom(seed, scenario.severityIndex)),
+        url
+      });
+    });
+}
+
 module.exports = {
   addressSeed,
   seededRandom,
@@ -87,5 +117,6 @@ module.exports = {
   normalizeAddress,
   isLikelyAddress,
   buildSignal,
-  zipFromAddress
+  zipFromAddress,
+  generateMockSignals
 };

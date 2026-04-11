@@ -1,5 +1,5 @@
 /** Maryland SDAT / lien-style signals from HTML scrape or deterministic fallback. */
-const { addressSeed, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
+const { buildSignal, fetchWithTimeout, generateMockSignals } = require("./common");
 
 function parseLienSignals(html, url) {
   const signals = [];
@@ -30,9 +30,8 @@ function parseLienSignals(html, url) {
   return signals.slice(0, 2);
 }
 
+/** Generates mock lien signals when SDAT scraping is unavailable. */
 function mockLienSignals(address) {
-  const seed = addressSeed(address);
-  const url = "https://sdat.dat.maryland.gov/RealProperty/";
   const scenarios = [
     {
       category: "LIEN",
@@ -81,24 +80,15 @@ function mockLienSignals(address) {
     }
   ];
 
-  const signals = scenarios
-    .filter((_, index) => seededRandom(seed, index + 10) > 0.6)
-    .slice(0, 2)
-    .map((scenario) => {
-      const labelPick = Math.floor(seededRandom(seed, scenario.labelIndex) * scenario.labelOptions.length);
-      const valuePick = Math.floor(seededRandom(seed, scenario.labelIndex + 20) * scenario.valueOptions.length);
-      return buildSignal({
-        source: "Maryland SDAT (estimated)",
-        category: scenario.category,
-        label: scenario.labelOptions[labelPick],
-        value: scenario.valueOptions[valuePick],
-        severity: severityFromValue(seededRandom(seed, scenario.severityIndex)),
-        url
-      });
-    });
-
   console.log("[signals:liens] mock fallback - API unavailable");
-  return signals;
+  return generateMockSignals(
+    address,
+    scenarios,
+    "Maryland SDAT (estimated)",
+    "https://sdat.dat.maryland.gov/RealProperty/",
+    10,
+    2
+  );
 }
 
 async function checkLiens(address) {

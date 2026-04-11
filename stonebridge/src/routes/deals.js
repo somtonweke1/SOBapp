@@ -26,8 +26,8 @@ router.param("id", (req, res, next, id) => {
   next();
 });
 
-/** Resolves the session user for public flows, hiding demo identities like the HTML shell. */
-async function optionalUser(req) {
+/** Resolves the session user for public flows, hiding demo identities and returning null for guest users. */
+async function getSessionUserOrNull(req) {
   const user = await loadSessionUser(req);
   return hideDemoPublicUser(user);
 }
@@ -110,7 +110,7 @@ router.post("/diagnose", asyncHandler(async (req, res) => {
   }
 
   try {
-    const reqUser = await optionalUser(req);
+    const reqUser = await getSessionUserOrNull(req);
     const result = await require("../engine/diagnose").diagnose(address);
 
     let client = reqUser;
@@ -257,26 +257,46 @@ router.post("/", asyncHandler(async (req, res) => {
 }));
 
 router.get("/", asyncHandler(async (req, res) => {
-  const deals = await prisma.deal.findMany({
-    where: { clientId: req.user.id },
-    orderBy: { createdAt: "desc" },
-    include: {
-      signals: {
-        select: {
-          id: true,
-          source: true,
-          category: true,
-          label: true,
-          severity: true,
-          value: true,
-          url: true,
-          pulledAt: true
-        }
-      },
-      timeline: { orderBy: { createdAt: "asc" }, take: 120 }
+  // Pagination parameters with sensible defaults
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 50));
+  const skip = (page - 1) * limit;
+
+  const [deals, totalCount] = await Promise.all([
+    prisma.deal.findMany({
+      where: { clientId: req.user.id },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+      include: {
+        signals: {
+          select: {
+            id: true,
+            source: true,
+            category: true,
+            label: true,
+            severity: true,
+            value: true,
+            url: true,
+            pulledAt: true
+          }
+        },
+        timeline: { orderBy: { createdAt: "asc" }, take: 120 }
+      }
+    }),
+    prisma.deal.count({ where: { clientId: req.user.id } })
+  ]);
+
+  res.json({
+    deals: deals.map(serializeDeal),
+    pagination: {
+      page,
+      limit,
+      total: totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+      hasMore: skip + deals.length < totalCount
     }
   });
-  res.json({ deals: deals.map(serializeDeal) });
 }));
 
 router.get("/:id", asyncHandler(async (req, res) => {
@@ -306,7 +326,22 @@ router.post("/:id/documents", asyncHandler(async (req, res) => {
   const url = normalizeString(req.body.url);
   const kind = normalizeString(req.body.kind || "Document");
   if (!label || !url) return sendError(res, 400, "Document label and URL are required");
-  if (!/^https?:\/\//i.test(url)) return sendError(res, 400, "Document URL must start with http or https");
+
+  // Validate URL format and prevent SSRF attacks
+  try {
+    const parsed = new URL(url);
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+      return sendError(res, 400, "Document URL must use http or https protocol");
+    }
+    // Block internal/private IP addresses to prevent SSRF
+    const blockedHosts = ['localhost', '127.0.0.1', '0.0.0.0', '169.254.169.254', '10.', '172.16.', '192.168.'];
+    const hostname = parsed.hostname.toLowerCase();
+    if (blockedHosts.some(blocked => hostname.includes(blocked) || hostname.startsWith(blocked))) {
+      return sendError(res, 400, "Document URL cannot reference internal addresses");
+    }
+  } catch (error) {
+    return sendError(res, 400, "Invalid document URL format");
+  }
 
   const document = await prisma.dealDocument.create({
     data: {
@@ -687,8 +722,21 @@ router.get("/:id/memo", asyncHandler(async (req, res) => {
     where: { id: req.params.id, clientId: req.user.id }
   });
   if (!deal || !deal.memoPath) return sendError(res, 404, "Memo not found");
-  if (!fs.existsSync(deal.memoPath)) return sendError(res, 404, "Memo file missing");
-  res.download(deal.memoPath, `${deal.id}.pdf`);
+
+  try {
+    if (!fs.existsSync(deal.memoPath)) return sendError(res, 404, "Memo file missing");
+    res.download(deal.memoPath, `${deal.id}.pdf`, (err) => {
+      if (err) {
+        console.error("[memo-download] Error downloading file:", err);
+        if (!res.headersSent) {
+          return sendError(res, 500, "Error downloading memo file");
+        }
+      }
+    });
+  } catch (error) {
+    console.error("[memo-download] Unexpected error:", error);
+    return sendError(res, 500, "Error accessing memo file");
+  }
 }));
 
 /** GET /deals/:id/spatial-context - Export GeoJSON spatial context for mapping */

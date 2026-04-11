@@ -57,15 +57,36 @@ router.get("/deals", asyncHandler(async (_req, res) => {
   if (_req.consoleScope.mode === "workspace") {
     return res.json({ deals: [] });
   }
-  const deals = await prisma.deal.findMany({
-    orderBy: { createdAt: "desc" },
-    include: {
-      client: { select: { email: true, name: true } },
-      signals: true,
-      timeline: { orderBy: { createdAt: "asc" } }
+
+  // Pagination parameters with sensible defaults
+  const page = Math.max(1, parseInt(_req.query.page) || 1);
+  const limit = Math.min(100, Math.max(1, parseInt(_req.query.limit) || 50));
+  const skip = (page - 1) * limit;
+
+  const [deals, totalCount] = await Promise.all([
+    prisma.deal.findMany({
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+      include: {
+        client: { select: { email: true, name: true } },
+        signals: true,
+        timeline: { orderBy: { createdAt: "asc" } }
+      }
+    }),
+    prisma.deal.count()
+  ]);
+
+  res.json({
+    deals: deals.map(serializeDeal),
+    pagination: {
+      page,
+      limit,
+      total: totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+      hasMore: skip + deals.length < totalCount
     }
   });
-  res.json({ deals: deals.map(serializeDeal) });
 }));
 
 router.get("/deals/:id", asyncHandler(async (req, res) => {

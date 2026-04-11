@@ -19,13 +19,21 @@ function nextStepsForSignals(signals) {
 
 /** Writes a PDF memo for the deal, persists its hash and path on the deal row, and records a timeline event. */
 async function generateMemo(deal, signals) {
-  const normalizedSignals = Array.isArray(signals) ? signals : [];
-  const memoDir = path.join(process.cwd(), "memos");
-  await fs.promises.mkdir(memoDir, { recursive: true });
-  const filePath = path.join(memoDir, `${deal.id}.pdf`);
-  const doc = new PDFDocument({ margin: 48 });
-  const stream = fs.createWriteStream(filePath);
-  doc.pipe(stream);
+  try {
+    const normalizedSignals = Array.isArray(signals) ? signals : [];
+    const memoDir = path.join(process.cwd(), "memos");
+
+    try {
+      await fs.promises.mkdir(memoDir, { recursive: true });
+    } catch (error) {
+      console.error("[memo] Failed to create memo directory:", error);
+      throw new Error(`Memo directory creation failed: ${error.message}`);
+    }
+
+    const filePath = path.join(memoDir, `${deal.id}.pdf`);
+    const doc = new PDFDocument({ margin: 48 });
+    const stream = fs.createWriteStream(filePath);
+    doc.pipe(stream);
 
   const safeAddress = String(deal.address || "").replace(/\s+/g, " ").trim();
   const city = String(deal.city || "Baltimore").trim();
@@ -56,39 +64,65 @@ async function generateMemo(deal, signals) {
   doc.fontSize(14).text("Next Diligence Steps", { underline: true });
   doc.fontSize(11);
   nextStepsForSignals(normalizedSignals).forEach((step, index) => doc.text(`${index + 1}. ${step}`));
-  doc.moveDown();
-  doc.text(`StoneBridge attribution: StoneBridge AI delivered this memo at ${new Date().toISOString()}.`);
+    doc.moveDown();
+    doc.text(`StoneBridge attribution: StoneBridge AI delivered this memo at ${new Date().toISOString()}.`);
 
-  await new Promise((resolve, reject) => {
-    stream.once("finish", resolve);
-    stream.once("error", reject);
-    doc.once("error", reject);
-    doc.end();
-  });
-
-  const memoContent = await fs.promises.readFile(filePath);
-  const hash = crypto.createHash("sha256").update(memoContent).digest("hex");
-
-  await prisma.deal.update({
-    where: { id: deal.id },
-    data: {
-      memoPath: filePath,
-      memoHash: hash,
-      memoDeliveredAt: new Date(),
-      status: "MEMO_DELIVERED"
+    try {
+      await new Promise((resolve, reject) => {
+        stream.once("finish", resolve);
+        stream.once("error", reject);
+        doc.once("error", reject);
+        doc.end();
+      });
+    } catch (error) {
+      console.error("[memo] PDF generation stream error:", error);
+      throw new Error(`PDF generation failed: ${error.message}`);
     }
-  });
 
-  await prisma.timelineEvent.create({
-    data: {
-      dealId: deal.id,
-      event: "MEMO_DELIVERED",
-      detail: "StoneBridge AI — Deal Risk Memo",
-      hash
+    let memoContent;
+    try {
+      memoContent = await fs.promises.readFile(filePath);
+    } catch (error) {
+      console.error("[memo] Failed to read generated PDF:", error);
+      throw new Error(`PDF read failed: ${error.message}`);
     }
-  });
 
-  return { filePath, hash };
+    const hash = crypto.createHash("sha256").update(memoContent).digest("hex");
+
+    try {
+      await prisma.deal.update({
+        where: { id: deal.id },
+        data: {
+          memoPath: filePath,
+          memoHash: hash,
+          memoDeliveredAt: new Date(),
+          status: "MEMO_DELIVERED"
+        }
+      });
+    } catch (error) {
+      console.error("[memo] Failed to update deal with memo path:", error);
+      throw new Error(`Database update failed: ${error.message}`);
+    }
+
+    try {
+      await prisma.timelineEvent.create({
+        data: {
+          dealId: deal.id,
+          event: "MEMO_DELIVERED",
+          detail: "StoneBridge AI — Deal Risk Memo",
+          hash
+        }
+      });
+    } catch (error) {
+      console.error("[memo] Failed to create timeline event:", error);
+      // Non-fatal - memo already created, just log the error
+    }
+
+    return { filePath, hash };
+  } catch (error) {
+    console.error("[memo] Memo generation failed:", error);
+    throw error;
+  }
 }
 
 module.exports = { generateMemo };
