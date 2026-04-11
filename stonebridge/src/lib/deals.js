@@ -23,6 +23,21 @@ async function runDiagnosticForDeal(dealId) {
 
   const result = await diagnose(deal.address);
 
+  // Prepare deal update data
+  const dealUpdateData = {
+    riskScoreBefore: result.riskScore,
+    flagCountBefore: result.flagCount,
+    verdict: result.verdict,
+    signalSources: [...new Set(result.signals.map(signal => signal.source))],
+    status: "PENDING"
+  };
+
+  // Add coordinates if geocoding succeeded
+  if (result.coordinates) {
+    dealUpdateData.latitude = result.coordinates.latitude;
+    dealUpdateData.longitude = result.coordinates.longitude;
+  }
+
   await prisma.$transaction([
     prisma.signal.deleteMany({ where: { dealId } }),
     prisma.signal.createMany({
@@ -30,19 +45,13 @@ async function runDiagnosticForDeal(dealId) {
     }),
     prisma.deal.update({
       where: { id: dealId },
-      data: {
-        riskScoreBefore: result.riskScore,
-        flagCountBefore: result.flagCount,
-        verdict: result.verdict,
-        signalSources: [...new Set(result.signals.map(signal => signal.source))],
-        status: "PENDING"
-      }
+      data: dealUpdateData
     }),
     prisma.timelineEvent.create({
       data: {
         dealId,
         event: "DIAGNOSTIC_COMPLETED",
-        detail: `Risk score ${result.riskScore}; ${result.flagCount} non-low flags; derived verdict ${result.verdict}${result.sourceStatus.rejected ? `; ${result.sourceStatus.rejected} source rejections` : ""}${result.sourceStatus.estimatedSignalCount ? `; ${result.sourceStatus.estimatedSignalCount} estimated signals` : ""}${result.dataQuality?.scoreCappedForEstimatedOnly ? "; score capped (estimated-only)" : ""}`
+        detail: `Risk score ${result.riskScore}; ${result.flagCount} non-low flags; derived verdict ${result.verdict}${result.sourceStatus.rejected ? `; ${result.sourceStatus.rejected} source rejections` : ""}${result.sourceStatus.estimatedSignalCount ? `; ${result.sourceStatus.estimatedSignalCount} estimated signals` : ""}${result.dataQuality?.scoreCappedForEstimatedOnly ? "; score capped (estimated-only)" : ""}${result.dataQuality?.geocoded ? "; geocoded" : ""}`
       }
     })
   ]);

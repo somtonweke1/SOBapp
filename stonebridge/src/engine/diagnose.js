@@ -7,6 +7,7 @@ const { checkUtilityAnomalies } = require("./signals/utility");
 const { checkProcurementAdjacency } = require("./signals/procurement");
 const { checkOwnershipContext } = require("./signals/ownership");
 const { checkInfrastructureRisk } = require("./signals/infrastructure");
+const { geocodeAddress } = require("../services/geocode");
 
 /** Severity ordering used when sorting signals for presentation. */
 const SOURCE_ORDER = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
@@ -128,15 +129,20 @@ function normalizeSignals(results) {
 
 /** Runs all signal checks and returns scores, signals, and explicit source health metadata. */
 async function diagnose(address) {
-  const results = await Promise.allSettled([
-    checkPropertyRecords(address),
-    checkLiens(address),
-    checkUtilityAnomalies(address),
-    checkProcurementAdjacency(address),
-    checkOwnershipContext(address),
-    checkInfrastructureRisk(address)
+  // Run signal checks and geocoding in parallel
+  const [signalResults, geocodeResult] = await Promise.all([
+    Promise.allSettled([
+      checkPropertyRecords(address),
+      checkLiens(address),
+      checkUtilityAnomalies(address),
+      checkProcurementAdjacency(address),
+      checkOwnershipContext(address),
+      checkInfrastructureRisk(address)
+    ]),
+    geocodeAddress(address)
   ]);
 
+  const results = signalResults;
   const successfulResults = results.filter((result) => result.status === "fulfilled");
   const failedSources = results
     .filter((result) => result.status === "rejected")
@@ -163,10 +169,16 @@ async function diagnose(address) {
     riskScore,
     flagCount,
     verdict,
+    coordinates: geocodeResult ? {
+      latitude: geocodeResult.latitude,
+      longitude: geocodeResult.longitude,
+      formattedAddress: geocodeResult.formattedAddress
+    } : null,
     dataQuality: {
       estimatedSignalCount,
       liveSignalCount,
-      scoreCappedForEstimatedOnly
+      scoreCappedForEstimatedOnly,
+      geocoded: geocodeResult !== null
     },
     sourceStatus: {
       attempted: results.length,

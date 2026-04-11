@@ -13,6 +13,8 @@ model Deal {
   address            String
   city               String         @default("Baltimore")
   state              String         @default("MD")
+  latitude           Float?
+  longitude          Float?
   clientId           String
   client             User           @relation(fields: [clientId], references: [id])
   status             DealStatus     @default(PENDING)

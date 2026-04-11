@@ -27,6 +27,7 @@
     "jsonwebtoken": "latest",
     "node-cron": "latest",
     "node-fetch": "latest",
+    "node-geocoder": "^4.4.1",
     "pdfkit": "latest",
     "stripe": "latest"
   },

@@ -691,4 +691,46 @@ router.get("/:id/memo", asyncHandler(async (req, res) => {
   res.download(deal.memoPath, `${deal.id}.pdf`);
 }));
 
+/** GET /deals/:id/spatial-context - Export GeoJSON spatial context for mapping */
+router.get("/:id/spatial-context", asyncHandler(async (req, res) => {
+  const { getSpatialContext } = require("../services/spatialRisk");
+
+  const deal = await getAuthorizedDealForUser(req.user, req.params.id);
+  if (!deal) return sendError(res, 404, "Deal not found");
+
+  if (!deal.latitude || !deal.longitude) {
+    return sendError(res, 400, "Deal has no coordinates. Run diagnostic first.");
+  }
+
+  const radiusMeters = parseInt(req.query.radius) || 500;
+  const geojson = await getSpatialContext(deal.latitude, deal.longitude, radiusMeters);
+
+  res.setHeader('Content-Type', 'application/geo+json');
+  res.json(geojson);
+}));
+
+/** GET /deals/:id/spatial-risk - Get spatial risk analysis for a deal */
+router.get("/:id/spatial-risk", asyncHandler(async (req, res) => {
+  const { computeSpatialRisk } = require("../services/spatialRisk");
+
+  const deal = await getAuthorizedDealForUser(req.user, req.params.id);
+  if (!deal) return sendError(res, 404, "Deal not found");
+
+  if (!deal.latitude || !deal.longitude) {
+    return sendError(res, 400, "Deal has no coordinates. Run diagnostic first.");
+  }
+
+  const spatialRisk = await computeSpatialRisk(deal.latitude, deal.longitude);
+
+  res.json({
+    dealId: deal.id,
+    address: deal.address,
+    coordinates: {
+      latitude: deal.latitude,
+      longitude: deal.longitude
+    },
+    ...spatialRisk
+  });
+}));
+
 module.exports = router;
