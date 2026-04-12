@@ -68,13 +68,14 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Final fallback
+    // No synthetic fallback: return explicit unavailable state when live sources fail.
     return NextResponse.json({
-      success: true,
-      data: getFallbackData(),
-      source: 'fallback',
+      success: false,
+      data: {},
+      source: 'unavailable',
+      error: 'Live commodity data unavailable from configured providers',
       timestamp: new Date().toISOString()
-    });
+    }, { status: 503 });
 
   } catch (error) {
     console.error('Commodity API Error:', error);
@@ -165,32 +166,4 @@ async function getAlphaVantagePrices(): Promise<CommodityData> {
   }
 
   return {};
-}
-
-function getFallbackData(): CommodityData {
-  const baseRates = {
-    gold: 2418,
-    silver: 28.5,
-    copper: 8450,
-    oil: 78.5,
-    platinum: 945,
-    palladium: 1850,
-    natural_gas: 3.2,
-  };
-
-  return Object.entries(baseRates).reduce((acc, [commodity, basePrice]) => {
-    const variation = (Math.random() - 0.5) * 0.03;
-    const currentPrice = basePrice * (1 + variation);
-
-    acc[commodity] = {
-      current: Number(currentPrice.toFixed(2)),
-      previous: basePrice,
-      daily_change: Number((variation * 100).toFixed(2)),
-      volume: Math.floor(Math.random() * 100000 + 10000),
-      timestamp: new Date().toISOString(),
-      source: 'fallback'
-    };
-
-    return acc;
-  }, {} as CommodityData);
 }

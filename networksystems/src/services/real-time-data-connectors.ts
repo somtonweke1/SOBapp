@@ -86,11 +86,11 @@ class RealTimeDataConnector {
       // EIA Natural Gas Spot Price - Henry Hub
       // This is REAL data updated daily by the US government
       const response = await fetch(
-        'https://api.eia.gov/v2/natural-gas/pri/spt/data/?frequency=daily&data[0]=value&sort[0][column]=period&sort[0][direction]=desc&length=2&api_key=demo'
+        'https://api.eia.gov/v2/natural-gas/pri/spt/data/?frequency=daily&data[0]=value&sort[0][column]=period&sort[0][direction]=desc&length=2'
       );
 
       if (!response.ok) {
-        return this.getFallbackGasPrice();
+        throw new Error(`EIA gas API error ${response.status}`);
       }
 
       const data = await response.json();
@@ -116,10 +116,10 @@ class RealTimeDataConnector {
         return result;
       }
 
-      return this.getFallbackGasPrice();
+      throw new Error('EIA gas API returned no usable data');
     } catch (error) {
       console.error('EIA API error:', error);
-      return this.getFallbackGasPrice();
+      throw error;
     }
   }
 
@@ -145,11 +145,11 @@ class RealTimeDataConnector {
 
       // EIA Electricity Demand
       const response = await fetch(
-        `https://api.eia.gov/v2/electricity/rto/region-data/data/?frequency=hourly&data[0]=value&facets[respondent][]=${regionCode}&sort[0][column]=period&sort[0][direction]=desc&length=24&api_key=demo`
+        `https://api.eia.gov/v2/electricity/rto/region-data/data/?frequency=hourly&data[0]=value&facets[respondent][]=${regionCode}&sort[0][column]=period&sort[0][direction]=desc&length=24`
       );
 
       if (!response.ok) {
-        return this.getFallbackDemand();
+        throw new Error(`EIA demand API error ${response.status}`);
       }
 
       const data = await response.json();
@@ -165,10 +165,10 @@ class RealTimeDataConnector {
         return result;
       }
 
-      return this.getFallbackDemand();
+      throw new Error('EIA demand API returned no usable data');
     } catch (error) {
       console.error('EIA demand API error:', error);
-      return this.getFallbackDemand();
+      throw error;
     }
   }
 
@@ -188,7 +188,7 @@ class RealTimeDataConnector {
       );
 
       if (!response.ok) {
-        return this.getFallbackWeather(lat, lon);
+        throw new Error(`Weather API error ${response.status}`);
       }
 
       const data = await response.json();
@@ -218,7 +218,7 @@ class RealTimeDataConnector {
       return result;
     } catch (error) {
       console.error('Weather API error:', error);
-      return this.getFallbackWeather(lat, lon);
+      throw error;
     }
   }
 
@@ -373,35 +373,6 @@ class RealTimeDataConnector {
     const avgPricePerMWh = 40;
 
     return capacityMW * hours * avgPricePerMWh * efficiencyLoss;
-  }
-
-  // Fallback data methods
-  private getFallbackGasPrice(): CommodityPrice {
-    return {
-      symbol: 'NG',
-      price: 3.50,
-      change: 0,
-      changePercent: 0,
-      timestamp: new Date()
-    };
-  }
-
-  private getFallbackDemand(): EIADataPoint[] {
-    return Array(24).fill(null).map((_, i) => ({
-      period: new Date(Date.now() - i * 3600000).toISOString(),
-      value: 30000 + Math.random() * 5000,
-      units: 'MW'
-    }));
-  }
-
-  private getFallbackWeather(lat: number, lon: number): WeatherData {
-    return {
-      location: `${lat.toFixed(2)},${lon.toFixed(2)}`,
-      temperature: 65,
-      conditions: 'Clear',
-      windSpeed: 5,
-      timestamp: new Date()
-    };
   }
 
   // Cache helpers

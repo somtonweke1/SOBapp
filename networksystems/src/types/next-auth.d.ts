@@ -10,7 +10,7 @@ declare module 'next-auth' {
     hasSignedAgreement: boolean;
     userRole: string;
     company: string | null;
-    permissions: string;
+    permissions: string[];
   }
 
   interface Session {
@@ -23,7 +23,7 @@ declare module 'next-auth' {
       hasSignedAgreement: boolean;
       userRole: string;
       company: string | null;
-      permissions: string;
+      permissions: string[];
     };
   }
 }
@@ -35,7 +35,7 @@ declare module 'next-auth/jwt' {
     subscription: string;
     hasSignedAgreement: boolean;
     userRole: string;
-    permissions: string;
+    permissions: string[];
     company: string | null;
   }
 }

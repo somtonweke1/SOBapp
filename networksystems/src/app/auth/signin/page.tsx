@@ -56,6 +56,13 @@ function SignInForm() {
           <p className="mt-2 text-center text-sm font-light text-zinc-600">
             Baltimore Real Estate Forensics Platform
           </p>
+          <p className="mt-2 text-center text-sm font-light text-zinc-600">
+            Internal ops access code users should go to{' '}
+            <Link href="/login" className="font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
+              /login
+            </Link>
+            .
+          </p>
         </div>
 
         <form className="mt-8 space-y-6 bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-zinc-200/50" onSubmit={handleSubmit}>

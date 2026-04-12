@@ -82,6 +82,46 @@ const nextConfig = {
       }
     ];
   }
+  ,
+  async redirects() {
+    return [
+      {
+        source: '/recon',
+        destination: '/internal-ops/dashboard',
+        permanent: true,
+      },
+      {
+        source: '/audit',
+        destination: '/internal-ops/dashboard',
+        permanent: true,
+      },
+      {
+        source: '/audit/:path*',
+        destination: '/internal-ops/dashboard',
+        permanent: true,
+      },
+      {
+        source: '/public-risk/dashboard',
+        destination: '/internal-ops/dashboard',
+        permanent: true,
+      },
+      {
+        source: '/public-risk/vendors',
+        destination: '/internal-ops/vendors',
+        permanent: true,
+      },
+      {
+        source: '/public-risk/memo',
+        destination: '/internal-ops/memo',
+        permanent: true,
+      },
+      {
+        source: '/public-risk',
+        destination: '/internal-ops/dashboard',
+        permanent: true,
+      },
+    ];
+  }
 }
 
 module.exports = withBundleAnalyzer(nextConfig)

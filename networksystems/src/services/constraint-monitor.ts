@@ -217,184 +217,39 @@ class ConstraintMonitorService {
   }
 
   /**
-   * Detect commodity price threshold breaches
+   * Detect commodity price threshold breaches.
+   * Real data only: wire to live price feeds; no synthetic events.
    */
   private async detectCommodityPriceChanges(): Promise<ConstraintChangeEvent[]> {
-    const events: ConstraintChangeEvent[] = [];
-
-    // Example: Cobalt price spike detection
-    const mockPriceChange = {
-      material: 'cobalt',
-      oldPrice: 55000,
-      newPrice: 72000,
-      percentChange: ((72000 - 55000) / 55000) * 100
-    };
-
-    if (Math.abs(mockPriceChange.percentChange) > 20) {
-      events.push({
-        id: `price_change_${Date.now()}`,
-        timestamp: new Date(),
-        constraintId: 'constraint_cobalt_supply',
-        changeType: 'threshold_breach',
-        severity: 'high',
-        details: {
-          metric: 'cobalt_spot_price',
-          oldValue: mockPriceChange.oldPrice,
-          newValue: mockPriceChange.newPrice,
-          percentChange: mockPriceChange.percentChange,
-          threshold: 20
-        },
-        affectedAssets: ['drc_cobalt_operations', 'ev_battery_supply_chain'],
-        estimatedImpact: {
-          financial: 8500000, // $8.5M impact
-          operational: '23% increase in procurement costs, potential supply chain delays'
-        },
-        requiresAction: true,
-        suggestedActions: [
-          'Lock in cobalt futures contracts at current rates',
-          'Activate alternative supplier agreements',
-          'Adjust production schedule to minimize cobalt usage'
-        ]
-      });
-    }
-
-    return events;
+    // TODO: integrate real commodity APIs (e.g. LME, Yahoo Finance); return [] until then
+    return [];
   }
 
   /**
-   * Detect port status changes (closures, delays)
+   * Detect port status changes (closures, delays).
+   * Real data only: wire to port/LOG APIs; no synthetic events.
    */
   private async detectPortStatusChanges(): Promise<ConstraintChangeEvent[]> {
-    const events: ConstraintChangeEvent[] = [];
-
-    // Example: Port closure detection
-    const mockPortClosure = {
-      port: 'Port of Houston',
-      status: 'maintenance_closure',
-      duration: 8, // weeks
-      affectedRoutes: ['gulf_coast_lng', 'mid_atlantic_gas']
-    };
-
-    if (mockPortClosure.duration > 4) {
-      events.push({
-        id: `port_closure_${Date.now()}`,
-        timestamp: new Date(),
-        constraintId: 'constraint_logistics_houston',
-        changeType: 'new_constraint',
-        severity: 'critical',
-        details: {
-          metric: 'port_availability',
-          oldValue: 100,
-          newValue: 0,
-          percentChange: -100,
-          threshold: 50
-        },
-        affectedAssets: ['houston_lng_terminal', 'gulf_coast_pipeline'],
-        estimatedImpact: {
-          financial: 12100000, // $12.1M over 8 weeks
-          operational: '35% reduction in LNG export capacity, rerouting required'
-        },
-        requiresAction: true,
-        suggestedActions: [
-          'Reroute to Port of Corpus Christi (+$2.1M logistics cost)',
-          'Accelerate Q2 production to compensate (+$8.3M revenue opportunity)',
-          'Negotiate temporary storage at alternative terminals'
-        ]
-      });
-    }
-
-    return events;
+    // TODO: integrate real port/logistics data; return [] until then
+    return [];
   }
 
   /**
-   * Detect geopolitical risk changes
+   * Detect geopolitical risk changes.
+   * Real data only: wire to risk intelligence; no synthetic events.
    */
   private async detectGeopoliticalRiskChanges(): Promise<ConstraintChangeEvent[]> {
-    const events: ConstraintChangeEvent[] = [];
-
-    // Example: DRC political instability
-    const mockRiskIncrease = {
-      region: 'DRC (Democratic Republic of Congo)',
-      riskType: 'political_instability',
-      oldScore: 4.2,
-      newScore: 7.8,
-      confidence: 0.82
-    };
-
-    if (mockRiskIncrease.newScore - mockRiskIncrease.oldScore > 2.0) {
-      events.push({
-        id: `geopolitical_risk_${Date.now()}`,
-        timestamp: new Date(),
-        constraintId: 'constraint_drc_cobalt_supply',
-        changeType: 'threshold_breach',
-        severity: 'critical',
-        details: {
-          metric: 'geopolitical_risk_score',
-          oldValue: mockRiskIncrease.oldScore,
-          newValue: mockRiskIncrease.newScore,
-          percentChange: ((mockRiskIncrease.newScore - mockRiskIncrease.oldScore) / mockRiskIncrease.oldScore) * 100,
-          threshold: 2.0
-        },
-        affectedAssets: ['drc_cobalt_mines', 'global_ev_battery_supply'],
-        estimatedImpact: {
-          financial: 47300000, // $47.3M exposure
-          operational: 'Potential 60% disruption to global cobalt supply, cascading EV production delays'
-        },
-        requiresAction: true,
-        suggestedActions: [
-          'Diversify cobalt sourcing to Australia/Indonesia (+18% cost but 85% risk reduction)',
-          'Build 6-month strategic cobalt reserve (+$12M inventory cost)',
-          'Hedge cobalt price exposure via futures contracts'
-        ]
-      });
-    }
-
-    return events;
+    // TODO: integrate real risk/geopolitical data; return [] until then
+    return [];
   }
 
   /**
-   * Detect production status changes
+   * Detect production status changes.
+   * Real data only: wire to production/operational APIs; no synthetic events.
    */
   private async detectProductionChanges(): Promise<ConstraintChangeEvent[]> {
-    const events: ConstraintChangeEvent[] = [];
-
-    // Example: Unexpected production drop
-    const mockProductionDrop = {
-      facility: 'Jwaneng Diamond Mine',
-      oldOutput: 12500, // carats/day
-      newOutput: 8200,
-      percentChange: ((8200 - 12500) / 12500) * 100
-    };
-
-    if (Math.abs(mockProductionDrop.percentChange) > 25) {
-      events.push({
-        id: `production_drop_${Date.now()}`,
-        timestamp: new Date(),
-        constraintId: 'constraint_jwaneng_production',
-        changeType: 'threshold_breach',
-        severity: 'high',
-        details: {
-          metric: 'daily_production',
-          oldValue: mockProductionDrop.oldOutput,
-          newValue: mockProductionDrop.newOutput,
-          percentChange: mockProductionDrop.percentChange,
-          threshold: 25
-        },
-        affectedAssets: ['jwaneng_mine', 'debswana_revenue'],
-        estimatedImpact: {
-          financial: 3200000, // $3.2M daily revenue loss
-          operational: '34% production shortfall, likely equipment failure or ore grade drop'
-        },
-        requiresAction: true,
-        suggestedActions: [
-          'Deploy maintenance crew for emergency equipment repair',
-          'Redirect processing capacity to higher-grade ore stockpiles',
-          'Adjust Q2 production targets and customer delivery schedules'
-        ]
-      });
-    }
-
-    return events;
+    // TODO: integrate real production/operational data; return [] until then
+    return [];
   }
 
   /**

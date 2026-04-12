@@ -31,6 +31,10 @@ function outputOf(result) {
   return `${result.stdout}\n${result.stderr}`.trim();
 }
 
+function sleep(seconds) {
+  spawnSync('sh', ['-c', `sleep ${Math.max(0, seconds)}`], { stdio: 'ignore' });
+}
+
 function shouldSkipMigrations() {
   const value = (process.env.SKIP_MIGRATIONS || '').toLowerCase();
   return value === '1' || value === 'true' || value === 'yes';
@@ -97,7 +101,19 @@ function checkSchemaUpToDate() {
 function deployMigrations() {
   console.log('🚀 Running `prisma migrate deploy`...');
 
-  const result = runPrisma(['migrate', 'deploy'], { inherit: true });
+  let result = runPrisma(['migrate', 'deploy']);
+
+  for (let attempt = 1; !result.ok && attempt <= 2; attempt += 1) {
+    const out = outputOf(result).toLowerCase();
+    const advisoryLockTimeout =
+      out.includes('p1002') &&
+      out.includes('advisory lock');
+
+    if (!advisoryLockTimeout) break;
+    console.warn(`⚠️ Advisory lock timeout during migrate deploy (retry ${attempt}/2 in 5s)...`);
+    sleep(5);
+    result = runPrisma(['migrate', 'deploy']);
+  }
 
   if (result.ok) {
     console.log('✅ Migration deploy completed');
@@ -109,6 +125,15 @@ function deployMigrations() {
   if (output.includes('already applied') || output.includes('no pending migrations')) {
     console.log('✅ No pending work: migrations already applied');
     return true;
+  }
+
+  if (output.includes('p1002') && output.includes('advisory lock')) {
+    console.warn('⚠️ Could not acquire advisory lock after retries; checking migration status...');
+    const status = outputOf(runPrisma(['migrate', 'status'])).toLowerCase();
+    if (status.includes('database schema is up to date') || status.includes('no pending migrations')) {
+      console.log('✅ Status check indicates schema is up to date; continuing');
+      return true;
+    }
   }
 
   console.warn('⚠️ Migration deploy reported an error');
@@ -138,8 +163,12 @@ function main() {
   }
 
   if (!DATABASE_URL) {
-    console.error('❌ DATABASE_URL environment variable is not set');
-    process.exit(1);
+    console.warn('⚠️ DATABASE_URL environment variable is not set');
+    console.log('⏭️ Skipping migrations and generating Prisma Client for build compatibility');
+    if (!generateClient()) {
+      process.exit(1);
+    }
+    process.exit(0);
   }
 
   if (DATABASE_URL.startsWith('file:')) {

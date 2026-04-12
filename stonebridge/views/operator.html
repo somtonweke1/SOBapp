@@ -45,17 +45,20 @@
         </div>
         <div class="operator-panel">
           <div class="operator-nav">
-            <button class="active" data-operator-view="pipeline">Pipeline</button>
-            <button data-operator-view="diagnostics">Diagnostics</button>
-            <button data-operator-view="capital">Capital</button>
-            <button data-operator-view="health">Signal Health</button>
-            <button data-operator-view="settings">Settings</button>
+            <button type="button" class="operator-nav-button active" data-operator-view="pipeline" aria-controls="operatorView-pipeline" aria-pressed="true">Pipeline</button>
+            <button type="button" class="operator-nav-button" data-operator-view="diagnostics" aria-controls="operatorView-diagnostics" aria-pressed="false">Diagnostics</button>
+            <button type="button" class="operator-nav-button" data-operator-view="capital" aria-controls="operatorView-capital" aria-pressed="false">Capital</button>
+            <button type="button" class="operator-nav-button" data-operator-view="health" aria-controls="operatorView-health" aria-pressed="false">Signal Health</button>
+            <button type="button" class="operator-nav-button" data-operator-view="settings" aria-controls="operatorView-settings" aria-pressed="false">Settings</button>
           </div>
         </div>
         <div class="operator-panel">
           <div class="field-group">
             <label class="field-label" for="workspaceScope">Workspace scope</label>
-            <select class="input" id="workspaceScope"></select>
+            <div class="select-shell">
+              <select class="input input-select" id="workspaceScope"></select>
+              <span class="select-shell-icon" aria-hidden="true">⌄</span>
+            </div>
           </div>
         </div>
         <div class="operator-panel">
@@ -542,11 +545,22 @@
     }
 
     function renderWorkspaceScope() {
+      if (!availableWorkspaces.length) {
+        workspaceScope.innerHTML = '<option value="">No workspaces available</option>';
+        workspaceScope.disabled = true;
+        return;
+      }
+
+      workspaceScope.disabled = false;
       workspaceScope.innerHTML = availableWorkspaces.map((workspace) => `
         <option value="${workspace.slug}">${workspace.name}</option>
       `).join("");
-      if (selectedWorkspaceSlug) workspaceScope.value = selectedWorkspaceSlug;
-      workspaceScope.closest(".operator-panel").style.display = availableWorkspaces.length > 1 ? "block" : "none";
+
+      if (selectedWorkspaceSlug) {
+        workspaceScope.value = selectedWorkspaceSlug;
+      } else {
+        workspaceScope.selectedIndex = 0;
+      }
     }
 
     function configureConsoleMode() {
@@ -775,9 +789,13 @@
 
     document.querySelectorAll("[data-operator-view]").forEach((button) => {
       button.addEventListener("click", () => {
-        document.querySelectorAll("[data-operator-view]").forEach((candidate) => candidate.classList.remove("active"));
+        document.querySelectorAll("[data-operator-view]").forEach((candidate) => {
+          candidate.classList.remove("active");
+          candidate.setAttribute("aria-pressed", "false");
+        });
         document.querySelectorAll(".operator-view").forEach((view) => view.classList.remove("active"));
         button.classList.add("active");
+        button.setAttribute("aria-pressed", "true");
         document.getElementById(`operatorView-${button.dataset.operatorView}`).classList.add("active");
       });
     });

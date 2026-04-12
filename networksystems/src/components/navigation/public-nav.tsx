@@ -14,8 +14,8 @@ export function PublicNav() {
               <span className="text-emerald-100 font-semibold text-lg tracking-wide">S</span>
             </div>
             <div className="hidden sm:block">
-              <span className="text-xl font-semibold tracking-tight text-emerald-100 group-hover:text-emerald-300 transition-colors">SOBapp</span>
-              <p className="text-xs font-light text-emerald-200/70 group-hover:text-emerald-300 transition-colors">Baltimore Forensics</p>
+              <span className="text-xl font-semibold tracking-tight text-emerald-100 group-hover:text-emerald-300 transition-colors">StoneBridge AI</span>
+              <p className="text-xs font-light text-emerald-200/70 group-hover:text-emerald-300 transition-colors">Decision-grade Baltimore diligence</p>
             </div>
           </Link>
 
@@ -26,7 +26,7 @@ export function PublicNav() {
               className="hidden md:flex items-center gap-2 text-sm font-light text-emerald-200/80 hover:text-emerald-300 transition-colors"
             >
               <Activity className="w-4 h-4" />
-              Audit Engine
+              Free Scan
             </Link>
 
             <Link
@@ -34,7 +34,7 @@ export function PublicNav() {
               className="hidden md:flex items-center gap-2 text-sm font-light text-emerald-200/80 hover:text-emerald-300 transition-colors"
             >
               <ShieldCheck className="w-4 h-4" />
-              Deal Shield
+              Diligence Products
             </Link>
 
             <Link
@@ -42,7 +42,7 @@ export function PublicNav() {
               className="hidden md:flex items-center gap-2 text-sm font-light text-emerald-200/80 hover:text-emerald-300 transition-colors"
             >
               <TrendingUp className="w-4 h-4" />
-              Portfolio Stress-Test
+              Institutional Screening
             </Link>
 
             {/* Book Demo CTA */}
@@ -50,7 +50,7 @@ export function PublicNav() {
               href="/claims"
               className="px-4 py-2 border border-emerald-400/50 bg-emerald-500/10 text-emerald-100 text-sm font-light rounded-lg hover:bg-emerald-500/20 transition-colors shadow-md hover:shadow-lg"
             >
-              Start Free Forensic Audit
+              Start Paid Intake
             </Link>
           </div>
         </div>

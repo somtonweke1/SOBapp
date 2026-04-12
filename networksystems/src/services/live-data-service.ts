@@ -37,8 +37,7 @@ export class LiveDataService {
         return cachedData;
       }
 
-      // Last resort: realistic fallback data
-      return this.generateLiveCommodityData();
+      return {};
     } catch (error) {
       console.error('Error fetching real commodity prices:', error);
 
@@ -48,38 +47,14 @@ export class LiveDataService {
         return cachedData;
       }
 
-      return this.generateLiveCommodityData();
+      return {};
     }
   }
 
   // Live Mining Operations Data
   async getMiningOperationsData(): Promise<any> {
     try {
-      // Simulate live mining data with real-world variations
-      const baseData = {
-        johannesburg: {
-          production: 115000 + Math.floor(Math.random() * 10000 - 5000),
-          efficiency: 92 + Math.random() * 8,
-          power_consumption: 285 + Math.random() * 20,
-          workers_active: 2300 + Math.floor(Math.random() * 200 - 100),
-          last_updated: new Date().toISOString()
-        },
-        drc_cobalt: {
-          production: 28500 + Math.floor(Math.random() * 2000 - 1000),
-          price_per_kg: 32500 + Math.random() * 5000,
-          supply_risk: Math.random() > 0.7 ? 'high' : 'medium',
-          last_updated: new Date().toISOString()
-        },
-        ghana_gold: {
-          production: 87500 + Math.floor(Math.random() * 5000 - 2500),
-          grade: 2.8 + Math.random() * 0.4,
-          water_usage: 15000 + Math.random() * 1000,
-          last_updated: new Date().toISOString()
-        }
-      };
-
-      this.dataCache.set('mining_ops', baseData);
-      return baseData;
+      return {};
     } catch (error) {
       console.error('Error fetching mining operations data:', error);
       return this.dataCache.get('mining_ops') || {};
@@ -89,43 +64,7 @@ export class LiveDataService {
   // Live Shipping and Trade Data
   async getShippingData(): Promise<any> {
     try {
-      // Simulate live shipping data based on real patterns
-      const ports = [
-        {
-          id: 'durban',
-          name: 'Durban Port',
-          utilization: 85 + Math.random() * 10,
-          ships_in_port: Math.floor(Math.random() * 15 + 25),
-          cargo_processed: 65200 + Math.random() * 5000,
-          delays: Math.random() > 0.8 ? Math.floor(Math.random() * 48) : 0,
-          weather_conditions: Math.random() > 0.9 ? 'rough' : 'good',
-          last_updated: new Date().toISOString()
-        },
-        {
-          id: 'lagos',
-          name: 'Lagos Port',
-          utilization: 92 + Math.random() * 6,
-          ships_in_port: Math.floor(Math.random() * 20 + 35),
-          cargo_processed: 42100 + Math.random() * 3000,
-          delays: Math.random() > 0.6 ? Math.floor(Math.random() * 72) : 0,
-          weather_conditions: 'good',
-          last_updated: new Date().toISOString()
-        }
-      ];
-
-      const routes = [
-        {
-          id: 'suez_route',
-          name: 'Africa-Europe via Suez',
-          vessels_active: Math.floor(Math.random() * 50 + 150),
-          average_speed: 14 + Math.random() * 4,
-          congestion_level: Math.random() > 0.7 ? 'high' : 'medium',
-          transit_time: 18 + (Math.random() > 0.7 ? Math.floor(Math.random() * 5) : 0),
-          last_updated: new Date().toISOString()
-        }
-      ];
-
-      return { ports, routes };
+      return {};
     } catch (error) {
       console.error('Error fetching shipping data:', error);
       return { ports: [], routes: [] };
@@ -203,20 +142,7 @@ export class LiveDataService {
       const cached = this.dataCache.get('market_intel');
       if (cached) return cached;
 
-      // Fallback to basic intelligence
-      return [
-        {
-          id: `intel_fallback_${Date.now()}`,
-          type: 'system',
-          priority: 'low',
-          title: 'Intelligence Service Temporarily Unavailable',
-          description: 'Real-time intelligence feed is currently offline. Please check back shortly.',
-          impact: 'No immediate action required',
-          timestamp: new Date().toISOString(),
-          relevance: ['system'],
-          source: 'fallback'
-        }
-      ];
+      return [];
     }
   }
 
@@ -251,24 +177,14 @@ export class LiveDataService {
         return cachedData;
       }
 
-      // Fallback to basic commodity data
-      return this.getCommodityPrices();
+      return {};
     }
   }
 
   // Real-time Portfolio Updates
   async getPortfolioUpdates(): Promise<any> {
     try {
-      const portfolioMetrics = {
-        total_value: 2450 + (Math.random() - 0.5) * 100,
-        daily_pnl: (Math.random() - 0.5) * 200,
-        risk_score: 65 + (Math.random() - 0.5) * 20,
-        active_positions: Math.floor(Math.random() * 3 + 6),
-        correlation_alerts: Math.floor(Math.random() * 5),
-        last_updated: new Date().toISOString()
-      };
-
-      return portfolioMetrics;
+      return {};
     } catch (error) {
       console.error('Error fetching portfolio updates:', error);
       return {};
@@ -348,30 +264,9 @@ export class LiveDataService {
   }
 
   // Helper methods
-  private generateLiveCommodityData() {
-    const baseRates = {
-      gold: 2418,
-      silver: 28.5,
-      platinum: 945,
-      copper: 8450,
-      iron_ore: 105
-    };
-
-    return Object.entries(baseRates).reduce((acc, [metal, basePrice]) => {
-      const variation = (Math.random() - 0.5) * 0.08; // ±4% variation
-      acc[metal] = {
-        price: Number((basePrice * (1 + variation)).toFixed(2)),
-        change_24h: Number((variation * 100).toFixed(2)),
-        volume: Math.floor(Math.random() * 100000 + 10000),
-        timestamp: new Date().toISOString()
-      };
-      return acc;
-    }, {} as any);
-  }
-
   private processCommodityData(dataArray: any[]) {
-    // Process and normalize data from different API sources
-    return this.generateLiveCommodityData(); // Fallback for now
+    void dataArray;
+    return {};
   }
 
   // Get all live data for dashboard

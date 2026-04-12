@@ -139,15 +139,6 @@ export default function LoginForm() {
             </div>
           </div>
 
-          {/* Development Access Note */}
-          <div className="mt-6 p-4 bg-emerald-50/50 border border-emerald-200/30 rounded-lg">
-            <h4 className="text-sm font-light text-emerald-800 mb-2">Platform Preview Access</h4>
-            <div className="text-xs text-emerald-700 space-y-1 font-light">
-              <div>Demo access: <code className="bg-white px-1 py-0.5 rounded">admin@miar.com</code></div>
-              <div>Password: <code className="bg-white px-1 py-0.5 rounded">demo123</code></div>
-              <p className="mt-2 text-emerald-600">For evaluation purposes only</p>
-            </div>
-          </div>
         </Card>
 
         <div className="text-center">

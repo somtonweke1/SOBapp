@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer-core';
+import { getSystemEfficacyMetrics } from '@/lib/risk/system-efficacy';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -26,11 +27,27 @@ export async function GET(request: NextRequest) {
   targetParams.set('generatedAt', generatedAt);
   if (accessKey) targetParams.set('key', accessKey);
 
-  const passthrough = ['address', 'owner', 'caseId', 'lienTotal', 'lastSalePrice'];
+  const passthrough = [
+    'address',
+    'owner',
+    'caseId',
+    'lienTotal',
+    'lastSalePrice',
+    'company',
+    'need',
+    'annualLeakage',
+    'targetLoopId',
+    'bridgeType',
+    'bridgeLane',
+  ];
   passthrough.forEach((key) => {
     const value = request.nextUrl.searchParams.get(key);
     if (value) targetParams.set(key, value);
   });
+  const efficacy = await getSystemEfficacyMetrics();
+  targetParams.set('efficacyBridgedLoops', String(efficacy.bridgedLoops));
+  targetParams.set('efficacyLoopBreakRate', String(efficacy.loopBreakRate));
+  targetParams.set('efficacyTimeToBridgeHours', String(efficacy.avgTimeToBridgeHours));
 
   const targetUrl = `${baseUrl}/ops/proposal?${targetParams.toString()}`;
 

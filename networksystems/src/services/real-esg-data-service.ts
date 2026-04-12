@@ -138,7 +138,7 @@ class RealESGDataService {
       return result;
     } catch (error) {
       console.error('Error fetching World Bank governance data:', error);
-      return this.getFallbackGovernanceData(countryCode);
+      return null;
     }
   }
 
@@ -159,7 +159,7 @@ class RealESGDataService {
       return esgProfiles;
     } catch (error) {
       console.error('Error getting ESG profile:', error);
-      return this.getVerifiedESGData(countryCode, null);
+      return [];
     }
   }
 
@@ -386,29 +386,6 @@ class RealESGDataService {
   }
 
   /**
-   * Fallback governance data based on latest public reports
-   */
-  private getFallbackGovernanceData(countryCode: string): any {
-    // From Transparency International CPI 2023 and World Bank WGI 2023
-    const fallbackScores: Record<string, any> = {
-      'CD': { governanceScore: 23, corruptionScore: 20 }, // DRC
-      'ZA': { governanceScore: 62, corruptionScore: 41 }, // South Africa
-      'ZM': { governanceScore: 48, corruptionScore: 33 }, // Zambia
-      'GH': { governanceScore: 58, corruptionScore: 43 }, // Ghana
-      'BW': { governanceScore: 72, corruptionScore: 60 }, // Botswana
-      'NA': { governanceScore: 68, corruptionScore: 49 }  // Namibia
-    };
-
-    return {
-      country: countryCode,
-      ...fallbackScores[countryCode],
-      source: 'Transparency International CPI 2023 / World Bank WGI 2023 (Fallback)',
-      lastUpdated: new Date().toISOString(),
-      confidence: 'estimated' as const
-    };
-  }
-
-  /**
    * Get ESG Risk Score for Material-Country Combination
    */
   async getESGRiskScore(country: string, material: string): Promise<{
@@ -424,10 +401,10 @@ class RealESGDataService {
 
     if (!materialData) {
       return {
-        riskScore: 50,
-        riskLevel: 'medium',
-        factors: ['Insufficient data'],
-        dataSources: ['Estimated based on regional averages'],
+        riskScore: 0,
+        riskLevel: 'low',
+        factors: ['Live ESG data unavailable for this country/material pair'],
+        dataSources: ['Live source unavailable'],
         confidence: 'estimated'
       };
     }

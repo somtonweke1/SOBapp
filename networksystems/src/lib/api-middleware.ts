@@ -52,7 +52,9 @@ export async function authenticateRequest(
     throw new Error('Unauthorized');
   }
 
-  const permissions = JSON.parse(session.user.permissions || '[]');
+  const permissions = Array.isArray(session.user.permissions)
+    ? session.user.permissions
+    : JSON.parse(session.user.permissions || '[]');
 
   return {
     userId: session.user.id,

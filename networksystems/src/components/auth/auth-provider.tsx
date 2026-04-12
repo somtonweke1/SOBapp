@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 interface User {
   id: string;
@@ -23,83 +24,71 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+function normalizePermissions(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === 'string');
+  }
+
+  if (typeof value !== 'string' || !value.trim()) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
-
-  // Mock user data for demo
-  const mockUsers: Record<string, User> = {
-    'admin@miar.com': {
-      id: '1',
-      name: 'Sarah Chen',
-      email: 'admin@miar.com',
-      role: 'admin',
-      company: 'SOBapp Platform',
-      permissions: ['view_all', 'manage_users', 'configure_system', 'export_data', 'ai_insights'],
-      subscription: 'enterprise'
-    },
-    'manager@mining.com': {
-      id: '2',
-      name: 'James Okafor',
-      email: 'manager@mining.com',
-      role: 'manager',
-      company: 'West African Mining Corp',
-      permissions: ['view_operations', 'manage_assets', 'export_data', 'ai_insights'],
-      subscription: 'professional'
-    },
-    'operator@mine.co.za': {
-      id: '3',
-      name: 'Themba Mthembu',
-      email: 'operator@mine.co.za',
-      role: 'operator',
-      company: 'Johannesburg Gold Mine',
-      permissions: ['view_operations', 'update_status'],
-      subscription: 'starter'
-    }
-  };
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     setMounted(true);
-    // Check for stored session only after mounting (client-side)
-    const storedUser = localStorage.getItem('miar_user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        // Clear invalid stored data
-        localStorage.removeItem('miar_user');
-      }
+  }, []);
+
+  useEffect(() => {
+    if (status === 'loading') {
+      setIsLoading(true);
+      return;
+    }
+
+    if (session?.user) {
+      setUser({
+        id: session.user.id,
+        name: session.user.name || '',
+        email: session.user.email || '',
+        role: (session.user.role as User['role']) || 'viewer',
+        company: session.user.company || 'Unknown',
+        permissions: normalizePermissions(session.user.permissions),
+        subscription: (session.user.subscription as User['subscription']) || 'starter',
+      });
+    } else {
+      setUser(null);
     }
     setIsLoading(false);
-  }, []);
+  }, [session, status]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
-
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const user = mockUsers[email];
-    if (user && password === 'demo123') {
-      setUser(user);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('miar_user', JSON.stringify(user));
-      }
-      setIsLoading(false);
-      return true;
-    }
-
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+    });
+    const ok = !!result?.ok && !result?.error;
     setIsLoading(false);
-    return false;
+    return ok;
   };
 
   const logout = () => {
     setUser(null);
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('miar_user');
-    }
+    signOut({ redirect: false });
     // Don't automatically redirect to login - allow landing page access
     router.push('/');
   };

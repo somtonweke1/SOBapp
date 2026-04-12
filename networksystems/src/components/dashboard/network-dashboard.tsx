@@ -30,31 +30,6 @@ const NetworkDashboard: React.FC = () => {
     loadNetworks();
   }, [loadNetworks]);
 
-  // Sample network data
-  const sampleNetwork: Network = {
-    id: 'sample-1',
-    name: 'Sample Social Network',
-    description: 'A sample network for demonstration',
-    nodes: [
-      { id: 'A', label: 'Alice', group: 'users', x: 100, y: 100 },
-      { id: 'B', label: 'Bob', group: 'users', x: 200, y: 100 },
-      { id: 'C', label: 'Charlie', group: 'users', x: 150, y: 200 },
-      { id: 'D', label: 'Diana', group: 'users', x: 300, y: 150 },
-      { id: 'E', label: 'Eve', group: 'users', x: 250, y: 250 }
-    ],
-    edges: [
-      { source: 'A', target: 'B', weight: 1 },
-      { source: 'B', target: 'C', weight: 1 },
-      { source: 'C', target: 'D', weight: 1 },
-      { source: 'D', target: 'E', weight: 1 },
-      { source: 'E', target: 'A', weight: 1 },
-      { source: 'A', target: 'C', weight: 1 },
-      { source: 'B', target: 'D', weight: 1 }
-    ],
-    directed: false,
-    createdAt: new Date().toISOString()
-  };
-
   const centralityAlgorithms = [
     { value: 'degree', label: 'Degree Centrality' },
     { value: 'betweenness', label: 'Betweenness Centrality' },
@@ -72,16 +47,6 @@ const NetworkDashboard: React.FC = () => {
     { value: 'clustering', label: 'Clustering Analysis' },
     { value: 'structural_properties', label: 'Structural Properties' }
   ];
-
-  const handleAddSampleNetwork = async () => {
-    try {
-      await addNetwork(sampleNetwork);
-      setCurrentNetwork(sampleNetwork);
-      await saveNetwork(sampleNetwork);
-    } catch (error) {
-      console.error('Failed to add sample network:', error);
-    }
-  };
 
   const handleRunCentralityAnalysis = async () => {
     if (!currentNetwork) return;
@@ -197,20 +162,6 @@ const NetworkDashboard: React.FC = () => {
                     Create
                   </button>
                 </div>
-              </div>
-
-              {/* Add Sample Network */}
-              <div className="mb-6">
-                <h3 className="text-lg font-medium text-zinc-700 mb-3">
-                  Sample Data
-                </h3>
-                <button
-                  onClick={handleAddSampleNetwork}
-                  disabled={loading}
-                  className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
-                >
-                  Add Sample Network
-                </button>
               </div>
 
               {/* Network List */}

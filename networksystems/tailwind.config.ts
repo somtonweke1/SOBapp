@@ -1,5 +1,6 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from 'tailwindcss';
+
+const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -7,14 +8,15 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
       colors: {
-        // Brand colors
         brand: {
           primary: 'var(--color-primary)',
           'primary-dark': 'var(--color-primary-dark)',
           'primary-light': 'var(--color-primary-light)',
         },
-        // Semantic colors for consistent usage
         status: {
           success: 'var(--color-success)',
           'success-bg': 'var(--color-success-bg)',
@@ -37,19 +39,6 @@ module.exports = {
           'critical-border': 'var(--color-critical-border)',
           'critical-text': 'var(--color-critical-text)',
         },
-        // Extend zinc to be the default neutral (Swiss minimal)
-        neutral: {
-          50: 'var(--color-neutral-50)',
-          100: 'var(--color-neutral-100)',
-          200: 'var(--color-neutral-200)',
-          300: 'var(--color-neutral-300)',
-          400: 'var(--color-neutral-400)',
-          500: 'var(--color-neutral-500)',
-          600: 'var(--color-neutral-600)',
-          700: 'var(--color-neutral-700)',
-          800: 'var(--color-neutral-800)',
-          900: 'var(--color-neutral-900)',
-        },
       },
       backgroundColor: {
         surface: 'var(--color-surface)',
@@ -65,7 +54,12 @@ module.exports = {
         DEFAULT: 'var(--color-border)',
         hover: 'var(--color-border-hover)',
       },
+      boxShadow: {
+        clean: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+      },
     },
   },
   plugins: [],
-}
+};
+
+export default config;

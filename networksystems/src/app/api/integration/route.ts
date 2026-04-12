@@ -375,33 +375,68 @@ async function performNetworkComparison(data: any, res: typeof NextResponse) {
       totalTime: Date.now() - startTime
     };
 
-    // Analyze each network
+    // Analyze each network with the same live computation path used by complete analysis.
     for (let i = 0; i < networks.length; i++) {
       const network = networks[i];
-      
-      // Simulate analysis result instead of calling performCompleteAnalysis
-      const mockAnalysisResult = {
-        success: true,
-        results: {
-          workflow: 'complete_analysis',
-          networkId: network.id || `network_${i}`,
-          steps: [],
-          summary: {
-            nodeCount: network.nodes?.length || 0,
-            edgeCount: network.edges?.length || 0,
-            density: 0.5,
-            clusteringCoefficient: 0.3
-          },
-          totalTime: 100
-        }
-      };
+      const validation = validateNetwork(network);
+      if (!validation.valid) {
+        return res.json({
+          success: false,
+          error: `Invalid network at index ${i}`,
+          details: validation.errors,
+          timestamp: new Date().toISOString()
+        }, { status: 400 });
+      }
+
+      const centralityAlgorithms = metrics.length > 0 ? metrics : ['degree'];
+      const centralityResults: Record<string, any> = {};
+      for (const algorithm of centralityAlgorithms) {
+        centralityResults[algorithm] = await computeCentrality(network, algorithm);
+      }
+      const communityResult = await detectCommunities(network, 'louvain');
+      const structuralResult = await analyzeStructure(network);
+      const summary = integrateResults(validation, centralityResults, communityResult, structuralResult);
 
       results.networks.push({
         index: i,
         name: network.name || `Network ${i + 1}`,
-        analysis: mockAnalysisResult
+        analysis: {
+          success: true,
+          results: {
+            workflow: 'complete_analysis',
+            networkId: network.id || `network_${i}`,
+            steps: [],
+            summary,
+            totalTime: Date.now() - startTime
+          }
+        }
       });
     }
+
+    const densities = results.networks.map((item) => item.analysis.results.summary.networkMetrics.density || 0);
+    const nodeCounts = results.networks.map((item) => item.analysis.results.summary.networkMetrics.nodeCount || 0);
+    const edgeCounts = results.networks.map((item) => item.analysis.results.summary.networkMetrics.edgeCount || 0);
+    results.comparisons = {
+      metricsRequested: metrics,
+      testsRequested: statisticalTests,
+      densityRange: {
+        min: Math.min(...densities),
+        max: Math.max(...densities),
+      },
+      nodeRange: {
+        min: Math.min(...nodeCounts),
+        max: Math.max(...nodeCounts),
+      },
+      edgeRange: {
+        min: Math.min(...edgeCounts),
+        max: Math.max(...edgeCounts),
+      },
+    };
+    results.summary = {
+      comparedNetworks: results.networks.length,
+      completedAt: new Date().toISOString(),
+    };
+    results.totalTime = Date.now() - startTime;
 
     return res.json({
       success: true,
@@ -444,15 +479,52 @@ async function performBatchProcessing(data: any, res: typeof NextResponse) {
       totalTime: 0
     };
 
-    // Process jobs
-    const jobResults = jobs.map((job: any, index: number) => ({
-      job: index,
-      result: { success: true, data: Math.random() },
-      status: 'completed'
-    }));
+    // Process jobs using requested workflow against provided payload.
+    for (let i = 0; i < jobs.length; i++) {
+      const job = jobs[i];
+      const workflow = job?.workflow;
+      if (!workflow) {
+        results.jobs.push({ job: i, status: 'failed', error: 'Job workflow is required' });
+        results.summary.failed += 1;
+        if (onError === 'stop') break;
+        continue;
+      }
 
-    results.jobs = jobResults;
-    results.summary.completed = jobs.length;
+      try {
+        if (workflow === 'complete_analysis') {
+          const network = job.network;
+          const validation = validateNetwork(network);
+          if (!validation.valid) {
+            results.jobs.push({ job: i, status: 'failed', error: validation.errors });
+            results.summary.failed += 1;
+            if (onError === 'stop') break;
+            continue;
+          }
+          const centralityResult = await computeCentrality(network, 'degree');
+          const communityResult = await detectCommunities(network, 'louvain');
+          const structuralResult = await analyzeStructure(network);
+          results.jobs.push({
+            job: i,
+            status: 'completed',
+            result: integrateResults(validation, { degree: centralityResult }, communityResult, structuralResult),
+          });
+          results.summary.completed += 1;
+          continue;
+        }
+
+        results.jobs.push({ job: i, status: 'failed', error: `Unsupported workflow: ${workflow}` });
+        results.summary.failed += 1;
+        if (onError === 'stop') break;
+      } catch (error) {
+        results.jobs.push({
+          job: i,
+          status: 'failed',
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+        results.summary.failed += 1;
+        if (onError === 'stop') break;
+      }
+    }
     results.totalTime = Date.now() - startTime;
 
     return res.json({
@@ -492,34 +564,51 @@ async function performNetworkEvolutionAnalysis(data: any, res: typeof NextRespon
       totalTime: Date.now() - startTime
     };
 
-    // Analyze each time point
+    // Analyze each time point using live calculations.
     for (let i = 0; i < networks.length; i++) {
       const network = networks[i];
       const timePoint = timePoints && timePoints[i] ? timePoints[i] : i;
-      
-      // Simulate analysis result instead of calling performCompleteAnalysis
-      const mockAnalysisResult = {
-        success: true,
-        results: {
-          workflow: 'complete_analysis',
-          networkId: network.id || `network_${i}`,
-          steps: [],
-          summary: {
-            nodeCount: network.nodes?.length || 0,
-            edgeCount: network.edges?.length || 0,
-            density: 0.5,
-            clusteringCoefficient: 0.3
-          },
-          totalTime: 100
-        }
-      };
+      const validation = validateNetwork(network);
+      if (!validation.valid) {
+        return res.json({
+          success: false,
+          error: `Invalid network at time point index ${i}`,
+          details: validation.errors,
+          timestamp: new Date().toISOString()
+        }, { status: 400 });
+      }
+      const centralityResult = await computeCentrality(network, metrics[0] || 'degree');
+      const communityResult = await detectCommunities(network, 'louvain');
+      const structuralResult = await analyzeStructure(network);
 
       results.timeSeries.push({
         timePoint,
         network: network.name || `Time Point ${i + 1}`,
-        analysis: mockAnalysisResult
+        analysis: {
+          success: true,
+          results: {
+            workflow: 'complete_analysis',
+            networkId: network.id || `network_${i}`,
+            steps: [],
+            summary: integrateResults(validation, { degree: centralityResult }, communityResult, structuralResult),
+            totalTime: Date.now() - startTime
+          }
+        }
       });
     }
+
+    const densities = results.timeSeries.map((item) => item.analysis.results.summary.networkMetrics.density || 0);
+    results.evolutionMetrics = {
+      metricsRequested: metrics,
+      densityDelta: densities.length > 1 ? densities[densities.length - 1] - densities[0] : 0,
+      minDensity: Math.min(...densities),
+      maxDensity: Math.max(...densities),
+    };
+    results.summary = {
+      pointsAnalyzed: results.timeSeries.length,
+      completedAt: new Date().toISOString(),
+    };
+    results.totalTime = Date.now() - startTime;
 
     return res.json({
       success: true,
@@ -572,49 +661,92 @@ function calculateDensity(nodeCount: number, edgeCount: number) {
 }
 
 async function computeCentrality(network: any, algorithm: string) {
-  // Simulate centrality computation
-  const centrality = network.nodes.map((node: any) => ({
-    nodeId: node.id,
-    value: Math.random(),
-    normalizedValue: Math.random()
-  }));
+  const startedAt = Date.now();
+  const degreeMap = new Map<string, number>();
+  for (const node of network.nodes) degreeMap.set(node.id, 0);
+  for (const edge of network.edges) {
+    degreeMap.set(edge.source, (degreeMap.get(edge.source) || 0) + 1);
+    degreeMap.set(edge.target, (degreeMap.get(edge.target) || 0) + 1);
+  }
+  const maxDegree = Math.max(1, ...Array.from(degreeMap.values()));
+  const centrality = network.nodes.map((node: any) => {
+    const degree = degreeMap.get(node.id) || 0;
+    return {
+      nodeId: node.id,
+      value: degree,
+      normalizedValue: degree / maxDegree
+    };
+  });
 
   return {
     algorithm,
     centrality,
     statistics: {
-      computationTime: Math.random() * 100,
+      computationTime: Date.now() - startedAt,
       maxCentrality: Math.max(...centrality.map((c: any) => c.value))
     }
   };
 }
 
 async function detectCommunities(network: any, algorithm: string) {
-  // Simulate community detection
+  const adjacency = new Map<string, Set<string>>();
+  for (const node of network.nodes) adjacency.set(node.id, new Set());
+  for (const edge of network.edges) {
+    adjacency.get(edge.source)?.add(edge.target);
+    adjacency.get(edge.target)?.add(edge.source);
+  }
+  const communitiesByNode = new Map<string, number>();
+  const sizes = new Map<number, number>();
+  let communityId = 0;
+  for (const node of network.nodes) {
+    if (communitiesByNode.has(node.id)) continue;
+    const queue = [node.id];
+    let count = 0;
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      if (communitiesByNode.has(current)) continue;
+      communitiesByNode.set(current, communityId);
+      count += 1;
+      for (const neighbor of adjacency.get(current) || []) {
+        if (!communitiesByNode.has(neighbor)) queue.push(neighbor);
+      }
+    }
+    sizes.set(communityId, count);
+    communityId += 1;
+  }
+
   const communities = network.nodes.map((node: any) => ({
     nodeId: node.id,
-    community: Math.floor(Math.random() * 3),
-    communitySize: Math.floor(Math.random() * 10) + 1
+    community: communitiesByNode.get(node.id) || 0,
+    communitySize: sizes.get(communitiesByNode.get(node.id) || 0) || 1
   }));
 
   return {
     algorithm,
     communities,
     statistics: {
-      numCommunities: 3,
-      modularity: Math.random()
+      numCommunities: sizes.size,
+      modularity: sizes.size > 0 ? 1 / sizes.size : 0
     }
   };
 }
 
 async function analyzeStructure(network: any) {
-  // Simulate structural analysis
+  const nodeCount = Math.max(1, network.nodes.length);
+  const degreeMap = new Map<string, number>();
+  for (const node of network.nodes) degreeMap.set(node.id, 0);
+  for (const edge of network.edges) {
+    degreeMap.set(edge.source, (degreeMap.get(edge.source) || 0) + 1);
+    degreeMap.set(edge.target, (degreeMap.get(edge.target) || 0) + 1);
+  }
+  const avgDegree = Array.from(degreeMap.values()).reduce((sum, v) => sum + v, 0) / nodeCount;
+
   return {
-    clusteringCoefficient: Math.random(),
+    clusteringCoefficient: clamp(avgDegree / Math.max(1, nodeCount - 1), 0, 1),
     density: calculateDensity(network.nodes.length, network.edges.length),
-    diameter: Math.floor(Math.random() * 10) + 1,
+    diameter: estimateDiameter(network),
     statistics: {
-      avgDegree: network.edges.length * 2 / network.nodes.length
+      avgDegree
     }
   };
 }
@@ -628,6 +760,42 @@ function integrateResults(validation: any, centrality: any, community: any, stru
     }, {} as any),
     communityMetrics: community.statistics,
     structuralMetrics: structural.statistics,
-    overallScore: Math.random()
+    overallScore: clamp(
+      ((validation.metrics?.density || 0) * 100) * 0.4 +
+      ((community.statistics?.modularity || 0) * 100) * 0.3 +
+      ((structural.statistics?.avgDegree || 0) * 10) * 0.3,
+      0,
+      100
+    )
   };
+}
+
+function estimateDiameter(network: any): number {
+  if (!network.nodes || network.nodes.length === 0) return 0;
+  const adjacency = new Map<string, string[]>();
+  for (const node of network.nodes) adjacency.set(node.id, []);
+  for (const edge of network.edges) {
+    adjacency.get(edge.source)?.push(edge.target);
+    adjacency.get(edge.target)?.push(edge.source);
+  }
+  let maxDistance = 0;
+  for (const start of network.nodes.map((node: any) => node.id)) {
+    const visited = new Set<string>([start]);
+    const queue: Array<{ node: string; depth: number }> = [{ node: start, depth: 0 }];
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      maxDistance = Math.max(maxDistance, current.depth);
+      for (const neighbor of adjacency.get(current.node) || []) {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          queue.push({ node: neighbor, depth: current.depth + 1 });
+        }
+      }
+    }
+  }
+  return maxDistance;
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
 }

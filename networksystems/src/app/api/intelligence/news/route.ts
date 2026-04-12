@@ -2,67 +2,108 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-config';
 import { prisma } from '@/lib/prisma';
+import OpenAI from 'openai';
 
 export const dynamic = 'force-dynamic';
 
-/**
- * NEWS INTELLIGENCE API
- * Server-side only - API keys never exposed to client
- */
-
-interface PerplexityConfig {
-  baseUrl: string;
-  apiKey: string;
-  model: string;
+interface IntelligenceResult {
+  content: string;
+  citations: string[];
+  timestamp: string;
+  source: 'gemini' | 'openai';
 }
 
-const perplexityConfig: PerplexityConfig = {
-  baseUrl: 'https://api.perplexity.ai',
-  apiKey: process.env.PERPLEXITY_API_KEY || '',
-  model: 'llama-3.1-sonar-large-128k-online',
-};
+const SYSTEM_CONTEXT = 'You are a mining industry analyst. Provide concise, data-driven insights about mining operations, commodity markets, and supply chains.';
 
-async function queryPerplexity(prompt: string, context?: string): Promise<any> {
-  if (!perplexityConfig.apiKey) {
-    throw new Error('Perplexity API key not configured');
+async function queryGemini(prompt: string, context?: string): Promise<IntelligenceResult> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error('GEMINI_API_KEY not configured');
   }
 
-  const response = await fetch(`${perplexityConfig.baseUrl}/chat/completions`, {
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${perplexityConfig.apiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: perplexityConfig.model,
-      messages: [
-        {
-          role: 'system',
-          content: context || 'You are a mining industry analyst. Provide concise, data-driven insights about mining operations, commodity markets, and supply chains.',
-        },
+      contents: [
         {
           role: 'user',
-          content: prompt,
+          parts: [
+            {
+              text: `${context || SYSTEM_CONTEXT}\n\n${prompt}`,
+            },
+          ],
         },
       ],
-      temperature: 0.2,
-      max_tokens: 500,
-      return_citations: true,
-      search_recency_filter: 'week',
+      generationConfig: {
+        temperature: 0.2,
+        maxOutputTokens: 500,
+      },
     }),
   });
 
   if (!response.ok) {
-    throw new Error(`Perplexity API error: ${response.statusText}`);
+    throw new Error(`Gemini API error: ${response.statusText}`);
   }
 
   const data = await response.json();
+  const content = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!content) {
+    throw new Error('Gemini response missing content');
+  }
+
   return {
-    content: data.choices[0].message.content,
-    citations: data.citations || [],
+    content,
+    citations: [],
     timestamp: new Date().toISOString(),
-    source: 'perplexity_ai',
+    source: 'gemini',
   };
+}
+
+async function queryOpenAI(prompt: string, context?: string): Promise<IntelligenceResult> {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('OPENAI_API_KEY not configured');
+  }
+
+  const client = new OpenAI({ apiKey });
+  const completion = await client.chat.completions.create({
+    model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+    temperature: 0.2,
+    max_tokens: 500,
+    messages: [
+      {
+        role: 'system',
+        content: context || SYSTEM_CONTEXT,
+      },
+      {
+        role: 'user',
+        content: prompt,
+      },
+    ],
+  });
+
+  const content = completion.choices?.[0]?.message?.content;
+  if (!content) {
+    throw new Error('OpenAI response missing content');
+  }
+
+  return {
+    content,
+    citations: [],
+    timestamp: new Date().toISOString(),
+    source: 'openai',
+  };
+}
+
+async function queryIntelligence(prompt: string, context?: string): Promise<IntelligenceResult> {
+  try {
+    return await queryGemini(prompt, context);
+  } catch {
+    return queryOpenAI(prompt, context);
+  }
 }
 
 export async function GET(request: NextRequest) {
@@ -85,7 +126,7 @@ export async function GET(request: NextRequest) {
       case 'summary':
         const regionFilter = region ? ` in ${region}` : '';
         const prompt = `What are the most important mining industry developments${regionFilter} in the past 7 days? Focus on: production disruptions, new discoveries, M&A activity, commodity price drivers, and policy changes. Provide 3-5 bullet points with specific details.`;
-        result = await queryPerplexity(prompt);
+        result = await queryIntelligence(prompt);
         break;
 
       case 'commodity':
@@ -93,7 +134,7 @@ export async function GET(request: NextRequest) {
           return NextResponse.json({ error: 'Commodity parameter required' }, { status: 400 });
         }
         const commodityPrompt = `What are the latest developments affecting ${commodity} prices and supply? Include production updates, demand forecasts, and geopolitical factors from the past 7 days.`;
-        result = await queryPerplexity(commodityPrompt);
+        result = await queryIntelligence(commodityPrompt);
         break;
 
       case 'company':
@@ -101,17 +142,17 @@ export async function GET(request: NextRequest) {
           return NextResponse.json({ error: 'Company parameter required' }, { status: 400 });
         }
         const companyPrompt = `What is the latest news about ${company} mining operations? Include production updates, financial results, expansion plans, and any operational challenges from the past 30 days.`;
-        result = await queryPerplexity(companyPrompt);
+        result = await queryIntelligence(companyPrompt);
         break;
 
       case 'supply_chain':
         const scPrompt = `What are the current supply chain disruptions affecting the global mining industry? Include port delays, logistics issues, geopolitical conflicts, and weather events from the past 7 days.`;
-        result = await queryPerplexity(scPrompt);
+        result = await queryIntelligence(scPrompt);
         break;
 
       case 'alerts':
         const alertsPrompt = `What are the most urgent and impactful developments in the mining industry today that would affect mining operations, supply chains, or commodity prices? Focus on breaking news and critical events.`;
-        result = await queryPerplexity(alertsPrompt);
+        result = await queryIntelligence(alertsPrompt);
         break;
 
       default:

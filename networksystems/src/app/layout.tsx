@@ -1,15 +1,12 @@
-import type { Metadata } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google'
-import './globals.css'
-import { Providers } from '@/components/providers'
-
-const inter = Inter({ subsets: ['latin'] })
-const jetbrains = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains' })
+import type { Metadata } from 'next';
+import './globals.css';
+import { Providers } from '@/components/providers';
 
 export const metadata: Metadata = {
-  title: 'SOBapp | Baltimore Real Estate Forensics',
-  description: 'SOBapp is the Baltimore Real Estate Forensics Engine for DPW water bill audits, DSCR stress-testing, and property-level risk intelligence.',
-}
+  title: 'StoneBridge AI | Baltimore Deal Diagnostic Engine',
+  description:
+    'StoneBridge AI uses Baltimore public infrastructure, procurement, utility, and property data to diagnose hidden deal risk before acquisition or rehab.',
+};
 
 export default function RootLayout({
   children,
@@ -18,10 +15,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${jetbrains.variable} bg-[#050505] text-emerald-100`}>
-        <Providers>
-          {children}
-        </Providers>
+      <body
+        className="bg-gradient-to-br from-zinc-50 to-zinc-100 text-zinc-600 font-sans antialiased selection:bg-emerald-500/20 selection:text-emerald-900"
+      >
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

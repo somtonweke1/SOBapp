@@ -47,10 +47,10 @@ export async function POST(request: NextRequest) {
       options
     );
 
-    // Get synthesis recommendations
+    // Get synthesis recommendations (real OpenAI only; no synthetic fallback)
     let synthesisRecommendations = null;
     try {
-      synthesisRecommendations = getSynthesisRecommendations(
+      synthesisRecommendations = await getSynthesisRecommendations(
         specifications,
         discoveryResults,
         labSites
@@ -190,9 +190,9 @@ function calculateDiscoveryStatistics(candidates: any[], pipeline: any, labs: an
   };
 }
 
-function getSynthesisRecommendations(specifications: any, results: any, labs: any[]) {
+function getSynthesisRecommendations(specifications: any, results: any, labs: any[]): Promise<Record<string, unknown> | null> {
   const topCandidates = results.candidates.slice(0, 5);
-  const labCapabilities = labs.map(lab => ({
+  const labCapabilities = labs.map((lab: any) => ({
     name: lab.name,
     equipment: lab.equipment?.map((eq: any) => eq.type).join(', ') || 'basic'
   }));
@@ -203,12 +203,12 @@ Target Properties: ${JSON.stringify(specifications.targetProperties)}
 Application: ${specifications.applicationDomain}
 
 Top Candidate Materials:
-${topCandidates.map((c: any, i: number) => 
-    `${i+1}. ${JSON.stringify(c.composition)} - Confidence: ${(c.confidenceScore*100).toFixed(1)}%`
+${topCandidates.map((c: any, i: number) =>
+    `${i + 1}. ${JSON.stringify(c.composition)} - Confidence: ${(c.confidenceScore * 100).toFixed(1)}%`
   ).join('\n')}
 
 Available Lab Facilities:
-${labCapabilities.map(lab => `- ${lab.name}: ${lab.equipment}`).join('\n')}
+${labCapabilities.map((lab: any) => `- ${lab.name}: ${lab.equipment}`).join('\n')}
 
 Provide:
 1. Optimized synthesis protocols for top 3 candidates
@@ -220,59 +220,39 @@ Provide:
 
 Format as JSON with detailed synthesis protocols.`;
 
-  // Simplified synthesis recommendations
-  try {
-    // Mock OpenAI completion with default response
-    const completion = { choices: [{ message: { content: null } }] };
+  if (!openai) {
+    return Promise.resolve(null);
+  }
 
-    /*
-    const completion = await openai!.chat.completions.create({
-      model: "gpt-4",
+  return openai.chat.completions
+    .create({
+      model: 'gpt-4',
       messages: [
         {
-          role: "system",
-          content: "You are a materials science expert specializing in autonomous synthesis and African manufacturing capabilities."
+          role: 'system',
+          content: 'You are a materials science expert specializing in autonomous synthesis and African manufacturing capabilities.'
         },
         {
-          role: "user",
+          role: 'user',
           content: prompt
         }
       ],
       temperature: 0.3,
-      max_tokens: 1500,
+      max_tokens: 1500
+    })
+    .then((completion) => {
+      const content = completion.choices[0]?.message?.content;
+      if (!content) return null;
+      try {
+        return JSON.parse(content) as Record<string, unknown>;
+      } catch {
+        return null;
+      }
+    })
+    .catch((error) => {
+      console.error('Synthesis recommendation error:', error);
+      return null;
     });
-
-    return JSON.parse(completion.choices[0]?.message?.content || '{}');
-    */
-
-    // Return default synthesis recommendations
-    return {
-      optimizedProtocols: topCandidates.slice(0, 3).map((c: any, i: number) => ({
-        candidateId: c.id,
-        protocol: generateDefaultProtocol(c),
-        estimatedYield: 0.75 + Math.random() * 0.2,
-        qualityMetrics: ['purity', 'crystal_structure', 'mechanical_properties']
-      })),
-      parallelSynthesis: {
-        batchSize: 5,
-        simultaneousExperiments: Math.min(labs.length, 3),
-        timeReduction: '35%'
-      },
-      scaleUpFactors: {
-        laboratoryToMini: 10,
-        miniToPilot: 100,
-        pilotToCommercial: 1000
-      },
-      confidence: 0.79
-    };
-  } catch (error) {
-    console.error('Synthesis recommendation error:', error);
-    return {
-      optimizedProtocols: [],
-      labRecommendations: [],
-      confidence: 0.5
-    };
-  }
 }
 
 // Helper functions

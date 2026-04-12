@@ -18,7 +18,7 @@ export interface EconomicIndicator {
 
 export class FREDDataService {
   // Note: FRED requires free API key from https://fred.stlouisfed.org/docs/api/api_key.html
-  private static readonly API_KEY = process.env.NEXT_PUBLIC_FRED_API_KEY || 'demo';
+  private static readonly API_KEY = process.env.NEXT_PUBLIC_FRED_API_KEY || '';
   private static readonly BASE_URL = 'https://api.stlouisfed.org/fred';
 
   private static cache: Map<string, { data: any; timestamp: number }> = new Map();
@@ -75,30 +75,10 @@ export class FREDDataService {
           }
         } catch (error) {
           console.error(`Failed to fetch ${seriesId}:`, error);
-          // Use fallback data
-          results[config.name] = this.getFallbackIndicator(config.name, config.description, config.unit);
         }
       }
 
       // Add mining-specific indicators
-      results['copper_demand_index'] = {
-        indicator: 'Copper Demand Index',
-        value: 102.3,
-        unit: 'index',
-        date: new Date(),
-        change: 2.1,
-        source: 'estimate'
-      };
-
-      results['renewable_energy_growth'] = {
-        indicator: 'Renewable Energy Growth',
-        value: 15.2,
-        unit: '%',
-        date: new Date(),
-        change: 1.8,
-        source: 'estimate'
-      };
-
       this.cache.set('economic_indicators', {
         data: results,
         timestamp: Date.now()
@@ -107,39 +87,8 @@ export class FREDDataService {
       return results;
     } catch (error) {
       console.error('FRED API error:', error);
-      return this.getFallbackEconomicData();
+      return {};
     }
-  }
-
-  private static getFallbackIndicator(name: string, description: string, unit: string): EconomicIndicator {
-    const fallbackValues: Record<string, number> = {
-      'treasury_10y': 4.25,
-      'oil_wti': 82.50,
-      'usd_eur': 1.085,
-      'core_cpi': 306.5,
-      'consumer_sentiment': 68.2,
-      'industrial_production': 103.8
-    };
-
-    return {
-      indicator: description,
-      value: fallbackValues[name] || 100,
-      unit: unit,
-      date: new Date(),
-      change: (Math.random() - 0.5) * 2,
-      source: 'estimate'
-    };
-  }
-
-  private static getFallbackEconomicData(): Record<string, EconomicIndicator> {
-    return {
-      'treasury_10y': this.getFallbackIndicator('treasury_10y', '10-Year Treasury Rate', '%'),
-      'oil_wti': this.getFallbackIndicator('oil_wti', 'WTI Crude Oil', 'USD/barrel'),
-      'usd_eur': this.getFallbackIndicator('usd_eur', 'USD/EUR Exchange Rate', 'rate'),
-      'core_cpi': this.getFallbackIndicator('core_cpi', 'Core CPI', 'index'),
-      'consumer_sentiment': this.getFallbackIndicator('consumer_sentiment', 'Consumer Sentiment', 'index'),
-      'industrial_production': this.getFallbackIndicator('industrial_production', 'Industrial Production', 'index')
-    };
   }
 }
 

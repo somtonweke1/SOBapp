@@ -44,7 +44,7 @@ class RealNewsAlertService {
 
   // Free API configuration
   private newsAPI = {
-    key: process.env.NEXT_PUBLIC_NEWS_API_KEY || 'demo', // Get free key at newsapi.org
+    key: process.env.NEXT_PUBLIC_NEWS_API_KEY || '', // Required: get key at newsapi.org
     baseUrl: 'https://newsapi.org/v2',
     rateLimit: 100 // requests per day on free tier
   };
@@ -94,6 +94,10 @@ class RealNewsAlertService {
       return cached.data;
     }
 
+    if (!this.newsAPI.key) {
+      return [];
+    }
+
     try {
       // Search terms for mining-related news
       const searchTerms = [
@@ -129,11 +133,11 @@ class RealNewsAlertService {
         return newsAlerts;
       }
 
-      // If API fails or no key, use RSS fallback
-      return this.fetchRSSFallback();
+      // No synthetic fallback: return empty when API fails or key is missing/invalid
+      return [];
     } catch (error) {
       console.error('NewsAPI error:', error);
-      return this.fetchRSSFallback();
+      return [];
     }
   }
 
@@ -163,10 +167,11 @@ class RealNewsAlertService {
   }
 
   /**
-   * Fallback to RSS feeds (always available, no API key needed)
+   * Do not use in production: returns synthetic data.
+   * For real RSS, integrate an RSS parser and fetch from rssFeeds above.
    */
   private async fetchRSSFallback(): Promise<NewsAlert[]> {
-    // Simulate RSS parsing with curated real mining news examples
+    // Synthetic placeholder - not used when policy is real data only
     // In production, you'd use an RSS parser library
     const recentMiningNews: NewsAlert[] = [
       {

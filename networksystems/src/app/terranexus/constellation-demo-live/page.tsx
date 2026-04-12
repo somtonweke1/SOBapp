@@ -97,6 +97,7 @@ interface DemoData {
 export default function ConstellationDemoLivePage() {
   const [demoData, setDemoData] = useState<DemoData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [selectedMitigations, setSelectedMitigations] = useState<string[]>([]);
   const [calculatedImpact, setCalculatedImpact] = useState<{
     totalCost: number;
@@ -137,8 +138,12 @@ export default function ConstellationDemoLivePage() {
 
   const fetchDemoData = async () => {
     setIsLoading(true);
+    setLoadError(null);
     try {
       const response = await fetch('/api/demos/constellation');
+      if (!response.ok) {
+        throw new Error('Live data unavailable for this view');
+      }
       const data = await response.json();
       setDemoData(data);
 
@@ -148,6 +153,8 @@ export default function ConstellationDemoLivePage() {
       }
     } catch (error) {
       console.error('Failed to load demo data:', error);
+      setDemoData(null);
+      setLoadError('This demo page has been disabled because it relied on synthetic data.');
     } finally {
       setIsLoading(false);
     }
@@ -199,12 +206,23 @@ export default function ConstellationDemoLivePage() {
     );
   };
 
-  if (isLoading || !demoData) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-zinc-50 to-white flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="h-12 w-12 animate-spin text-blue-600 mx-auto mb-4" />
           <p className="text-lg text-zinc-600">Loading constraint engine demo...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!demoData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-zinc-50 to-white flex items-center justify-center">
+        <div className="max-w-xl rounded-xl border border-amber-300 bg-amber-50 p-6 text-center text-amber-900">
+          <p className="font-semibold">Synthetic demo disabled</p>
+          <p className="mt-2 text-sm">{loadError || 'No live data is available for this page.'}</p>
         </div>
       </div>
     );

@@ -1,76 +1,79 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { jsPDF } from 'jspdf';
-import QRCode from 'qrcode';
-import { promises as fs } from 'fs';
-import path from 'path';
 
 export const runtime = 'nodejs';
 
-type InvoiceRequest = {
-  ownerName: string;
-  propertyAddress: string;
-  dpwAccountNumber: string;
-  grossDisputedAmount: number;
-  recoveredAmount: number;
+type Payload = {
+  ownerName?: string;
+  propertyAddress?: string;
+  dpwAccountNumber?: string;
+  grossDisputedAmount?: number;
+  recoveredAmount?: number;
   evidenceUrl?: string;
 };
 
-const formatCurrency = (value: number) =>
-  value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+const money = (value: number) =>
+  value.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
-const generateCaseId = () => {
-  const year = new Date().getFullYear();
-  const suffix = Math.floor(1000 + Math.random() * 9000);
-  return `SOB-${year}-${suffix}`;
-};
-
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
+  let payload: Payload = {};
   try {
-    const body = (await request.json()) as Partial<InvoiceRequest>;
-    const ownerName = body.ownerName || 'Unknown Owner';
-    const propertyAddress = body.propertyAddress || 'Unknown Address';
-    const dpwAccountNumber = body.dpwAccountNumber || 'Unknown Account';
-    const grossDisputedAmount = Number(body.grossDisputedAmount || 0);
-    const recoveredAmount = Number(body.recoveredAmount || 0);
-    const successFee = recoveredAmount * 0.3;
-    const netCapitalGained = recoveredAmount - successFee;
-    const evidenceUrl = body.evidenceUrl || 'https://sobapp.vercel.app/dashboard';
-
-    const caseId = generateCaseId();
-    const issueDate = new Date().toLocaleDateString('en-US');
-    const agreementTimestamp = new Date().toISOString();
-
-    const qrDataUrl = await QRCode.toDataURL(evidenceUrl, { margin: 1, width: 160 });
-    const templatePath = path.join(process.cwd(), 'src', 'templates', 'invoice-template.html');
-    const template = await fs.readFile(templatePath, 'utf-8');
-
-    const html = template
-      .replace('{{caseId}}', caseId)
-      .replace('{{issueDate}}', issueDate)
-      .replace('{{ownerName}}', ownerName)
-      .replace('{{propertyAddress}}', propertyAddress)
-      .replace('{{dpwAccountNumber}}', dpwAccountNumber)
-      .replace('{{evidenceReference}}', evidenceUrl)
-      .replace('{{grossDisputedAmount}}', formatCurrency(grossDisputedAmount))
-      .replace('{{recoveredAmount}}', formatCurrency(recoveredAmount))
-      .replace('{{successFee}}', formatCurrency(successFee))
-      .replace('{{netCapitalGained}}', formatCurrency(netCapitalGained))
-      .replace('{{agreementTimestamp}}', agreementTimestamp)
-      .replace('{{qrCode}}', qrDataUrl);
-
-    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
-    await doc.html(html, { x: 0, y: 0, width: 612 });
-
-    const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
-    return new NextResponse(pdfBuffer, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename=recovery-invoice-${caseId}.pdf`,
-      },
-    });
-  } catch (error) {
-    console.error('Invoice generation error:', error);
-    return NextResponse.json({ error: 'Failed to generate invoice' }, { status: 500 });
+    payload = (await request.json()) as Payload;
+  } catch {
+    // ignore
   }
+
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  const left = 54;
+  let y = 72;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.text('StoneBridge AI - Recovery Invoice', left, y);
+
+  y += 24;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.text(`Generated: ${new Date().toLocaleString()}`, left, y);
+
+  y += 18;
+  doc.setFontSize(11);
+  doc.text(`Owner: ${payload.ownerName || '-'}`, left, y);
+  y += 16;
+  doc.text(`Property: ${payload.propertyAddress || '-'}`, left, y);
+  y += 16;
+  doc.text(`DPW Account: ${payload.dpwAccountNumber || '-'}`, left, y);
+
+  y += 22;
+  doc.setFont('helvetica', 'bold');
+  doc.text('Amounts', left, y);
+  doc.setFont('helvetica', 'normal');
+  y += 16;
+
+  const gross = Number(payload.grossDisputedAmount);
+  const recovered = Number(payload.recoveredAmount);
+  doc.text(`Gross Disputed: ${Number.isFinite(gross) ? money(gross) : '-'}`, left, y);
+  y += 16;
+  doc.text(`Recovered: ${Number.isFinite(recovered) ? money(recovered) : '-'}`, left, y);
+
+  if (payload.evidenceUrl) {
+    y += 24;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Evidence', left, y);
+    doc.setFont('helvetica', 'normal');
+    y += 16;
+    doc.setTextColor(20, 110, 190);
+    doc.textWithLink(payload.evidenceUrl, left, y, { url: payload.evidenceUrl });
+    doc.setTextColor(0, 0, 0);
+  }
+
+  const buffer = doc.output('arraybuffer');
+  return new NextResponse(buffer, {
+    headers: {
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename="stonebridge-recovery-invoice.pdf"',
+      'Cache-Control': 'no-store',
+    },
+  });
 }
+

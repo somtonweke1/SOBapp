@@ -7,12 +7,12 @@ export class RealMarketDataService {
   private apis = {
     alphaVantage: {
       baseUrl: 'https://www.alphavantage.co/query',
-      key: '4WDXO5G1LWE47YBH', // Real Alpha Vantage API key
+      key: process.env.ALPHA_VANTAGE_API_KEY || '',
       rateLimit: 500 // per day
     },
     twelveData: {
       baseUrl: 'https://api.twelvedata.com',
-      key: 'cd5607aa49084906b4bf821598dc22f3', // Real Twelve Data API key
+      key: process.env.TWELVE_DATA_API_KEY || '',
       rateLimit: 800 // per day
     },
     yahooFinance: {
@@ -21,7 +21,7 @@ export class RealMarketDataService {
     },
     finhub: {
       baseUrl: 'https://finnhub.io/api/v1',
-      key: 'demo', // Replace with real key: https://finnhub.io/
+      key: process.env.FINNHUB_API_KEY || '',
       rateLimit: 60 // per minute
     }
   };
@@ -80,8 +80,7 @@ export class RealMarketDataService {
       throw new Error('All APIs failed');
     } catch (error) {
       console.error('Error fetching real commodity prices:', error);
-      // Return fallback data that's still realistic
-      return this.getFallbackCommodityData();
+      return {};
     }
   }
 
@@ -145,6 +144,7 @@ export class RealMarketDataService {
 
   // Alpha Vantage API with real commodities data
   private async getAlphaVantagePrices(): Promise<any> {
+    if (!this.apis.alphaVantage.key) return {};
     try {
       // Using Alpha Vantage commodity endpoints
       const commodityMap = {
@@ -203,6 +203,7 @@ export class RealMarketDataService {
 
   // Twelve Data API with real commodity symbols
   private async getTwelveDataPrices(): Promise<any> {
+    if (!this.apis.twelveData.key) return {};
     try {
       // Using real commodity symbols that Twelve Data supports
       const commoditySymbols = {
@@ -444,17 +445,8 @@ export class RealMarketDataService {
         'DCOILWTICO': 'wti_oil'   // WTI Oil Price
       };
 
-      // Note: FRED API is free but requires registration
-      // For now, we'll use a simpler approach
-      const economicData = {
-        treasury_10y: 4.5 + (Math.random() - 0.5) * 0.5,
-        usd_eur: 1.08 + (Math.random() - 0.5) * 0.02,
-        vix: 18 + (Math.random() - 0.5) * 5, // Market volatility
-        timestamp: new Date().toISOString()
-      };
-
-      this.setCache(cacheKey, economicData, 60); // Cache for 1 hour
-      return economicData;
+      void indicators;
+      return {};
     } catch (error) {
       console.error('Error fetching economic indicators:', error);
       return {};
@@ -468,94 +460,11 @@ export class RealMarketDataService {
     if (cached) return cached;
 
     try {
-      // These are harder to get real-time but critical for African mining
-      const batteryMetals = {
-        lithium: {
-          current: 18500 + (Math.random() - 0.5) * 2000, // USD per metric ton
-          daily_change: (Math.random() - 0.5) * 5,
-          commodity_type: 'battery_metal',
-          primary_producers: ['Australia', 'Chile', 'Zimbabwe'],
-          applications: ['EV batteries', 'energy storage'],
-          timestamp: new Date().toISOString(),
-          source: 'industry_estimates'
-        },
-        cobalt: {
-          current: 32500 + (Math.random() - 0.5) * 3000, // USD per metric ton
-          daily_change: (Math.random() - 0.5) * 4,
-          commodity_type: 'battery_metal',
-          primary_producers: ['DRC (70%)', 'Zambia', 'Madagascar'],
-          applications: ['lithium-ion batteries', 'superalloys'],
-          supply_risk: 'high',
-          timestamp: new Date().toISOString(),
-          source: 'industry_estimates'
-        },
-        graphite: {
-          current: 8200 + (Math.random() - 0.5) * 800, // USD per metric ton
-          daily_change: (Math.random() - 0.5) * 3,
-          commodity_type: 'battery_metal',
-          primary_producers: ['China', 'Mozambique', 'Madagascar'],
-          applications: ['battery anodes', 'steel production'],
-          timestamp: new Date().toISOString(),
-          source: 'industry_estimates'
-        },
-        manganese: {
-          current: 2100 + (Math.random() - 0.5) * 200, // USD per metric ton
-          daily_change: (Math.random() - 0.5) * 2.5,
-          commodity_type: 'battery_metal',
-          primary_producers: ['South Africa', 'Gabon', 'Australia'],
-          applications: ['steel alloys', 'batteries'],
-          timestamp: new Date().toISOString(),
-          source: 'industry_estimates'
-        },
-        rare_earth_oxides: {
-          current: 67500 + (Math.random() - 0.5) * 5000, // USD per metric ton (mixed)
-          daily_change: (Math.random() - 0.5) * 6,
-          commodity_type: 'rare_earth',
-          primary_producers: ['China (60%)', 'USA', 'Myanmar'],
-          applications: ['magnets', 'catalysts', 'electronics'],
-          supply_risk: 'critical',
-          timestamp: new Date().toISOString(),
-          source: 'industry_estimates'
-        }
-      };
-
-      this.setCache(cacheKey, batteryMetals, 30); // Cache for 30 minutes (less volatile)
-      return batteryMetals;
+      return {};
     } catch (error) {
       console.error('Error fetching battery metals data:', error);
       return {};
     }
-  }
-
-  // Fallback data when APIs fail
-  private getFallbackCommodityData(): any {
-    // Use recent approximate values with small variations
-    const baseRates = {
-      gold: 2418,    // USD per troy ounce
-      silver: 28.5,  // USD per troy ounce
-      copper: 8450,  // USD per metric ton
-      oil: 78.5,     // USD per barrel
-      platinum: 945, // USD per troy ounce
-      palladium: 1850, // USD per troy ounce
-      aluminum: 2380,  // USD per metric ton
-      zinc: 2650,      // USD per metric ton
-      nickel: 16800    // USD per metric ton
-    };
-
-    return Object.entries(baseRates).reduce((acc, [commodity, basePrice]) => {
-      const variation = (Math.random() - 0.5) * 0.03; // ±1.5% variation
-      const currentPrice = basePrice * (1 + variation);
-      const dailyChange = variation * 100;
-
-      acc[commodity] = {
-        current: Number(currentPrice.toFixed(2)),
-        daily_change: Number(dailyChange.toFixed(2)),
-        volume: Math.floor(Math.random() * 100000 + 10000),
-        timestamp: new Date().toISOString(),
-        source: 'fallback_realistic'
-      };
-      return acc;
-    }, {} as any);
   }
 
   // Get all real market data
@@ -584,7 +493,6 @@ export class RealMarketDataService {
       console.error('Error fetching all real market data:', error);
       return {
         error: 'Failed to fetch real market data',
-        fallback: this.getFallbackCommodityData(),
         last_updated: new Date().toISOString()
       };
     }

@@ -1,1 +1,5 @@
 .vercel
+_RECOVERED_FROM_CURSOR/
+stonebridge/node_modules/
+stonebridge/.env
+stonebridge/memos/*.pdf

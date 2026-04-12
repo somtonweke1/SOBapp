@@ -4,10 +4,19 @@ import OpenAI from 'openai';
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 }) : null;
+const ASSET_CONNECTOR_URL = process.env.ASSET_MONITORING_CONNECTOR_URL;
 
 // Production-grade Asset Monitoring API
 export async function POST(request: NextRequest) {
   try {
+    if (!ASSET_CONNECTOR_URL) {
+      return NextResponse.json({
+        success: false,
+        error: 'Live asset monitoring connector is not configured',
+        timestamp: new Date().toISOString()
+      }, { status: 503 });
+    }
+
     const body = await request.json();
     const { clientId, assetIds, analysisType, timeRange } = body;
 
@@ -46,7 +55,9 @@ export async function POST(request: NextRequest) {
         assetsAnalyzed: assets.length,
         timeRange,
         computationTime: Date.now(),
-        confidenceLevel: 0.94
+        confidenceLevel: assets.length > 0
+          ? Math.max(0.5, Math.min(0.99, 1 - (assets.filter((a: any) => a.faultPrediction?.probability > 0.7).length / assets.length) * 0.4))
+          : 0
       },
       timestamp: new Date().toISOString()
     });
@@ -64,6 +75,14 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    if (!ASSET_CONNECTOR_URL) {
+      return NextResponse.json({
+        success: false,
+        error: 'Live asset monitoring connector is not configured',
+        timestamp: new Date().toISOString()
+      }, { status: 503 });
+    }
+
     const { searchParams } = new URL(request.url);
     const clientId = searchParams.get('clientId');
     const assetType = searchParams.get('assetType');
@@ -88,10 +107,12 @@ export async function GET(request: NextRequest) {
       alerts,
       kpis: {
         totalAssets: assets.length,
-        operationalAssets: assets.filter(a => a.status === 'operational').length,
-        maintenanceRequired: assets.filter(a => a.faultPrediction.probability > 0.7).length,
-        averageEfficiency: assets.reduce((sum, a) => sum + a.efficiency, 0) / assets.length,
-        totalUptime: assets.reduce((sum, a) => sum + a.uptime, 0),
+        operationalAssets: assets.filter((a: any) => a.status === 'operational').length,
+        maintenanceRequired: assets.filter((a: any) => a.faultPrediction.probability > 0.7).length,
+        averageEfficiency: assets.length > 0
+          ? assets.reduce((sum: number, a: any) => sum + a.efficiency, 0) / assets.length
+          : 0,
+        totalUptime: assets.reduce((sum: number, a: any) => sum + a.uptime, 0),
         costSavingsThisMonth: kpis.monthlySavings,
         predictedFailures: kpis.predictedFailures,
         maintenanceOpportunities: kpis.maintenanceOpportunities
@@ -112,86 +133,57 @@ export async function GET(request: NextRequest) {
 
 // Core Business Logic Functions
 async function analyzeAssets(clientId: string, assetIds: string[], analysisType: string, timeRange: any) {
-  // Simulate real-time asset data from IoT sensors
-  const mockAssets = [
-    {
-      assetId: 'CRUSHER-001',
-      assetType: 'crusher' as const,
-      location: { lat: -26.2041, lng: 28.0473, elevation: 1753 },
-      status: 'operational' as const,
-      efficiency: 87.3 + (Math.random() - 0.5) * 10,
-      uptime: 142.5,
-      lastMaintenance: '2024-01-15',
-      nextMaintenance: '2024-02-15',
-      faultPrediction: {
-        probability: 0.12 + Math.random() * 0.1,
-        timeToFailure: 72 + Math.random() * 24,
-        potentialCost: 45000 + Math.random() * 10000,
-        recommendedAction: 'Replace bearing assembly - 72h window'
-      },
-      realTimeMetrics: {
-        powerConsumption: 2850 + Math.random() * 200,
-        throughput: 450 + Math.random() * 50,
-        temperature: 68 + Math.random() * 5,
-        vibration: 2.3 + Math.random() * 0.5,
-        pressure: 12.5 + Math.random() * 1
-      },
-      businessImpact: {
-        dailyRevenue: 125000,
-        maintenanceCost: 15000,
-        emergencyRepairCost: 45000,
-        productionLoss: 450
-      }
-    }
-  ];
-
-  return assetIds && assetIds.length > 0
-    ? mockAssets.filter(asset => assetIds.includes(asset.assetId))
-    : mockAssets;
+  return fetchConnector('assets/analyze', { clientId, assetIds, analysisType, timeRange });
 }
 
 async function getRealTimeAssets(clientId: string, filters: any) {
-  const assets = await analyzeAssets(clientId, [], 'real_time', null);
-
-  if (filters.assetType) {
-    return assets.filter(asset => asset.assetType === filters.assetType);
-  }
-
-  if (filters.status) {
-    return assets.filter(asset => asset.status === filters.status);
-  }
-
-  return assets;
+  return fetchConnector('assets/realtime', { clientId, filters });
 }
 
 async function getActiveAlerts(clientId: string) {
-  return [
-    {
-      id: 'alert-001',
-      assetId: 'CRUSHER-001',
-      severity: 'warning' as const,
-      message: 'Bearing temperature approaching critical threshold (73°C)',
-      timestamp: new Date().toISOString(),
-      acknowledged: false,
-      businessImpact: 'Potential 4-hour downtime, $45K emergency repair cost',
-      recommendedAction: 'Schedule maintenance within 72 hours',
-      estimatedCost: 15000
-    }
-  ];
+  return fetchConnector('alerts/active', { clientId });
 }
 
 async function calculateAssetKPIs(assets: any[]) {
   const operationalAssets = assets.filter(a => a.status === 'operational');
+  const monthlySavings = assets.reduce((sum, a) => {
+    const emergency = a.businessImpact?.emergencyRepairCost || 0;
+    const maintenance = a.businessImpact?.maintenanceCost || 0;
+    const probability = a.faultPrediction?.probability || 0;
+    return sum + Math.max(0, emergency - maintenance) * probability;
+  }, 0);
 
   return {
-    monthlySavings: 125000,
+    monthlySavings,
     predictedFailures: assets.filter(a => a.faultPrediction.probability > 0.7).length,
     maintenanceOpportunities: assets.filter(a =>
       a.faultPrediction.probability > 0.3 && a.faultPrediction.probability < 0.7
     ).length,
     totalRevenueAtRisk: assets.reduce((sum, a) => sum + (a.businessImpact?.dailyRevenue || 0), 0),
-    avgEfficiencyGain: operationalAssets.reduce((sum, a) => sum + (a.efficiency - 75), 0) / operationalAssets.length
+    avgEfficiencyGain: operationalAssets.length > 0
+      ? operationalAssets.reduce((sum, a) => sum + (a.efficiency - 75), 0) / operationalAssets.length
+      : 0
   };
+}
+
+async function fetchConnector(path: string, payload: Record<string, unknown>) {
+  if (!ASSET_CONNECTOR_URL) {
+    throw new Error('Live asset monitoring connector is not configured');
+  }
+
+  const response = await fetch(`${ASSET_CONNECTOR_URL.replace(/\/$/, '')}/${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    cache: 'no-store'
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Connector request failed (${response.status}): ${body}`);
+  }
+
+  return response.json();
 }
 
 async function generateMaintenancePredictions(assets: any[]) {
@@ -210,7 +202,10 @@ async function generateMaintenancePredictions(assets: any[]) {
       totalPotentialSavings: assets.reduce((sum, a) =>
         sum + (a.businessImpact.emergencyRepairCost - a.businessImpact.maintenanceCost), 0
       ),
-      confidence: 0.87
+      confidence: Math.max(
+        0.5,
+        Math.min(0.99, 1 - (assets.filter((a) => a.faultPrediction.probability > 0.7).length / Math.max(1, assets.length)) * 0.35)
+      )
     };
   }
 
@@ -270,7 +265,10 @@ Focus on maximizing operational efficiency and ROI. Format as JSON.`;
       totalPotentialSavings: assets.reduce((sum, a) =>
         sum + (a.businessImpact.emergencyRepairCost - a.businessImpact.maintenanceCost), 0
       ),
-      confidence: 0.87
+      confidence: Math.max(
+        0.5,
+        Math.min(0.99, 1 - (assets.filter((a) => a.faultPrediction.probability > 0.7).length / Math.max(1, assets.length)) * 0.35)
+      )
     };
   }
 }

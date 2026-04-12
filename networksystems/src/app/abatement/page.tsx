@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import StoneBridgeShell from '@/components/stonebridge/shell/StoneBridgeShell';
+import ProcessPanel from '@/components/stonebridge/shell/ProcessPanel';
 
 type AuditSnapshot = {
   input?: {
@@ -92,67 +94,73 @@ Sincerely,
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 text-zinc-900">
-      <div className="mx-auto max-w-5xl px-6 py-12">
-        <header className="border-b border-zinc-200/50 pb-8">
-          <p className="text-xs uppercase tracking-[0.4em] text-zinc-500">Member Portal Preview</p>
-          <h1 className="mt-4 text-4xl font-semibold">Abatement Letter Suite</h1>
-          <p className="mt-3 text-zinc-600">
-            This is a locked preview of the official DPW dispute letter generator.
-          </p>
-          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-1 text-xs uppercase tracking-[0.35em] text-emerald-600">
-            Members Only
-          </div>
-          <div className="mt-6 flex flex-wrap gap-4">
-            <Link
-              href="/audit"
-              className="rounded-lg border border-zinc-300 px-5 py-2 text-sm font-semibold text-zinc-600 transition hover:border-zinc-400 hover:text-zinc-900"
-            >
-              Back to Audit
-            </Link>
-            <Link
-              href="/dashboard"
-              className="rounded-lg border border-emerald-200 px-5 py-2 text-sm font-semibold text-emerald-600 transition hover:border-emerald-300"
-            >
-              View War Room Preview
-            </Link>
-          </div>
-        </header>
+    <StoneBridgeShell
+      activeMode="asset"
+      title="Abatement Letter Suite (Preview)"
+      subtitle="A locked preview of the DPW dispute generator. Convert to a claim to unlock export-ready artifacts."
+      primaryAction={
+        <button
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+          className="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-4 py-2 text-xs font-light uppercase tracking-[0.3em] text-white shadow-sm transition-colors hover:bg-emerald-700"
+        >
+          Start Claim
+        </button>
+      }
+      secondaryAction={
+        <Link
+          href="/audit"
+          className="inline-flex items-center justify-center rounded-lg border border-zinc-200 bg-white/70 px-4 py-2 text-xs font-light uppercase tracking-[0.3em] text-zinc-700 shadow-sm transition-colors hover:bg-white"
+        >
+          Back
+        </Link>
+      }
+      aside={
+        <ProcessPanel
+          steps={[
+            'Run the DPW audit and capture the discrepancy.',
+            'Generate an abatement-ready dispute narrative.',
+            'Convert to a claim to unlock exports and packaging.',
+          ]}
+          bullets={[
+            'Dispute letter template with the right facts.',
+            'Evidence packet format (lender/counsel friendly).',
+            'Claim unlocks exports and next-step routing.',
+          ]}
+          ctas={[
+            { href: '/audit', label: 'Run Audit', tone: 'secondary' },
+            { href: '/claims?zip=21201', label: 'Claims Intake', tone: 'primary' },
+          ]}
+        />
+      }
+    >
+      <div className="rounded-2xl border border-zinc-200/60 bg-white/70 p-6 shadow-xl backdrop-blur-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-xs font-light uppercase tracking-[0.3em] text-zinc-500">Abatement Letter</p>
+          <button
+            type="button"
+            onClick={handleDownload}
+            className="rounded-full border border-zinc-200 bg-white px-4 py-2 text-xs font-light uppercase tracking-[0.3em] text-zinc-700 transition-colors hover:bg-white"
+            disabled={isDownloading}
+          >
+            {isDownloading ? 'Preparing...' : 'Download Preview (TXT)'}
+          </button>
+        </div>
 
-        <div className="mt-10 rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <p className="text-xs uppercase tracking-[0.3em] text-zinc-500">Abatement Letter</p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={handleDownload}
-                className="rounded-full border border-zinc-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-zinc-700 transition hover:border-zinc-300"
-                disabled={isDownloading}
-              >
-                {isDownloading ? 'Preparing...' : 'Download Letter (TXT)'}
-              </button>
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-emerald-700"
-              >
-                Start a Claim
-              </button>
-            </div>
-          </div>
-
-          <div className="relative mt-6 overflow-hidden rounded-xl border border-zinc-200/60 bg-white/90">
-            <pre className="whitespace-pre-wrap px-6 py-5 text-xs text-zinc-700 blur-md">
-              {previewLetter}
-            </pre>
-            <div className="pointer-events-none absolute inset-0 bg-white/70" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center">
-              <p className="text-sm font-semibold text-zinc-900">Unlock the full legal template + export tools.</p>
-              <Link
-                href="/claims"
-                className="rounded-full bg-emerald-600 px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-emerald-700"
-              >
-                Start a Claim
-              </Link>
-            </div>
+        <div className="relative mt-6 overflow-hidden rounded-xl border border-zinc-200/60 bg-white/90">
+          <pre className="whitespace-pre-wrap px-6 py-5 text-xs text-zinc-700 blur-md">
+            {previewLetter}
+          </pre>
+          <div className="pointer-events-none absolute inset-0 bg-white/70" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center">
+            <p className="text-sm font-light text-zinc-900">Unlock the full template and export tools by starting a claim.</p>
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="rounded-full bg-emerald-600 px-5 py-2 text-xs font-light uppercase tracking-[0.3em] text-white transition-colors hover:bg-emerald-700"
+            >
+              Start a Claim
+            </button>
           </div>
         </div>
       </div>
@@ -160,21 +168,22 @@ Sincerely,
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 px-6">
           <div className="w-full max-w-md rounded-2xl border border-zinc-200/60 bg-white/95 p-6 shadow-2xl">
-            <p className="text-xs uppercase tracking-[0.35em] text-zinc-400">Sons of Baltimore Access</p>
-            <h2 className="mt-3 text-2xl font-semibold text-zinc-900">Unlock the Abatement Suite</h2>
-            <p className="mt-3 text-sm text-zinc-600">
-              Your claim unlocks the official DPW dispute letter, export-ready PDFs, and the War Room property map.
+            <p className="text-xs font-light uppercase tracking-[0.35em] text-zinc-400">StoneBridge Access</p>
+            <h2 className="mt-3 text-2xl font-extralight tracking-tight text-zinc-900">Unlock the Abatement Suite</h2>
+            <p className="mt-3 text-sm font-light text-zinc-600">
+              Your claim unlocks the official DPW dispute letter, export-ready artifacts, and the War Room map.
             </p>
             <div className="mt-6 flex flex-col gap-3">
               <Link
-                href="/claims"
-                className="rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white text-center transition hover:bg-emerald-700"
+                href="/claims?zip=21201"
+                className="rounded-lg bg-emerald-600 px-4 py-3 text-sm font-light text-white text-center transition-colors hover:bg-emerald-700"
               >
                 Start Claim Intake
               </Link>
               <button
+                type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="rounded-lg border border-zinc-200 px-4 py-3 text-sm font-semibold text-zinc-600 transition hover:border-zinc-300 hover:text-zinc-900"
+                className="rounded-lg border border-zinc-200 bg-white/70 px-4 py-3 text-sm font-light text-zinc-700 transition-colors hover:bg-white"
               >
                 Not Now
               </button>
@@ -182,6 +191,6 @@ Sincerely,
           </div>
         </div>
       )}
-    </div>
+    </StoneBridgeShell>
   );
 }

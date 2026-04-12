@@ -2,15 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+@import 'maplibre-gl/dist/maplibre-gl.css';
+
 /**
  * MIAR Design System - CSS Custom Properties
  * Swiss-inspired premium enterprise design system
  */
 :root {
+  --font-inter: "Inter", "Avenir Next", "Segoe UI", sans-serif;
+  --font-jetbrains: "JetBrains Mono", "SFMono-Regular", "Menlo", "Monaco", "Consolas", monospace;
+  --font-practice-serif: "Libre Baskerville", "Georgia", "Times New Roman", serif;
+  --font-practice-mono: "IBM Plex Mono", "SFMono-Regular", "Menlo", "Monaco", "Consolas", monospace;
+
   /* Brand Colors */
   --color-primary: #059669;
   --color-primary-dark: #047857;
   --color-primary-light: #10b981;
+
+  /* StoneBridge Light (high-trust, clinical) */
+  --sb-bg: #f9fafb; /* gray-50 */
+  --sb-surface: #ffffff;
+  --sb-border: #e5e7eb; /* gray-200 */
+  --sb-text: #111827; /* gray-900 */
+  --sb-muted: #6b7280; /* gray-500 */
+  --sb-asset: #059669; /* emerald-600 */
+  --sb-compliance: #4f46e5; /* indigo-600 */
+  --sb-risk: #e11d48; /* rose-600 */
 
   /* Neutral Colors - Zinc Scale */
   --color-neutral-50: #fafafa;
@@ -51,16 +68,16 @@
   --color-critical-border: #fecdd3;
   --color-critical-text: #881337;
 
-  /* Background & Surface Colors */
-  --color-background: #050505;
-  --color-surface: #0b0b0f;
-  --color-surface-elevated: #111118;
+  /* Background & Surface Colors (legacy names; now mapped to Light) */
+  --color-background: var(--sb-bg);
+  --color-surface: var(--sb-surface);
+  --color-surface-elevated: var(--sb-surface);
 
-  /* Text Colors */
-  --color-text-primary: #e5f7ef;
-  --color-text-secondary: #b6c7bf;
-  --color-text-tertiary: #8ca197;
-  --color-text-disabled: #5c6b64;
+  /* Text Colors (legacy names; now mapped to Light) */
+  --color-text-primary: var(--sb-text);
+  --color-text-secondary: var(--sb-muted);
+  --color-text-tertiary: var(--sb-muted);
+  --color-text-disabled: #9ca3af; /* gray-400 */
 
   /* Border Colors */
   --color-border: #e4e4e7;
@@ -72,17 +89,10 @@
   --background-end-rgb: 244, 244, 245;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 24, 24, 27;
-    --background-start-rgb: 250, 250, 250;
-    --background-end-rgb: 244, 244, 245;
-  }
-}
-
 body {
-  color: var(--color-text-primary);
-  background: var(--color-background);
+  color: #52525b;
+  background: linear-gradient(135deg, #fafafa 0%, #f4f4f5 100%);
+  min-height: 100vh;
 }
 
 .font-forensic {

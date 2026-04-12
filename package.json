@@ -1,11 +1,12 @@
 {
-  "name": "miar-root",
+  "name": "stonebridge-root",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "install": "cd networksystems && npm install",
     "build": "cd networksystems && npm run build",
     "start": "cd networksystems && npm start",
-    "dev": "cd networksystems && npm run dev"
+    "dev": "cd networksystems && npm run dev",
+    "db:seed": "cd networksystems && npm run db:seed"
   }
 }

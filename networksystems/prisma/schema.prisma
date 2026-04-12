@@ -305,6 +305,155 @@ model AuditLog {
   @@index([resource, timestamp])
 }
 
+enum DealPropertyType {
+  COMMERCIAL
+  RESIDENTIAL
+  MIXED
+  EXEMPT
+}
+
+enum DealDecision {
+  PROCEED
+  CAUTION
+  ESCALATE
+  INSUFFICIENT
+}
+
+enum DealSubmittedBy {
+  DEVELOPER
+  INSTITUTIONAL
+  ANONYMOUS
+}
+
+model DealRecord {
+  id                String           @id @default(cuid())
+  address           String
+  zip_code          String?
+  neighborhood      String?
+  property_type     DealPropertyType?
+  zoning_code       String?
+  land_use          String?
+  assessment_value  Int?
+  owner_name        String?
+  permit_count      Int              @default(0)
+  permit_types      String[]         @default([])
+  active_violations Int              @default(0)
+  violation_types   String[]         @default([])
+  vacant_notice     Boolean          @default(false)
+  decision          DealDecision
+  decision_drivers  String[]         @default([])
+  submitted_by      DealSubmittedBy  @default(ANONYMOUS)
+  institution_name  String?
+  scan_timestamp    DateTime         @default(now())
+  outcome_reported  Boolean          @default(false)
+  outcome           String?
+  outcome_reported_at DateTime?
+  notes             String?
+
+  @@index([scan_timestamp])
+  @@index([decision, scan_timestamp])
+  @@index([zip_code, scan_timestamp])
+  @@index([property_type, scan_timestamp])
+  @@index([institution_name, scan_timestamp])
+}
+
+enum PilotStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+model PilotEngagement {
+  id                 String      @id @default(cuid())
+  institution_name   String      @unique
+  contact_name       String
+  contact_email      String
+  pilot_start_date   DateTime    @default(now())
+  pilot_status       PilotStatus @default(ACTIVE)
+  deal_target        Int
+  deals_submitted    Int         @default(0)
+  deals_delivered    Int         @default(0)
+  feedback_collected Boolean     @default(false)
+  notes              String?
+
+  @@index([pilot_status])
+  @@index([pilot_start_date])
+}
+
+model PilotAccessToken {
+  id               String   @id @default(cuid())
+  token            String   @unique
+  institution_name String
+  contact_email    String
+  created_at       DateTime @default(now())
+
+  @@index([institution_name, created_at])
+}
+
+enum EngagementType {
+  PILOT
+  MONTHLY_RETAINER
+  PER_DEAL
+  CUSTOM
+}
+
+enum ClientContractStatus {
+  PILOT
+  ACTIVE
+  PAUSED
+  CANCELLED
+}
+
+enum PortfolioUploadStatus {
+  RECEIVED
+  PROCESSING
+  DELIVERED
+}
+
+enum PortfolioDealContext {
+  ACQUISITION_PIPELINE
+  EXISTING_PORTFOLIO
+  REHAB_PLANNING
+  NEIGHBORHOOD_ASSESSMENT
+}
+
+model ClientEngagement {
+  id                     String               @id @default(cuid())
+  institution_name       String
+  contact_name           String
+  contact_email          String
+  engagement_type        EngagementType
+  monthly_fee            Int?
+  per_deal_fee           Int?
+  deal_volume_commitment Int?
+  contract_start_date    DateTime
+  contract_status        ClientContractStatus @default(PILOT)
+  billing_notes          String?
+  created_at             DateTime             @default(now())
+
+  @@index([institution_name, created_at])
+  @@index([contract_status, created_at])
+}
+
+model PortfolioUpload {
+  id               String              @id @default(cuid())
+  institution_name String
+  contact_name     String
+  contact_email    String
+  addresses        String[]
+  address_count    Int
+  deal_context     PortfolioDealContext
+  status           PortfolioUploadStatus @default(RECEIVED)
+  reference_number String              @unique
+  submitted_at     DateTime            @default(now())
+  results_json     String?
+  generated_at     DateTime?
+
+  @@index([status, submitted_at])
+  @@index([institution_name, submitted_at])
+  @@index([reference_number])
+}
+
 model ExportLog {
   id          String   @id @default(cuid())
   userId      String
@@ -465,4 +614,207 @@ model FeatureFlag {
   description String?
   rollout     Float    @default(100) // Percentage rollout 0-100
   updatedAt   DateTime @updatedAt
+}
+
+enum OutreachStatus {
+  NEW
+  PACKET_GENERATED
+  MAILED
+  FOLLOW_UP
+  CLOSED
+}
+
+model TargetStatus {
+  id                String         @id @default(cuid())
+  address           String
+  normalizedAddress String
+  zipCode           String
+  status            OutreachStatus @default(NEW)
+  notes             String?
+  packetGeneratedAt DateTime?
+  mailedAt          DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@unique([normalizedAddress, zipCode], name: "target_status_unique")
+  @@index([zipCode, status])
+  @@index([updatedAt])
+}
+
+// ============================================
+// PROCUREMENT INTELLIGENCE ONTOLOGY
+// ============================================
+
+enum ProcurementMethodType {
+  EMERGENCY
+  SOLE_SOURCE
+  COMPETITIVE
+  EXPEDITED
+  SMALL_PROCUREMENT
+  UNKNOWN
+}
+
+enum RiskBasisType {
+  STRICT_LAW
+  RISK_HEURISTIC
+}
+
+enum ConstraintLoopType {
+  REGULATOR_PROCESS
+  FINANCIAL
+  ENTITY_OPACITY
+  COMPLIANCE
+}
+
+enum ConstraintLoopStatus {
+  ACTIVE
+  BRIDGED
+  BROKEN
+}
+
+enum BridgeInterventionType {
+  PROCESS
+  DATA
+  CONTROL
+}
+
+enum BridgeInterventionStatus {
+  PROPOSED
+  DEPLOYED
+  COMPLETED
+  FAILED
+}
+
+model GovernmentAgency {
+  id           String              @id @default(cuid())
+  name         String              @unique
+  jurisdiction String
+  actions      ProcurementAction[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([jurisdiction])
+}
+
+model MasterEntity {
+  id         String             @id @default(cuid())
+  name       String
+  aliases    EntityAlias[]
+  dossiers   RiskDossier[]
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  @@unique([name])
+}
+
+model EntityAlias {
+  id             String              @id @default(cuid())
+  alias          String
+  normalizedAlias String
+  masterEntityId String
+  masterEntity   MasterEntity        @relation(fields: [masterEntityId], references: [id], onDelete: Cascade)
+  actions        ProcurementAction[]
+  createdAt      DateTime            @default(now())
+
+  @@index([masterEntityId])
+  @@index([normalizedAlias])
+  @@unique([masterEntityId, normalizedAlias])
+}
+
+model Statute {
+  id         String             @id @default(cuid())
+  code       String             @unique
+  title      String
+  bodyText   String
+  sourceUrl  String
+  dossiers   RiskDossier[]
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+}
+
+model ProcurementAction {
+  id               String                @id @default(cuid())
+  externalId       String?               @unique
+  agencyId         String
+  agency           GovernmentAgency      @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  aliasId          String
+  alias            EntityAlias           @relation(fields: [aliasId], references: [id], onDelete: Cascade)
+  amount           Float
+  method           ProcurementMethodType
+  category         String?
+  startDate        DateTime?
+  endDate          DateTime?
+  waiverGranted    Boolean               @default(false)
+  sourceUrl        String
+  boardActionDate  DateTime?
+  vendorAddress    String?
+  vendorPhone      String?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  @@index([agencyId, method])
+  @@index([aliasId, boardActionDate])
+  @@index([boardActionDate])
+  @@index([vendorAddress, vendorPhone])
+}
+
+model RiskDossier {
+  id                 String        @id @default(cuid())
+  snapshotId         String        @unique
+  masterEntityId     String?
+  masterEntity       MasterEntity? @relation(fields: [masterEntityId], references: [id], onDelete: SetNull)
+  statuteId          String?
+  statute            Statute?      @relation(fields: [statuteId], references: [id], onDelete: SetNull)
+  agencyName         String
+  basis              RiskBasisType
+  indicator          String
+  exposure           Float
+  confidence         Float
+  defensibilityScore Float
+  sourceUrl          String
+  generatedAt        DateTime      @default(now())
+
+  @@index([agencyName, basis])
+  @@index([generatedAt])
+  @@index([defensibilityScore])
+}
+
+model ConstraintLoop {
+  id           String               @id @default(cuid())
+  signature    String               @unique
+  type         ConstraintLoopType
+  status       ConstraintLoopStatus @default(ACTIVE)
+  signals      String               // JSON array of RiskFlag snapshots
+  tensionScore Float                @default(0)
+  vendor       String?
+  agency       String?
+  jurisdiction String?
+  exposure     Float                @default(0)
+  bridgedAt    DateTime?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  interventions BridgeIntervention[]
+
+  @@index([type, status])
+  @@index([vendor, status])
+  @@index([updatedAt])
+}
+
+model BridgeIntervention {
+  id               String                   @id @default(cuid())
+  type             BridgeInterventionType
+  status           BridgeInterventionStatus @default(PROPOSED)
+  targetLoopId     String
+  targetLoop       ConstraintLoop           @relation(fields: [targetLoopId], references: [id], onDelete: Cascade)
+  playbookSteps    String                   // JSON array of BridgePlaybookStep
+  expectedDelta    Float
+  actualDelta      Float?
+  timeToBridgeHours Float?
+  deployedAt       DateTime?
+  completedAt      DateTime?
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+
+  @@index([targetLoopId, status])
+  @@index([createdAt])
 }

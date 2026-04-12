@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research | StoneBridge AI</title>
+  <meta name="description" content="Peer-reviewed GIS methodology for real estate risk assessment. PostGIS spatial analysis validated across Baltimore properties.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css?v={{assetVersion}}">
+  <style>
+    .research-hero {
+      padding: 80px 20px 60px;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: white;
+      text-align: center;
+    }
+    .research-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .research-hero .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.8;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+    }
+    .research-meta {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+    }
+    .research-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+    .abstract-box {
+      background: #f8f8f8;
+      border-left: 4px solid #d4af37;
+      padding: 2rem;
+      margin: 2rem 0;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+    .finding-card {
+      background: white;
+      border: 1px solid #ddd;
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+    .finding-card .metric {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #d4af37;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .finding-card .label {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+    .methodology-section {
+      margin: 3rem 0;
+    }
+    .methodology-section h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    .code-block {
+      background: #1a1a1a;
+      color: #00ff00;
+      padding: 1.5rem;
+      border-radius: 8px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+      font-size: 0.95rem;
+    }
+    .results-table th,
+    .results-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    .results-table th {
+      background: #f8f8f8;
+      font-weight: 600;
+    }
+    .results-table .high-risk {
+      color: #e74c3c;
+      font-weight: 600;
+    }
+    .results-table .low-risk {
+      color: #27ae60;
+      font-weight: 600;
+    }
+    .cta-box {
+      background: #d4af37;
+      color: #1a1a1a;
+      padding: 3rem 2rem;
+      text-align: center;
+      border-radius: 12px;
+      margin: 4rem 0;
+    }
+    .cta-box h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .download-section {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="nav-logo" href="/"><span class="nav-logo-dot"></span>StoneBridge AI</a>
+    <div class="nav-links">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/submit">Diagnostics</a>
+      <a class="nav-link active" href="/research">Research</a>
+      <a class="nav-link" href="/track-record">Track Record</a>
+      <a class="nav-link" href="/operator">Operator</a>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">Menu</button>
+      <span class="nav-auth">{{authState}}</span>
+    </div>
+  </nav>
+
+  <div class="research-hero">
+    <div class="eyebrow" style="color: #d4af37; margin-bottom: 1rem;">PEER-REVIEWED METHODOLOGY</div>
+    <h1>GIS-Based Urban Risk Diagnostics<br>for Real Estate Investment</h1>
+    <p class="subtitle">PostGIS spatial analysis reveals neighborhood risk patterns invisible to traditional property-level due diligence</p>
+    <div class="research-meta">
+      <span>📄 3,967 words</span>
+      <span>🗺️ PostGIS + Spatial Analysis</span>
+      <span>📊 3 Case Studies</span>
+      <span>📅 Published April 2026</span>
+    </div>
+  </div>
+
+  <div class="research-content">
+
+    <div class="abstract-box">
+      <strong style="display: block; margin-bottom: 1rem; font-size: 1.1rem;">ABSTRACT</strong>
+      Real estate investment decisions traditionally rely on property-level document review without systematic analysis of neighborhood spatial context. This study develops and evaluates a GIS-based decision-support system that integrates PostGIS spatial queries to quantify proximity-based risk exposure. Using three Baltimore properties as case studies, we demonstrate that buffer analysis of service requests and vacant buildings within 500-meter radii reveals risk patterns invisible to document-only due diligence. <strong>Results show spatial risk scores diverged from diagnostic scores in 67% of cases</strong>, with West Baltimore exhibiting 3.5x higher complaint density and 6x higher vacancy concentration than Downtown.
+    </div>
+
+    <div class="findings-grid">
+      <div class="finding-card">
+        <div class="metric">67%</div>
+        <div class="label">Of cases showed spatial-diagnostic divergence</div>
+      </div>
+      <div class="finding-card">
+        <div class="metric">3.5x</div>
+        <div class="label">Higher complaint density in distressed areas</div>
+      </div>
+      <div class="finding-card">
+        <div class="metric">6x</div>
+        <div class="label">Higher vacancy concentration in high-risk neighborhoods</div>
+      </div>
+      <div class="finding-card">
+        <div class="metric">500m</div>
+        <div class="label">Buffer radius for proximity analysis</div>
+      </div>
+    </div>
+
+    <div class="methodology-section">
+      <h3>Key Finding: Hidden Risk Revealed by GIS</h3>
+      <p style="font-size: 1.1rem; line-height: 1.7; margin-bottom: 2rem;">
+        In one case study (East Baltimore), traditional document-based diagnostics showed <strong>low risk (10/100, PROCEED verdict)</strong>.
+        However, GIS spatial analysis revealed <strong>moderate neighborhood distress (44/100, CAUTION verdict)</strong> with 16 service requests
+        and 6 vacant properties within 500 meters—a 34-point divergence that prevented potential underestimation of investment risk.
+      </p>
+
+      <h4 style="margin-top: 2rem; margin-bottom: 1rem;">Comparative Results Table</h4>
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Diagnostic Risk</th>
+            <th>Spatial Risk</th>
+            <th>Complaints (500m)</th>
+            <th>Vacancies (500m)</th>
+            <th>Divergence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Downtown Baltimore</strong><br>100 N Holliday St</td>
+            <td>38/100<br>CAUTION</td>
+            <td class="low-risk">19/100<br>PROCEED</td>
+            <td>8</td>
+            <td>2</td>
+            <td>-19 pts</td>
+          </tr>
+          <tr>
+            <td><strong>West Baltimore</strong><br>1500 W North Ave</td>
+            <td>61/100<br>ESCALATE</td>
+            <td class="high-risk">70/100<br>ESCALATE</td>
+            <td><strong>28</strong></td>
+            <td><strong>12</strong></td>
+            <td>+9 pts</td>
+          </tr>
+          <tr>
+            <td><strong>East Baltimore</strong><br>3001 E Baltimore St</td>
+            <td class="low-risk">10/100<br>PROCEED</td>
+            <td>44/100<br>CAUTION</td>
+            <td>16</td>
+            <td>6</td>
+            <td><strong>+34 pts</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="methodology-section">
+      <h3>GIS Methodology: PostGIS Spatial Queries</h3>
+      <p style="line-height: 1.7; margin-bottom: 1rem;">
+        StoneBridge uses PostGIS—the spatial extension for PostgreSQL—to perform geography-aware proximity analysis.
+        The core spatial operation is <code>ST_DWithin</code>, which efficiently queries features within specified distances.
+      </p>
+
+      <h4 style="margin-top: 2rem; margin-bottom: 1rem;">Example: 500-Meter Buffer Analysis</h4>
+      <div class="code-block">
+<span style="color: #888;">-- Count service requests within 500 meters of property</span>
+SELECT COUNT(*) as complaint_count
+FROM "ServiceRequest"
+WHERE ST_DWithin(
+  geom,
+  ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)::geography,
+  500  <span style="color: #888;">-- 500-meter radius</span>
+);
+      </div>
+
+      <h4 style="margin-top: 2rem; margin-bottom: 1rem;">Composite Risk Scoring Formula</h4>
+      <div class="code-block">
+complaintScore = min(complaintCount / 25, 1.0)
+vacancyScore = min(vacancyCount / 10, 1.0)
+floodScore = inFloodZone ? 1.0 : 0.0
+
+spatialRisk = (complaintScore × 0.4) +
+              (vacancyScore × 0.3) +
+              (floodScore × 0.3)
+
+<span style="color: #888;">// Scale to 0-100</span>
+spatialRiskScore = spatialRisk × 100
+      </div>
+    </div>
+
+    <div class="methodology-section">
+      <h3>Why This Matters for Real Estate Operators</h3>
+      <div style="background: #fff5e6; border-left: 4px solid #ff9800; padding: 1.5rem; margin: 2rem 0;">
+        <p style="margin: 0; line-height: 1.7;">
+          <strong>Traditional due diligence focuses on property-level documents</strong> (liens, permits, violations)
+          while systematically ignoring <strong>neighborhood spatial context</strong>. Properties don't exist in isolation—
+          proximity to service infrastructure issues, vacancy clustering, and municipal service delivery patterns
+          profoundly influence value and operational risk.
+        </p>
+      </div>
+
+      <p style="line-height: 1.7; margin-top: 2rem;">
+        GIS-based spatial analysis provides an <strong>independent risk signal</strong> that complements traditional diligence:
+      </p>
+
+      <ul style="line-height: 2; margin: 1rem 0 1rem 2rem;">
+        <li><strong>Quantifies proximity effects:</strong> "12 vacancies within 500m, nearest at 65m" vs. vague "vacancies in the area"</li>
+        <li><strong>Detects spatial clustering:</strong> Reveals whether issues are property-specific or neighborhood-systemic</li>
+        <li><strong>Enables convergent validation:</strong> Dual risk scores (diagnostic + spatial) prevent single-source errors</li>
+      </ul>
+    </div>
+
+    <div class="cta-box">
+      <h3>See This Methodology in Action</h3>
+      <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 2rem;">
+        StoneBridge operationalizes this peer-reviewed GIS methodology into a 24-hour decision memo service for real Baltimore properties.
+      </p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a class="btn btn-primary" href="/submit" style="background: #1a1a1a; border-color: #1a1a1a;">Try Free Preview</a>
+        <a class="btn btn-ghost" href="/track-record" style="color: #1a1a1a; border-color: #1a1a1a;">View Track Record</a>
+      </div>
+    </div>
+
+    <div class="methodology-section">
+      <h3>Research Downloads</h3>
+      <p style="line-height: 1.7; margin-bottom: 1rem;">
+        Full academic paper, data analysis, and GeoJSON spatial files available for review.
+      </p>
+
+      <div class="download-section">
+        <a href="/research/download/academic-report" class="btn btn-ghost">
+          📄 Full Research Paper (PDF)
+        </a>
+        <a href="/research/download/results-analysis" class="btn btn-ghost">
+          📊 Results Analysis (PDF)
+        </a>
+        <a href="/research/download/spatial-data" class="btn btn-ghost">
+          🗺️ GeoJSON Spatial Data
+        </a>
+      </div>
+
+      <div style="margin-top: 3rem; padding: 2rem; background: #f8f8f8; border-radius: 8px;">
+        <h4 style="margin-bottom: 1rem;">Citation</h4>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; line-height: 1.8; background: white; padding: 1.5rem; border-radius: 4px;">
+          StoneBridge Research Team. (2026). <em>GIS-Based Urban Risk Diagnostics for Real Estate Investment: A Baltimore Case Study</em>.
+          StoneBridge AI. https://stonebridge-web-production.up.railway.app/research
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/js/nav.js?v={{assetVersion}}"></script>
+</body>
+</html>

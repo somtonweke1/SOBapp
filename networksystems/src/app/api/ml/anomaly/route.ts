@@ -169,20 +169,16 @@ Format the response as JSON with security scores and threat levels.`;
       };
     }
 
-    // Add computed anomalies for demonstration
-    const computedAnomalies = computeAnomalies(network, networkStats, threshold || 0.5);
-
+    // Real AI analysis only; no synthetic or demo anomaly payloads
     const result = {
       success: true,
       detection_type: detectionType,
       threshold: threshold || 0.5,
       network_stats: networkStats,
       ai_analysis: anomalies,
-      computed_anomalies: computedAnomalies,
       metadata: {
         model: "gpt-4",
         confidence: 0.85,
-        computation_time: Date.now() - Date.now(),
         timestamp: new Date().toISOString()
       }
     };

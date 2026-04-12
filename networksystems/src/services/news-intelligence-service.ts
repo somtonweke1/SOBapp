@@ -171,7 +171,8 @@ export class NewsIntelligenceService {
       return articles;
     } catch (error) {
       console.error('Error fetching news articles:', error);
-      return this.getFallbackNews(category);
+      void category;
+      return [];
     }
   }
 
@@ -293,54 +294,8 @@ export class NewsIntelligenceService {
       return alerts;
     } catch (error) {
       console.error('Error generating intelligent alerts:', error);
-      return this.getFallbackAlerts();
+      return [];
     }
-  }
-
-  // ===== FALLBACK DATA =====
-
-  private getFallbackNews(category: string): any[] {
-    // Realistic fallback news based on current mining industry trends
-    return [
-      {
-        title: 'Gold prices surge on central bank demand',
-        description: 'Central banks increase gold reserves amid economic uncertainty, driving prices to new highs.',
-        category: 'market',
-        priority: 'high',
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        source: 'Industry Wire'
-      },
-      {
-        title: 'DRC cobalt production faces infrastructure challenges',
-        description: 'Major cobalt mining operations in Democratic Republic of Congo experiencing logistics delays.',
-        category: 'production',
-        priority: 'medium',
-        timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-        source: 'Mining Journal'
-      },
-      {
-        title: 'Lithium demand projected to triple by 2030',
-        description: 'EV battery demand driving unprecedented lithium market growth, analysts predict supply constraints.',
-        category: 'market',
-        priority: 'high',
-        timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-        source: 'Commodity Insights'
-      }
-    ];
-  }
-
-  private getFallbackAlerts(): any[] {
-    return [
-      {
-        id: `alert_fallback_${Date.now()}`,
-        type: 'system',
-        priority: 'low',
-        title: 'Real-time intelligence temporarily unavailable',
-        content: 'Using cached news data. Connect Perplexity API for live intelligence.',
-        timestamp: new Date().toISOString(),
-        source: 'system'
-      }
-    ];
   }
 }
 

@@ -3,6 +3,23 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 import { verifyPassword } from '@/lib/auth';
 
+function parsePermissions(value: string | string[] | null | undefined): string[] {
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (typeof value !== 'string' || !value.trim()) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -66,7 +83,7 @@ export const authOptions: NextAuthOptions = {
           hasSignedAgreement: user.hasSignedAgreement,
           userRole: user.userRole,
           company: user.company,
-          permissions: user.permissions,
+          permissions: parsePermissions(user.permissions),
         };
       },
     }),
@@ -111,7 +128,7 @@ export const authOptions: NextAuthOptions = {
             token.subscription = dbUser.subscription;
             token.hasSignedAgreement = dbUser.hasSignedAgreement;
             token.userRole = dbUser.userRole;
-            token.permissions = dbUser.permissions;
+            token.permissions = parsePermissions(dbUser.permissions);
             token.company = dbUser.company;
             token.role = dbUser.role;
           }
@@ -129,7 +146,7 @@ export const authOptions: NextAuthOptions = {
         session.user.subscription = token.subscription as string;
         session.user.hasSignedAgreement = token.hasSignedAgreement as boolean;
         session.user.userRole = token.userRole as string;
-        session.user.permissions = token.permissions as string;
+        session.user.permissions = parsePermissions(token.permissions as string[] | string);
         session.user.company = token.company as string | null;
       }
       return session;

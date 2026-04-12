@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import * as d3 from 'd3';
 import { fetchRealPropertyByAddress, RealPropertyRecord } from '@/lib/data-sources';
 import Link from 'next/link';
+import type { ShieldMode } from '@/components/stonebridge/Sidebar';
 
 interface NetworkNode {
   id: string;
@@ -51,13 +52,15 @@ interface ThreeDNetworkMapProps {
   edges: NetworkEdge[];
   selectedNode?: string;
   onNodeSelect?: (nodeId: string) => void;
+  mode?: ShieldMode;
 }
 
 export default function ThreeDNetworkMap({
   nodes = [],
   edges = [],
   selectedNode,
-  onNodeSelect
+  onNodeSelect,
+  mode = 'ASSET',
 }: ThreeDNetworkMapProps) {
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene>();
@@ -167,6 +170,28 @@ export default function ThreeDNetworkMap({
   const activeNodes = nodes.length > 0 ? nodes : mockNodes;
   const activeEdges = edges.length > 0 ? edges : mockEdges;
 
+  const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+  const lerpColor = (a: number, b: number, t: number) => {
+    const ar = (a >> 16) & 0xff;
+    const ag = (a >> 8) & 0xff;
+    const ab = a & 0xff;
+    const br = (b >> 16) & 0xff;
+    const bg = (b >> 8) & 0xff;
+    const bb = b & 0xff;
+    const rr = Math.round(lerp(ar, br, t));
+    const rg = Math.round(lerp(ag, bg, t));
+    const rb = Math.round(lerp(ab, bb, t));
+    return (rr << 16) | (rg << 8) | rb;
+  };
+
+  const vendorDensityForNode = (node: NetworkNode) => {
+    // Synthetic density signal; real version should come from contract counts/service schedules.
+    const connections = node.data.connections?.length ?? 0;
+    const lien = node.data.lienTotal ?? 0;
+    return clamp01(0.18 + connections * 0.14 + Math.min(0.55, lien / 3200));
+  };
+
   const isInstitutionalOwner = (name?: string) => {
     if (!name) return false;
     const upper = name.toUpperCase();
@@ -259,6 +284,7 @@ export default function ThreeDNetworkMap({
     // Create nodes
     const nodeObjects: { [key: string]: THREE.Mesh } = {};
     const permitHalos: Array<{ mesh: THREE.Mesh; material: THREE.MeshBasicMaterial }> = [];
+    const vendorHalos: Array<{ mesh: THREE.Mesh; material: THREE.MeshBasicMaterial; density: number }> = [];
 
     activeNodes.forEach(node => {
       const pos = latLngTo3D(node.position.lat, node.position.lng, node.position.elevation);
@@ -270,30 +296,43 @@ export default function ThreeDNetworkMap({
         (permit) => permit.isHistorical && (permit.type === 'dental' || permit.type === 'medical')
       );
       const hasLienDistress = (node.data.lienTotal ?? 0) > 750;
+      const vendorDensity = vendorDensityForNode(node);
+      const opsAmber = lerpColor(0x2b1700, 0xf59e0b, vendorDensity);
 
       // Different shapes for different node types
       switch (node.type) {
         case 'mining_site':
           geometry = new THREE.ConeGeometry(3, 8, 8);
           material = new THREE.MeshLambertMaterial({
-            color: hasLienDistress ? 0xdc2626 : (hasHistoricalPermit ? 0xffbf00 : 0x00ff41)
+            color:
+              mode === 'OPS'
+                ? opsAmber
+                : (hasLienDistress ? 0xdc2626 : (hasHistoricalPermit ? 0xffbf00 : 0x00ff41))
           });
           break;
         case 'processing_facility':
           geometry = new THREE.BoxGeometry(5, 5, 5);
           material = new THREE.MeshLambertMaterial({
-            color: hasLienDistress ? 0xdc2626 : (hasHistoricalPermit ? 0xffbf00 : 0x00ff41)
+            color:
+              mode === 'OPS'
+                ? opsAmber
+                : (hasLienDistress ? 0xdc2626 : (hasHistoricalPermit ? 0xffbf00 : 0x00ff41))
           });
           break;
         case 'research_lab':
           geometry = new THREE.SphereGeometry(3, 16, 16);
           material = new THREE.MeshLambertMaterial({
-            color: hasLienDistress ? 0xdc2626 : (hasHistoricalPermit ? 0xffbf00 : 0x00ff41)
+            color:
+              mode === 'OPS'
+                ? opsAmber
+                : (hasLienDistress ? 0xdc2626 : (hasHistoricalPermit ? 0xffbf00 : 0x00ff41))
           });
           break;
         default:
           geometry = new THREE.OctahedronGeometry(3);
-          material = new THREE.MeshLambertMaterial({ color: hasLienDistress ? 0xdc2626 : 0x00ff41 });
+          material = new THREE.MeshLambertMaterial({
+            color: mode === 'OPS' ? opsAmber : (hasLienDistress ? 0xdc2626 : 0x00ff41),
+          });
       }
 
       const mesh = new THREE.Mesh(geometry, material);
@@ -328,6 +367,24 @@ export default function ThreeDNetworkMap({
         permitHalo.lookAt(camera.position);
         scene.add(permitHalo);
         permitHalos.push({ mesh: permitHalo, material: permitHaloMaterial });
+      }
+
+      if (mode === 'OPS') {
+        // Amber "vendor density" halo: larger rings where contracts are concentrated.
+        const inner = 7 + vendorDensity * 8;
+        const outer = inner + 5 + vendorDensity * 12;
+        const vendorHaloGeometry = new THREE.RingGeometry(inner, outer, 28);
+        const vendorHaloMaterial = new THREE.MeshBasicMaterial({
+          color: 0xf59e0b,
+          transparent: true,
+          opacity: 0.10 + vendorDensity * 0.18,
+          depthWrite: false,
+        });
+        const vendorHalo = new THREE.Mesh(vendorHaloGeometry, vendorHaloMaterial);
+        vendorHalo.position.copy(mesh.position);
+        vendorHalo.lookAt(camera.position);
+        scene.add(vendorHalo);
+        vendorHalos.push({ mesh: vendorHalo, material: vendorHaloMaterial, density: vendorDensity });
       }
 
       scene.add(mesh);
@@ -434,6 +491,17 @@ export default function ThreeDNetworkMap({
         halo.mesh.scale.setScalar(1 + pulse * 0.35);
         halo.material.opacity = 0.25 + pulse * 0.35;
       });
+
+      // Pulse vendor density halos for Ops Shield.
+      if (mode === 'OPS') {
+        vendorHalos.forEach((halo, index) => {
+          const time = Date.now() * 0.0035 + index * 0.7;
+          const pulse = (Math.sin(time) + 1) / 2;
+          const scale = 1 + pulse * (0.18 + halo.density * 0.22);
+          halo.mesh.scale.setScalar(scale);
+          halo.material.opacity = 0.08 + pulse * (0.08 + halo.density * 0.14);
+        });
+      }
 
       renderer.render(scene, camera);
     };

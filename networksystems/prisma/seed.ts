@@ -88,6 +88,127 @@ async function main() {
   console.log('  Password: User1234');
   console.log('============================\n');
 
+  const db = prisma as any;
+  const seededLoops = [
+    {
+      id: 'loop-baltimore-utility-leakage',
+      signature: 'Baltimore Utility Leakage Loop::FINANCIAL',
+      type: 'FINANCIAL',
+      status: 'ACTIVE',
+      tensionScore: 11.4,
+      vendor: 'Baltimore Utility Leakage Loop',
+      agency: 'DPW',
+      jurisdiction: 'Baltimore City',
+      exposure: 620000,
+      signals: JSON.stringify([
+        {
+          id: 'seed-signal-1',
+          indicator: 'Late fee and statutory interest concentration',
+          severity: 'HIGH',
+          basis: 'RISK_HEURISTIC',
+          exposure: 620000,
+        },
+      ]),
+    },
+    {
+      id: 'loop-entity-opacity-multi-alias',
+      signature: 'Entity Opacity Multi Alias::ENTITY_OPACITY',
+      type: 'ENTITY_OPACITY',
+      status: 'ACTIVE',
+      tensionScore: 9.8,
+      vendor: 'Entity Opacity Multi Alias',
+      agency: 'DGS',
+      jurisdiction: 'Maryland State',
+      exposure: 410000,
+      signals: JSON.stringify([
+        {
+          id: 'seed-signal-2',
+          indicator: 'Alias masking across vendor identity graph',
+          severity: 'HIGH',
+          basis: 'STRICT_LAW',
+          exposure: 410000,
+        },
+      ]),
+    },
+    {
+      id: 'loop-regulator-process-bottleneck',
+      signature: 'Regulator Process Bottleneck::REGULATOR_PROCESS',
+      type: 'REGULATOR_PROCESS',
+      status: 'ACTIVE',
+      tensionScore: 8.9,
+      vendor: 'Regulator Process Bottleneck',
+      agency: 'DoIT',
+      jurisdiction: 'Maryland State',
+      exposure: 290000,
+      signals: JSON.stringify([
+        {
+          id: 'seed-signal-3',
+          indicator: 'Emergency procurement rollover beyond expected window',
+          severity: 'MEDIUM',
+          basis: 'STRICT_LAW',
+          exposure: 290000,
+        },
+      ]),
+    },
+  ];
+
+  for (const loop of seededLoops) {
+    try {
+      await db.constraintLoop.upsert({
+        where: { signature: loop.signature },
+        update: loop,
+        create: loop,
+      });
+    } catch (error) {
+      console.error(`Failed seeding loop ${loop.signature}:`, error);
+    }
+  }
+
+  const seededInterventions = [
+    {
+      id: 'bridge-seed-financial-1',
+      type: 'PROCESS',
+      status: 'COMPLETED',
+      targetLoopId: 'loop-baltimore-utility-leakage',
+      playbookSteps: JSON.stringify([
+        { id: 's-1', title: 'Invoice stream normalization' },
+        { id: 's-2', title: 'Penalty window prediction' },
+      ]),
+      expectedDelta: 210000,
+      actualDelta: 182000,
+      timeToBridgeHours: 38.5,
+      deployedAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
+      completedAt: new Date(Date.now() - 10 * 60 * 60 * 1000),
+    },
+    {
+      id: 'bridge-seed-entity-1',
+      type: 'DATA',
+      status: 'COMPLETED',
+      targetLoopId: 'loop-entity-opacity-multi-alias',
+      playbookSteps: JSON.stringify([
+        { id: 's-1', title: 'Entity alias resolution' },
+        { id: 's-2', title: 'Ownership path verification' },
+      ]),
+      expectedDelta: 102000,
+      actualDelta: 93000,
+      timeToBridgeHours: 26.2,
+      deployedAt: new Date(Date.now() - 36 * 60 * 60 * 1000),
+      completedAt: new Date(Date.now() - 8 * 60 * 60 * 1000),
+    },
+  ];
+
+  for (const intervention of seededInterventions) {
+    try {
+      await db.bridgeIntervention.upsert({
+        where: { id: intervention.id },
+        update: intervention,
+        create: intervention,
+      });
+    } catch (error) {
+      console.error(`Failed seeding bridge ${intervention.id}:`, error);
+    }
+  }
+
   console.log('Database seed completed successfully!');
 }
 

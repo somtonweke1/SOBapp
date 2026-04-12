@@ -32,11 +32,13 @@ export async function POST(request: NextRequest) {
     
   } catch (error) {
     console.error('Pricing API error:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    const isUnavailable = message.includes('Client tier lookup unavailable');
     return NextResponse.json({
       success: false,
-      error: 'Pricing calculation failed',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+      error: isUnavailable ? message : 'Pricing calculation failed',
+      details: message
+    }, { status: isUnavailable ? 503 : 500 });
   }
 }
 
@@ -425,10 +427,13 @@ async function trackUsage(clientId: string, usageData: any) {
     timestamp: new Date().toISOString()
   };
   
-  // Calculate overage charges if applicable
+  // Calculate overage charges if applicable (real tier lookup required)
   const client = await getClientTier(clientId);
+  if (!client) {
+    throw new Error('Client tier lookup unavailable. Configure persistence and implement getClientTier.');
+  }
   usage.overages = calculateOverages(usage.metrics, client.limits);
-  
+
   return usage;
 }
 
@@ -501,14 +506,8 @@ function calculateOverages(usage: any, limits: any) {
   };
 }
 
-async function getClientTier(clientId: string) {
-  // Mock client tier lookup - would be from database in production
-  return {
-    tier: 'professional',
-    limits: {
-      apiCalls: 50000,
-      users: 20,
-      dataRetention: '2 years'
-    }
-  };
+async function getClientTier(clientId: string): Promise<{ tier: string; limits: { apiCalls: number; users: number; dataRetention: string } } | null> {
+  // Real data only: implement DB lookup; do not return mock/sample tier data
+  // When persistence is configured, query by clientId and return tier + limits
+  return null;
 }

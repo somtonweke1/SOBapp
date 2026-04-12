@@ -252,71 +252,11 @@ export class RealTimeMaterialsService {
         return realEvents;
       }
     } catch (error) {
-      console.log('RealNewsAlertService not available, using fallback events');
+      console.log('RealNewsAlertService not available; no synthetic events served.');
     }
 
-    // Fallback to realistic simulated events if news service unavailable
-    const currentEvents: SupplyChainEvent[] = [
-      {
-        id: 'event_001',
-        type: 'disruption',
-        severity: 'high',
-        affectedMaterials: ['cobalt', 'copper'],
-        country: 'Democratic Republic of Congo',
-        description: 'Mining operations disrupted due to infrastructure damage',
-        impact: 'Estimated 15% reduction in cobalt output for Q1 2024',
-        startDate: new Date('2024-01-15'),
-        endDate: new Date('2024-03-31'),
-        probabilityEstimate: 0.85
-      },
-      {
-        id: 'event_002',
-        type: 'policy_change',
-        severity: 'medium',
-        affectedMaterials: ['lithium'],
-        country: 'Chile',
-        description: 'New environmental regulations for lithium extraction',
-        impact: 'Increased production costs by 12%, potential supply delays',
-        startDate: new Date('2024-02-01'),
-        probabilityEstimate: 0.95
-      },
-      {
-        id: 'event_003',
-        type: 'capacity_expansion',
-        severity: 'low',
-        affectedMaterials: ['lithium'],
-        country: 'Australia',
-        description: 'New lithium mine commissioned in Western Australia',
-        impact: 'Additional 50,000 tonnes/year capacity by 2025',
-        startDate: new Date('2024-01-10'),
-        probabilityEstimate: 0.90
-      },
-      {
-        id: 'event_004',
-        type: 'disruption',
-        severity: 'critical',
-        affectedMaterials: ['neodymium', 'dysprosium'],
-        country: 'China',
-        description: 'Export restrictions on rare earth elements',
-        impact: 'Global rare earth supply reduced by 20-30%',
-        startDate: new Date('2024-01-20'),
-        probabilityEstimate: 0.70
-      },
-      {
-        id: 'event_005',
-        type: 'mine_closure',
-        severity: 'medium',
-        affectedMaterials: ['nickel'],
-        country: 'Indonesia',
-        description: 'Temporary closure of nickel mines for environmental review',
-        impact: '8% reduction in global nickel supply for 6 months',
-        startDate: new Date('2024-02-05'),
-        endDate: new Date('2024-08-05'),
-        probabilityEstimate: 0.80
-      }
-    ];
-
-    return currentEvents;
+    // No synthetic fallback: return empty when real news is unavailable
+    return [];
   }
 
   /**

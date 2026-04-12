@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import ThreeDNetworkMap from '@/components/visualization/3d-network-map';
+import type { ShieldMode } from '@/components/stonebridge/Sidebar';
 
 type DistressNode = {
   id: string;
@@ -42,7 +43,7 @@ const distressEdges: DistressEdge[] = [
   { source: 'west-baltimore-core', target: 'north-avenue-cluster', type: 'supply_chain', strength: 0.68, distance: 2 }
 ];
 
-export default function WarRoomMap() {
+export default function WarRoomMap({ mode = 'ASSET' }: { mode?: ShieldMode }) {
   const [nodes, setNodes] = useState<DistressNode[]>([]);
 
   useEffect(() => {
@@ -62,5 +63,5 @@ export default function WarRoomMap() {
     };
   }, []);
 
-  return <ThreeDNetworkMap nodes={nodes} edges={distressEdges} />;
+  return <ThreeDNetworkMap nodes={nodes} edges={distressEdges} mode={mode} />;
 }

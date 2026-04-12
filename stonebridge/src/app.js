@@ -13,6 +13,7 @@ const operatorRoutes = require("./routes/operator");
 const paymentRoutes = require("./routes/payments");
 const publicRoutes = require("./routes/public");
 const sponsorRoutes = require("./routes/sponsor");
+const batchRoutes = require("./routes/batch");
 const { listActiveWorkspaces } = require("./lib/sponsor");
 const { SITE_DESCRIPTION, SITE_TITLE } = require("./lib/site");
 const { analyzeDistributionDiagnostic, normalizeList } = require("./lib/distribution-diagnostic");
@@ -462,6 +463,16 @@ app.get("/submit", async (req, res) => {
   })));
 });
 
+app.get("/batch", async (req, res) => {
+  const user = await getCurrentUser(req);
+  res.send(renderTemplate("batch", basePageData("/batch", {
+    title: `${SITE_TITLE} | Batch Analysis`,
+    description: "Analyze up to 50 Baltimore addresses at once. Upload CSV, get comparative risk analysis.",
+    authState: formatAuthState(user, "Login to batch analyze"),
+    userJson: JSON.stringify(user || null)
+  })));
+});
+
 app.get("/distribution-diagnostic", async (req, res) => {
   const user = await getCurrentUser(req);
   res.send(renderTemplate("distribution-diagnostic", basePageData("/distribution-diagnostic", {
@@ -814,6 +825,7 @@ app.use("/api/operator", operatorRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/public", publicRoutes);
 app.use("/api/sponsor", sponsorRoutes);
+app.use("/api/batch", batchRoutes);
 
 app.get("/health", async (_req, res) => {
   try {

@@ -1,0 +1,647 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64133,
+          39.310222
+        ]
+      },
+      "properties": {
+        "type": "property",
+        "radiusMeters": 500
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.63905217446866,
+          39.31067085530024
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:19.541Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6428200750866,
+          39.30804146983712
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:19.920Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64118571853112,
+          39.3106871026154
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:20.312Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64033376623411,
+          39.31202351510183
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:20.702Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6389432760441,
+          39.30828231909667
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:21.083Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.643634623108,
+          39.3125672807185
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:21.464Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.63958103173141,
+          39.30780046829963
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:21.849Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64043646964464,
+          39.30946759147294
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:22.227Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64141890577278,
+          39.30794815849845
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:22.607Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64267533763643,
+          39.31140580117342
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:22.984Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6402968328209,
+          39.3098208189731
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:23.367Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64031704194218,
+          39.31073398677545
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:23.747Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6435629600279,
+          39.30781485043266
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:24.128Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.63979900262528,
+          39.31082202243108
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:24.511Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64232051967232,
+          39.30903140739954
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:24.893Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64152677757633,
+          39.30885785305492
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:25.273Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6413171329933,
+          39.31123828064123
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:25.651Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64283542009926,
+          39.31078749230667
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:26.030Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64250940538524,
+          39.30985789415715
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:26.411Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6401489190391,
+          39.31252565029352
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:26.794Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.63983449633714,
+          39.31140649208603
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:27.173Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64380630388318,
+          39.31117985424403
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:27.626Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64299498917421,
+          39.31234911855117
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:28.018Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64233029687729,
+          39.3087493831773
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:28.397Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64377105476244,
+          39.31266440732252
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:28.773Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.63914853243041,
+          39.31112851054023
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:29.148Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64249746473344,
+          39.31070102336664
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:29.529Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.63944355605604,
+          39.30967854792846
+        ]
+      },
+      "properties": {
+        "type": "complaint",
+        "requestType": "SW-Dirty Streets",
+        "status": "Open",
+        "date": "2026-04-11T03:36:30.055Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6408748917893,
+          39.31068610445934
+        ]
+      },
+      "properties": {
+        "type": "vacancy",
+        "address": "Vacant Building 0",
+        "noticeDate": "2026-04-11T03:36:30.444Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64106675792598,
+          39.31248445877181
+        ]
+      },
+      "properties": {
+        "type": "vacancy",
+        "address": "Vacant Building 1",
+        "noticeDate": "2026-04-11T03:36:30.822Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64255181104369,
+          39.31249794050153
+        ]
+      },
+      "properties": {
+        "type": "vacancy",
+        "address": "Vacant Building 2",
+        "noticeDate": "2026-04-11T03:36:31.210Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64202867306611,
+          39.30784413689209
+        ]
+      },
+      "properties": {
+        "type": "vacancy",
+        "address": "Vacant Building 3",
+        "noticeDate": "2026-04-11T03:36:31.592Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64306016848994,
+          39.31039239646108
+        ]
+      },
+      "properties": {
+        "type": "vacancy",
+        "address": "Vacant Building 4",
+        "noticeDate": "2026-04-11T03:36:31.986Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64306537104572,
+          39.3102899797974
+        ]
+      },
+      "properties": {
+        "type": "vacancy",
+        "address": "Vacant Building 5",
+        "noticeDate": "2026-04-11T03:36:32.418Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64302912101202,
+          39.31248799712007
+        ]
+      },
+      "properties": {
+        "type": "vacancy",
+        "address": "Vacant Building 6",
+        "noticeDate": "2026-04-11T03:36:32.806Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64140937042137,
+          39.31189134372972
+        ]
+      },
+      "properties": {
+        "type": "vacancy",
+        "address": "Vacant Building 7",
+        "noticeDate": "2026-04-11T03:36:33.181Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.63968367307275,
+          39.31054912354827
+        ]
+      },
+      "properties": {
+        "type": "vacancy",
+        "address": "Vacant Building 8",
+        "noticeDate": "2026-04-11T03:36:33.557Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6422870671026,
+          39.30904715074493
+        ]
+      },
+      "properties": {
+        "type": "vacancy",
+        "address": "Vacant Building 9",
+        "noticeDate": "2026-04-11T03:36:33.935Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64365942160734,
+          39.30919759897664
+        ]
+      },
+      "properties": {
+        "type": "vacancy",
+        "address": "Vacant Building 10",
+        "noticeDate": "2026-04-11T03:36:34.319Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.64206157160507,
+          39.31190349088772
+        ]
+      },
+      "properties": {
+        "type": "vacancy",
+        "address": "Vacant Building 11",
+        "noticeDate": "2026-04-11T03:36:34.704Z"
+      }
+    }
+  ]
+}

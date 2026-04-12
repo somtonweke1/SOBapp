@@ -127,12 +127,12 @@ function generateEmailHTML(message: string, metadata: any): string {
     </div>
     ` : ''}
 
-    <a href="https://sobapp.vercel.app/dashboard" class="button">View Dashboard</a>
+    <a href="https://stonebridgeai.vercel.app/dashboard" class="button">View Dashboard</a>
   </div>
   <div class="footer">
-    <p>SOBapp - Baltimore Real Estate Forensics Platform</p>
+    <p>StoneBridge AI - Baltimore Deal Diagnostic Platform</p>
     <p>You're receiving this email because you've enabled alerts for your account.</p>
-    <p><a href="https://sobapp.vercel.app/settings" style="color: #059669;">Manage notification preferences</a></p>
+    <p><a href="https://stonebridgeai.vercel.app/settings" style="color: #059669;">Manage notification preferences</a></p>
   </div>
 </body>
 </html>

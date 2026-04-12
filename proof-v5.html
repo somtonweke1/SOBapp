@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StoneBridge AI — Diagnose the deal before capital is trapped</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0C0C0A;
+  --bg2:#131310;
+  --bg3:#1A1A16;
+  --bg4:#222220;
+  --ink:#F0EDE4;
+  --ink2:#8C8A80;
+  --ink3:#52524A;
+  --border:#2A2A26;
+  --border2:#3A3A34;
+  --amber:#D4862A;
+  --amber2:#F0A840;
+  --abg:rgba(212,134,42,0.10);
+  --aborder:rgba(212,134,42,0.25);
+  --green:#2A9060;
+  --green2:#3DB878;
+  --gbg:rgba(42,144,96,0.10);
+  --gborder:rgba(42,144,96,0.25);
+  --red:#A03030;
+  --red2:#D06161;
+  --rbg:rgba(160,48,48,0.10);
+  --rborder:rgba(160,48,48,0.25);
+  --blue:#2A60A0;
+  --blue2:#4A90D8;
+  --bbg:rgba(42,96,160,0.12);
+  --bborder:rgba(74,144,216,0.25);
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font:inherit}
+.view{display:none}
+.view.active{display:block}
+a{text-decoration:none;color:inherit}
+hr{border:none;border-top:1px solid var(--border);margin:24px 0}
+
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:0 34px;height:58px;display:flex;align-items:center;justify-content:space-between;
+  background:rgba(12,12,10,0.92);border-bottom:1px solid var(--border);backdrop-filter:blur(12px);
+}
+.logo{
+  display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:14px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;
+}
+.logo-mark{width:8px;height:8px;background:var(--amber)}
+.nav-center,.nav-right{display:flex;align-items:center;gap:4px}
+.nvbtn{
+  background:none;border:none;color:var(--ink2);padding:7px 12px;cursor:pointer;font-size:13px;
+  transition:all .15s;
+}
+.nvbtn:hover,.nvbtn.active{color:var(--ink)}
+.nvbtn.active{color:var(--amber)}
+.pill{
+  background:none;border:1px solid transparent;color:var(--ink);padding:9px 16px;cursor:pointer;
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  transition:all .15s;
+}
+.pill-ghost{border-color:var(--border2);color:var(--ink2)}
+.pill-ghost:hover{border-color:var(--ink2);color:var(--ink)}
+.pill-amber{background:var(--amber);border-color:var(--amber);color:#000}
+.pill-amber:hover{background:var(--amber2);border-color:var(--amber2)}
+.pill-green{background:var(--green);border-color:var(--green);color:#04110b}
+.pill-lg{padding:13px 24px;font-size:12px}
+
+.shell{padding-top:58px}
+.section-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink3);
+  margin-bottom:10px;
+}
+.section-title{
+  font-family:var(--serif);font-size:clamp(26px,4vw,44px);font-weight:400;line-height:1.12;color:var(--ink);
+}
+.section-sub{font-size:15px;color:var(--ink2);margin-top:14px;line-height:1.8}
+
+.hero{
+  min-height:92vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+  padding:84px 24px 58px;
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 84% 84% at 50% 50%, black 0%, transparent 100%);
+}
+.hero-glow{
+  position:absolute;top:12%;left:50%;transform:translateX(-50%);
+  width:720px;height:340px;background:radial-gradient(ellipse, rgba(212,134,42,0.08) 0%, transparent 72%);
+}
+.hero-inner{position:relative;z-index:2;max-width:1160px;width:100%;display:grid;grid-template-columns:1.08fr .92fr;gap:34px;align-items:center}
+.hero-copy{max-width:620px}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink3);margin-bottom:22px;
+}
+.hero h1{
+  font-family:var(--serif);font-size:clamp(40px,6vw,76px);font-weight:400;line-height:1.05;margin-bottom:18px;
+}
+.hero h1 em{font-style:italic;color:var(--amber)}
+.hero-subcopy{font-size:17px;color:var(--ink2);line-height:1.9;max-width:590px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+.hero-note{
+  margin-top:18px;font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.05em;
+}
+
+.panel{
+  background:var(--bg2);border:1px solid var(--border);overflow:hidden;
+}
+.panel-head{
+  padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:14px;
+}
+.panel-title{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3)}
+.src-chip{
+  display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bborder);background:var(--bbg);padding:5px 11px;
+}
+.src-chip-dot{width:5px;height:5px;background:var(--blue2)}
+.src-chip span{font-family:var(--mono);font-size:10px;color:var(--blue2)}
+
+.demo-switchers{display:flex;gap:8px;flex-wrap:wrap;padding:16px 20px;background:var(--bg3);border-bottom:1px solid var(--border)}
+.sc{
+  background:none;border:1px solid var(--border);color:var(--ink2);padding:8px 14px;cursor:pointer;font-size:12px;transition:all .15s;
+}
+.sc.on,.sc:hover{color:var(--ink);border-color:var(--ink2);background:var(--bg4)}
+
+.address-block{padding:20px;border-bottom:1px solid var(--border)}
+.address-line{font-family:var(--serif);font-size:28px;line-height:1.1;font-weight:400}
+.address-meta{margin-top:8px;font-size:13px;color:var(--ink2)}
+.address-note{margin-top:14px;font-size:13px;color:var(--ink2);line-height:1.7}
+
+.metric-grid{
+  display:grid;grid-template-columns:1fr 48px 1fr 48px 1fr;align-items:stretch;
+}
+.metric-col{padding:24px 18px;text-align:center;border-right:1px solid var(--border)}
+.metric-col:last-child{border-right:none}
+.metric-sep{
+  display:flex;align-items:center;justify-content:center;border-right:1px solid var(--border);color:var(--ink3);font-size:16px;
+}
+.metric-label{
+  font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;
+}
+.metric-val{
+  font-family:var(--mono);font-size:40px;font-weight:600;line-height:1;color:var(--ink);
+}
+.metric-val.dim{font-size:24px;color:var(--ink2)}
+.metric-val.good{color:var(--green2)}
+.metric-val.warn{color:var(--amber)}
+.metric-val.risk{color:var(--red2)}
+.metric-unit{font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:8px}
+.metric-src{
+  margin-top:10px;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--bborder);background:var(--bbg);padding:3px 9px;
+}
+.metric-src i{width:4px;height:4px;background:var(--blue2);display:block}
+.metric-src span{font-family:var(--mono);font-size:9px;color:var(--blue2)}
+
+.verdict-bar{
+  padding:16px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.verdict-copy{font-size:13px}
+.verdict-copy strong{font-family:var(--mono);font-size:12px;letter-spacing:.08em}
+.verdict-copy small{display:block;color:var(--ink2);font-size:11px;margin-top:4px;line-height:1.6}
+.money{font-family:var(--mono);font-size:18px;font-weight:600}
+.v-proceed{background:var(--gbg);border-top-color:var(--gborder)}
+.v-proceed .verdict-copy,.v-proceed .money{color:var(--green2)}
+.v-caution{background:var(--abg);border-top-color:var(--aborder)}
+.v-caution .verdict-copy,.v-caution .money{color:var(--amber)}
+.v-escalate{background:var(--rbg);border-top-color:var(--rborder)}
+.v-escalate .verdict-copy,.v-escalate .money{color:var(--red2)}
+
+.info-band{
+  background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:76px 24px;
+}
+.band-inner{max-width:1160px;margin:0 auto}
+.steps{margin-top:44px;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}
+.step{background:var(--bg);padding:26px 22px}
+.step-num{font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:.15em;margin-bottom:14px}
+.step h3{font-family:var(--serif);font-size:21px;font-weight:400;margin-bottom:10px}
+.step p{font-size:13px;color:var(--ink2);line-height:1.75}
+
+.sources,.cred-grid,.stats-grid,.dashboard-grid,.record-grid,.intake-grid,.stack-grid,.browser-layout,.cta-strip{
+  max-width:1160px;margin:0 auto;
+}
+.stack-section,.cred-section,.track-section,.dashboard-section,.browser-section,.record-section,.intake-section{
+  padding:84px 24px;
+}
+.stack-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:38px}
+.stack-card,.stat-card,.cred-card,.dash-card,.track-row,.signal-row,.queue-row{
+  background:var(--bg2);border:1px solid var(--border);
+}
+.stack-card{padding:20px 14px;text-align:center}
+.stack-name{font-family:var(--mono);font-size:11px;color:var(--ink);margin-bottom:4px}
+.stack-what{font-size:11px;color:var(--ink3)}
+
+.cred-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:38px}
+.cred-card{background:var(--bg);padding:28px 24px}
+.cred-num{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.18em;margin-bottom:14px}
+.cred-card h3{font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:8px}
+.cred-card p{font-size:13px;color:var(--ink2);line-height:1.7}
+
+.cta-strip{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  background:var(--bg2);border:1px solid var(--border);padding:26px 24px;
+}
+.cta-strip h3{font-family:var(--serif);font-size:28px;font-weight:400}
+.cta-strip p{font-size:14px;color:var(--ink2);max-width:560px}
+.cta-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+.page-head{margin-bottom:28px}
+.page-head h2{font-family:var(--serif);font-size:34px;font-weight:400;margin-bottom:6px}
+.page-head p{font-size:14px;color:var(--ink2)}
+
+.intake-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:18px}
+.fblock{background:var(--bg2);border:1px solid var(--border);margin-bottom:12px}
+.fhead{
+  padding:12px 18px;border-bottom:1px solid var(--border);background:var(--bg3);
+  display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:9px;color:var(--ink3);letter-spacing:.18em;text-transform:uppercase;
+}
+.fnum{
+  width:20px;height:20px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;
+}
+.fbody{padding:20px}
+.fg{margin-bottom:18px}
+.fg:last-child{margin-bottom:0}
+.fl{display:block;font-size:13px;font-weight:500;margin-bottom:8px}
+.fh{font-size:11px;color:var(--ink3);margin-top:6px;line-height:1.6}
+.fi{
+  width:100%;background:var(--bg3);border:1px solid var(--border);padding:11px 13px;color:var(--ink);outline:none;
+}
+.fi:focus{border-color:var(--ink3);background:var(--bg4)}
+textarea.fi{resize:vertical;min-height:88px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.choice{
+  background:var(--bg3);border:1px solid var(--border);padding:14px 12px;cursor:pointer;text-align:left;transition:all .15s;
+}
+.choice strong{display:block;font-family:var(--mono);font-size:11px;color:var(--ink);margin-bottom:4px}
+.choice span{display:block;font-size:11px;color:var(--ink3);line-height:1.5}
+.choice.sel{border-color:var(--amber);background:var(--abg)}
+.source-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.source{
+  background:var(--bg3);border:1px solid var(--border);padding:14px 10px;cursor:pointer;text-align:center;transition:all .15s;
+}
+.source:hover{border-color:var(--border2)}
+.source.sel{border-color:var(--amber);background:var(--abg)}
+.source strong{display:block;font-family:var(--mono);font-size:10px;margin-top:4px}
+.source span{display:block;font-size:10px;color:var(--ink3);margin-top:2px}
+.read-box,.lock-box,.hold-box,.side-card{background:var(--bg2);border:1px solid var(--border)}
+.read-box{padding:18px;margin-top:12px;display:none}
+.read-title,.side-title{
+  font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue2);margin-bottom:10px;
+}
+.reading-row{display:flex;align-items:center;gap:10px;color:var(--ink2);font-size:13px}
+.dot{width:7px;height:7px;background:var(--blue2);animation:blink 1.2s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.pulled-val{display:none;font-family:var(--mono);font-size:32px;font-weight:600;margin-top:12px}
+.pulled-note{display:none;font-family:var(--mono);font-size:10px;color:var(--blue2);margin-top:4px;line-height:1.6}
+.lock-box{padding:20px;display:none}
+.lock-note{font-family:var(--mono);font-size:10px;color:var(--blue2);text-align:center;margin-top:12px}
+.hold-box{padding:18px;display:none;margin-top:12px;background:var(--abg);border-color:var(--aborder)}
+.hold-box p{font-size:13px;color:var(--amber);line-height:1.7}
+
+.side-stack{display:grid;gap:12px}
+.side-card{padding:18px}
+.side-card h3{font-family:var(--serif);font-size:24px;font-weight:400;line-height:1.18}
+.side-card p{font-size:13px;color:var(--ink2);line-height:1.75;margin-top:10px}
+.preview-list{display:grid;gap:10px;margin-top:14px}
+.preview-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.preview-row:last-child{padding-bottom:0;border-bottom:none}
+.preview-row strong{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.12em;text-transform:uppercase}
+.preview-row span{font-size:13px;color:var(--ink)}
+
+.tabs{display:flex;border-bottom:1px solid var(--border);gap:0;margin-bottom:20px}
+.tab{
+  background:none;border:none;border-bottom:1px solid transparent;padding:10px 16px;margin-bottom:-1px;
+  color:var(--ink3);cursor:pointer;transition:all .15s;
+}
+.tab.on,.tab:hover{color:var(--ink)}
+.tab.on{border-bottom-color:var(--amber)}
+.tc{font-family:var(--mono);font-size:10px;margin-left:5px;opacity:.7}
+
+.deal-grid{display:grid;gap:12px}
+.deal-card{background:var(--bg2);border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:border-color .15s}
+.deal-card:hover{border-color:var(--border2)}
+.deal-top{padding:18px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.deal-title{font-family:var(--serif);font-size:24px;font-weight:400;line-height:1.08}
+.deal-sub{margin-top:7px;font-size:13px;color:var(--ink2);line-height:1.6}
+.deal-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.meta-chip{
+  font-family:var(--mono);font-size:10px;color:var(--ink3);border:1px solid var(--border);padding:4px 8px;
+}
+.meta-chip.src{border-color:var(--bborder);background:var(--bbg);color:var(--blue2)}
+.card-foot{
+  padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--bg3);
+}
+.foot-note{font-family:var(--mono);font-size:11px;color:var(--ink2)}
+
+.badge{
+  padding:5px 9px;font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--border2);
+}
+.b-proceed{background:var(--gbg);border-color:var(--gborder);color:var(--green2)}
+.b-caution{background:var(--abg);border-color:var(--aborder);color:var(--amber)}
+.b-escalate{background:var(--rbg);border-color:var(--rborder);color:var(--red2)}
+.b-pending{background:var(--bg4);border-color:var(--border2);color:var(--ink2)}
+
+.record-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:18px}
+.record-card{background:var(--bg2);border:1px solid var(--border);overflow:hidden}
+.record-card .panel-head{padding:14px 18px}
+.proof-block{padding:18px;border-top:1px solid var(--border);background:var(--bg3)}
+.proof-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.proof-row:last-child{border-bottom:none;padding-bottom:0}
+.proof-row strong{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.12em;text-transform:uppercase}
+.proof-row span{font-family:var(--mono);font-size:11px;color:var(--ink)}
+.note-block{padding:18px;border-top:1px solid var(--border)}
+.note-block p{font-size:13px;color:var(--ink2);line-height:1.75}
+
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:34px}
+.stat-card{padding:20px}
+.stat-card .label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+.stat-card .num{font-family:var(--mono);font-size:34px;font-weight:600;color:var(--ink);line-height:1;margin-top:12px}
+.stat-card .sub{font-size:12px;color:var(--ink2);margin-top:8px;line-height:1.6}
+
+.track-list{display:grid;gap:10px;margin-top:28px}
+.track-row{padding:18px 20px;display:grid;grid-template-columns:2.2fr .8fr .8fr .95fr .9fr;gap:12px;align-items:center}
+.track-row.head{
+  background:transparent;border-color:transparent;padding:0 20px 8px;color:var(--ink3);
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+}
+.track-main strong{display:block;font-family:var(--serif);font-size:24px;font-weight:400;line-height:1.08}
+.track-main span{display:block;font-size:12px;color:var(--ink2);margin-top:6px}
+.track-cell{font-size:12px;color:var(--ink)}
+.track-cell.mono{font-family:var(--mono);font-size:11px}
+
+.gate{
+  max-width:560px;margin:0 auto;background:var(--bg2);border:1px solid var(--border);padding:24px;
+}
+.gate h3{font-family:var(--serif);font-size:28px;font-weight:400;margin-bottom:8px}
+.gate p{font-size:14px;color:var(--ink2);line-height:1.75;margin-bottom:18px}
+.gate-foot{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.dashboard-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:30px}
+.dash-card{padding:18px}
+.dash-card .k{font-family:var(--mono);font-size:10px;color:var(--ink3);letter-spacing:.14em;text-transform:uppercase}
+.dash-card .v{font-family:var(--mono);font-size:34px;font-weight:600;line-height:1;margin-top:12px}
+.dash-card .t{font-size:12px;color:var(--ink2);margin-top:8px}
+.signal-table,.queue-table{display:grid;gap:10px;margin-top:18px}
+.signal-row,.queue-row{padding:16px 18px;display:grid;gap:10px;align-items:center}
+.signal-row{grid-template-columns:1.3fr .9fr 1fr .9fr}
+.queue-row{grid-template-columns:1.25fr 1fr .85fr .95fr}
+.row-head{
+  background:transparent;border-color:transparent;padding:0 18px 6px;color:var(--ink3);
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+}
+
+.mbg{
+  display:none;position:fixed;inset:0;background:rgba(12,12,10,.82);z-index:310;align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);padding:18px;
+}
+.mbg.open{display:flex}
+.modal{width:min(560px,100%);background:var(--bg2);border:1px solid var(--border2);overflow:hidden}
+.mh{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.mh-title{font-family:var(--serif);font-size:24px;font-weight:400}
+.mx{background:none;border:none;color:var(--ink3);font-size:22px;cursor:pointer}
+.mb{padding:20px}
+.mft{padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+
+.success-box{padding:16px 18px;background:var(--gbg);border:1px solid var(--gborder);color:var(--green2);font-size:13px;line-height:1.7}
+.warn-box{padding:16px 18px;background:var(--abg);border:1px solid var(--aborder);color:var(--amber);font-size:13px;line-height:1.7}
+
+@media(max-width:980px){
+  .hero-inner,.intake-grid,.record-grid{grid-template-columns:1fr}
+  .steps,.cred-grid,.dashboard-grid,.stats-grid,.stack-grid{grid-template-columns:1fr 1fr}
+  .track-row,.track-row.head,.signal-row,.queue-row{grid-template-columns:1fr}
+  .cta-strip{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:720px){
+  nav{padding:0 18px}
+  .nav-center{display:none}
+  .hero{padding:72px 18px 42px}
+  .metric-grid{grid-template-columns:1fr}
+  .metric-sep{display:none}
+  .metric-col{border-right:none!important;border-bottom:1px solid var(--border)}
+  .metric-col:last-child{border-bottom:none}
+  .source-grid,.choice-grid,.steps,.cred-grid,.stats-grid,.stack-grid,.dashboard-grid{grid-template-columns:1fr}
+  .frow{grid-template-columns:1fr}
+  .hero-actions,.cta-actions,.gate-foot{flex-direction:column;align-items:stretch}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><div class="logo-mark"></div>STONEBRIDGE AI</div>
+  <div class="nav-center">
+    <button class="nvbtn active" data-view="landing" onclick="showView('landing',this)">Home</button>
+    <button class="nvbtn" data-view="intake" onclick="showView('intake',this)">Submit</button>
+    <button class="nvbtn" data-view="browser" onclick="showView('browser',this)">Diagnostics</button>
+    <button class="nvbtn" data-view="track" onclick="showView('track',this)">Track Record</button>
+    <button class="nvbtn" data-view="dashboard" onclick="showView('dashboard',this)">Operator</button>
+  </div>
+  <div class="nav-right">
+    <button class="pill pill-ghost" onclick="openModal('preview')">Free Preview Scan</button>
+    <button class="pill pill-amber" onclick="openModal('purchase')">Purchase 24-hour Memo</button>
+  </div>
+</nav>
+
+<div class="shell">
+  <section id="view-landing" class="view active">
+    <div class="hero">
+      <div class="hero-grid"></div>
+      <div class="hero-glow"></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <div class="hero-eyebrow">Baltimore real estate deal diagnostics</div>
+          <h1>Diagnose the deal before <em>capital is trapped.</em></h1>
+          <div class="hero-subcopy">We deliver a 24-hour decision memo. Timestamped at delivery. Payment held until you confirm it was decision-grade.</div>
+          <div class="hero-actions">
+            <button class="pill pill-amber pill-lg" onclick="openModal('preview')">Free Preview Scan</button>
+            <button class="pill pill-ghost pill-lg" onclick="openModal('purchase')">Purchase 24-hour Memo</button>
+          </div>
+          <div class="hero-note">We read the risk signals directly from public records. You never enter a score.</div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Live Baltimore deal demo</div>
+            <div class="src-chip"><div class="src-chip-dot"></div><span id="demo-source-chip">StoneBridge diagnostic engine</span></div>
+          </div>
+          <div class="demo-switchers">
+            <button class="sc on" onclick="setDemo(0,this)">Proceeded clean</button>
+            <button class="sc" onclick="setDemo(1,this)">Renegotiated</button>
+            <button class="sc" onclick="setDemo(2,this)">Killed</button>
+          </div>
+          <div class="address-block">
+            <div class="address-line" id="demo-address">1728 W North Ave, Baltimore, MD 21217</div>
+            <div class="address-meta" id="demo-meta">Vacant mixed-use shell · Penn North · Intake pulled Mar 18, 2026</div>
+            <div class="address-note" id="demo-note">Utility anomalies, permit lag, tax sale exposure, and owner distress stacked into a single memo before the sponsor wired earnest money.</div>
+          </div>
+          <div class="metric-grid">
+            <div class="metric-col">
+              <div class="metric-label">Risk score at intake · StoneBridge diagnostic engine</div>
+              <div class="metric-val" id="demo-before">71</div>
+              <div class="metric-unit" id="demo-before-unit">12 public flags locked at intake</div>
+              <div class="metric-src"><i></i><span>StoneBridge diagnostic engine</span></div>
+            </div>
+            <div class="metric-sep">→</div>
+            <div class="metric-col">
+              <div class="metric-label">Memo verdict · Delivered in 24 hours</div>
+              <div class="metric-val warn" id="demo-goal">CAUTION</div>
+              <div class="metric-unit" id="demo-goal-unit">Renegotiate holdback before closing</div>
+            </div>
+            <div class="metric-sep">→</div>
+            <div class="metric-col">
+              <div class="metric-label">Outcome at 60 days · Client confirmed</div>
+              <div class="metric-val good" id="demo-after">RENEGOTIATED</div>
+              <div class="metric-unit" id="demo-after-unit">$185K credit captured before rehab</div>
+              <div class="metric-src"><i></i><span>Client confirmation + public record cross-check</span></div>
+            </div>
+          </div>
+          <div class="verdict-bar v-caution" id="demo-verdict-bar">
+            <div class="verdict-copy">
+              <strong id="demo-verdict-text">CAUTION</strong>
+              <small id="demo-verdict-sub">Memo delivered Mar 19, 2026 at 7:42 AM EDT. Payment held at intake and released after the sponsor confirmed the memo changed the buy box.</small>
+            </div>
+            <div class="money" id="demo-money">$2,500 held → released</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-band">
+      <div class="band-inner">
+        <div class="section-label">How it works</div>
+        <div class="section-title">Four steps from address intake to decision-grade memo.</div>
+        <div class="section-sub">Every StoneBridge memo runs through the same trust layer: intake score locked by the platform, memo timestamped at delivery, outcome confirmed later, payment released only after the work proves decision-grade.</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">01</div>
+            <h3>Submit address</h3>
+            <p>You send one Baltimore address or a small portfolio. We capture timeline pressure, acquisition stage, and the capital decision in front of you.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">02</div>
+            <h3>Platform reads risk signals</h3>
+            <p>StoneBridge pulls vacancy pressure, title and lien context, public procurement adjacency, utility anomalies, and ownership distress directly from records. You never enter a score.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">03</div>
+            <h3>Memo delivered and timestamped</h3>
+            <p>The 24-hour memo lands with a Proceed, Caution, or Escalate verdict. Delivery time, analyst attribution, and SHA-256 proof are fixed to the record immediately.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">04</div>
+            <h3>Payment follows the outcome</h3>
+            <p>$2,500 is held at intake. If the client confirms the memo was decision-grade, billing releases automatically. If it was not, billing returns.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack-section">
+      <div class="sources">
+        <div class="section-label">Source stack</div>
+        <div class="section-title">Baltimore records fused into one memo.</div>
+        <div class="stack-grid">
+          <div class="stack-card"><div class="stack-name">Baltimore City Records</div><div class="stack-what">Vacancy, code, permits, ownership</div></div>
+          <div class="stack-card"><div class="stack-name">Maryland DGS</div><div class="stack-what">State procurement adjacency</div></div>
+          <div class="stack-card"><div class="stack-name">SAM.gov</div><div class="stack-what">Federal contract exposure and entities</div></div>
+          <div class="stack-card"><div class="stack-name">eMMA</div><div class="stack-what">State bid activity and vendor traces</div></div>
+          <div class="stack-card"><div class="stack-name">County Bid Tabs</div><div class="stack-what">Adjacent contractor and parcel pressure</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cred-section">
+      <div class="sources">
+        <div class="section-label">Why StoneBridge closes credibility gaps</div>
+        <div class="section-title">The memo, the timestamp, and the record compound.</div>
+        <div class="cred-grid">
+          <div class="cred-card">
+            <div class="cred-num">01</div>
+            <h3>No hand-entered scores</h3>
+            <p>Risk scores and flag counts are pulled by the diagnostic engine at intake. The sponsor cannot soften the baseline and StoneBridge cannot exaggerate it later.</p>
+          </div>
+          <div class="cred-card">
+            <div class="cred-num">02</div>
+            <h3>No ambiguity at delivery</h3>
+            <p>Every memo is timestamped and attributed the moment it lands. If a client disputes whether the diagnosis existed, the proof block resolves it.</p>
+          </div>
+          <div class="cred-card">
+            <div class="cred-num">03</div>
+            <h3>No references needed</h3>
+            <p>The public track record is the credential. Each confirmed memo becomes another permanent example of the verdict, the deal outcome, and the payment release.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack-section" style="padding-top:0">
+      <div class="cta-strip">
+        <div>
+          <h3>Free preview for signal quality. Paid memo when capital is on the line.</h3>
+          <p>StoneBridge sells one thing: a 24-hour decision memo that tells a buyer to Proceed, Caution, or Escalate before money is committed.</p>
+        </div>
+        <div class="cta-actions">
+          <button class="pill pill-ghost pill-lg" onclick="openModal('preview')">Free Preview Scan</button>
+          <button class="pill pill-amber pill-lg" onclick="openModal('purchase')">Purchase 24-hour Memo</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-intake" class="view intake-section">
+    <div class="intake-grid">
+      <div>
+        <div class="page-head">
+          <h2>Submit an address</h2>
+          <p>Address in. Risk signals read automatically. Payment held only until the memo is confirmed decision-grade.</p>
+        </div>
+
+        <div class="fblock">
+          <div class="fhead"><div class="fnum">1</div>Address or portfolio input</div>
+          <div class="fbody">
+            <div class="fg">
+              <label class="fl" for="intake-address">Baltimore address</label>
+              <input id="intake-address" class="fi" value="415 N Milton Ave, Baltimore, MD 21224" oninput="updateIntakePreview()">
+            </div>
+            <div class="fg">
+              <label class="fl" for="intake-portfolio">Portfolio note</label>
+              <textarea id="intake-portfolio" class="fi" oninput="updateIntakePreview()">Single-rowhouse acquisition near Patterson Park. Seller disclosed water intrusion but omitted permit history.</textarea>
+              <div class="fh">StoneBridge accepts one address or a small clustered portfolio. This intake is set to a single acquisition.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fblock">
+          <div class="fhead"><div class="fnum">2</div>Timeline and pressure points</div>
+          <div class="fbody">
+            <div class="fg">
+              <label class="fl">Deal stage</label>
+              <div class="choice-grid" id="stage-choices">
+                <button class="choice sel" onclick="pickChoice('stage-choices',this,'Pre-acquisition')"><strong>Pre-acquisition</strong><span>Before earnest money converts.</span></button>
+                <button class="choice" onclick="pickChoice('stage-choices',this,'Pre-rehab')"><strong>Pre-rehab</strong><span>Before scope and draw schedule lock.</span></button>
+                <button class="choice" onclick="pickChoice('stage-choices',this,'Pre-signature')"><strong>Pre-signature</strong><span>Before lender or JV documents execute.</span></button>
+              </div>
+            </div>
+            <div class="frow">
+              <div class="fg">
+                <label class="fl" for="timeline">Decision deadline</label>
+                <select id="timeline" class="fi" onchange="updateIntakePreview()">
+                  <option>Need memo in 24 hours</option>
+                  <option>Need memo in 12 hours</option>
+                  <option>Need memo in 48 hours</option>
+                </select>
+              </div>
+              <div class="fg">
+                <label class="fl" for="pressure">Pressure point</label>
+                <select id="pressure" class="fi" onchange="updateIntakePreview()">
+                  <option>Deposit at risk</option>
+                  <option>Lender committee this week</option>
+                  <option>Contract assignment pending</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fblock">
+          <div class="fhead"><div class="fnum">3</div>Connect data source</div>
+          <div class="fbody">
+            <div class="fg">
+              <label class="fl">Payment hold and deal context</label>
+              <div class="source-grid">
+                <button class="source sel" onclick="pickSource(this,'Stripe hold + acquisition context',78,11)">
+                  <strong>Stripe</strong><span>Hold memo billing</span>
+                </button>
+                <button class="source" onclick="pickSource(this,'Stripe hold + rehab bridge context',64,9)">
+                  <strong>Bridge</strong><span>Rehab draw context</span>
+                </button>
+                <button class="source" onclick="pickSource(this,'Stripe hold + lender committee context',86,14)">
+                  <strong>Lender</strong><span>Committee diligence</span>
+                </button>
+                <button class="source" onclick="pickSource(this,'Stripe hold + portfolio context',59,7)">
+                  <strong>Portfolio</strong><span>Multi-asset intake</span>
+                </button>
+              </div>
+              <div class="read-box" id="read-box">
+                <div class="read-title">Reading risk signals from StoneBridge</div>
+                <div class="reading-row"><div class="dot"></div>Pulling vacancy, tax, permit, title, utility, and procurement signals...</div>
+                <div class="pulled-val" id="pulled-score">78</div>
+                <div class="pulled-note" id="pulled-note">Risk score at intake · StoneBridge diagnostic engine · 11 public flags locked to record</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fblock">
+          <div class="fhead"><div class="fnum">4</div>Payment held</div>
+          <div class="fbody">
+            <div class="hold-box" id="hold-box" style="display:block">
+              <p>$2,500 is locked at intake. StoneBridge delivers the memo within 24 hours. If you confirm it was decision-grade, billing releases. If it was not, billing returns.</p>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+              <button class="pill pill-ghost" onclick="openModal('preview')">Run Free Preview</button>
+              <button class="pill pill-amber" onclick="openModal('purchase')">Hold $2,500 + start memo</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="page-head">
+          <h2>Live preview</h2>
+          <p>Address to locked score. The intake view mirrors the record StoneBridge stores before analysis begins.</p>
+        </div>
+        <div class="side-stack">
+          <div class="side-card">
+            <div class="side-title">Live intake summary</div>
+            <h3 id="preview-address">415 N Milton Ave, Baltimore, MD 21224</h3>
+            <p id="preview-description">Single-rowhouse acquisition near Patterson Park. Seller disclosed water intrusion but omitted permit history.</p>
+            <div class="preview-list">
+              <div class="preview-row"><strong>Stage</strong><span id="preview-stage">Pre-acquisition</span></div>
+              <div class="preview-row"><strong>Deadline</strong><span id="preview-deadline">Need memo in 24 hours</span></div>
+              <div class="preview-row"><strong>Pressure</strong><span id="preview-pressure">Deposit at risk</span></div>
+              <div class="preview-row"><strong>Context</strong><span id="preview-context">Stripe hold + acquisition context</span></div>
+            </div>
+          </div>
+
+          <div class="lock-box" id="lock-box" style="display:block">
+            <div class="panel-title" style="text-align:center;margin-bottom:16px">Before score locked at intake</div>
+            <div class="metric-grid">
+              <div class="metric-col">
+                <div class="metric-label">Address at intake</div>
+                <div class="metric-val" id="lock-score">78</div>
+                <div class="metric-unit" id="lock-flags">11 risk flags</div>
+              </div>
+              <div class="metric-sep">→</div>
+              <div class="metric-col">
+                <div class="metric-label">Memo status</div>
+                <div class="metric-val dim">PENDING</div>
+                <div class="metric-unit">StoneBridge diagnoses in 24h</div>
+              </div>
+              <div class="metric-sep">→</div>
+              <div class="metric-col">
+                <div class="metric-label">Outcome at 60 days</div>
+                <div class="metric-val dim">OPEN</div>
+                <div class="metric-unit">Client confirmed later</div>
+              </div>
+            </div>
+            <div class="lock-note">We read the risk signals directly from public records. You never enter a score.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-browser" class="view browser-section">
+    <div class="browser-layout">
+      <div class="page-head">
+        <h2>Active diagnostics</h2>
+        <p>Each card shows the intake score StoneBridge locked, the memo verdict, and the deal outcome window.</p>
+      </div>
+      <div class="tabs">
+        <button class="tab on" onclick="setBrowserTab('open',this)">Open <span class="tc" id="count-open">2</span></button>
+        <button class="tab" onclick="setBrowserTab('progress',this)">Memo delivered — outcome window open <span class="tc" id="count-progress">2</span></button>
+        <button class="tab" onclick="setBrowserTab('completed',this)">Outcome confirmed — memo billing released <span class="tc" id="count-completed">4</span></button>
+      </div>
+      <div class="deal-grid" id="deal-grid"></div>
+    </div>
+  </section>
+
+  <section id="view-record" class="view record-section">
+    <div class="record-grid">
+      <div>
+        <div class="page-head">
+          <h2>Completed deal record</h2>
+          <p>Before score at intake, StoneBridge verdict, outcome at 60 days, and immutable proof of delivery.</p>
+        </div>
+        <div class="record-card">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Completed record</div>
+              <div class="address-line" style="font-size:32px;margin-top:10px" id="record-address">1501 E Monument St, Baltimore, MD 21205</div>
+              <div class="address-meta" id="record-meta">Oliver · Completed Feb 27, 2026</div>
+            </div>
+            <span class="badge b-caution" id="record-badge">CAUTION</span>
+          </div>
+          <div class="metric-grid">
+            <div class="metric-col">
+              <div class="metric-label">Risk score at intake · StoneBridge diagnostic engine</div>
+              <div class="metric-val" id="record-before">64</div>
+              <div class="metric-unit" id="record-before-unit">9 public flags locked</div>
+              <div class="metric-src"><i></i><span>StoneBridge diagnostic engine</span></div>
+            </div>
+            <div class="metric-sep">→</div>
+            <div class="metric-col">
+              <div class="metric-label">Verdict record</div>
+              <div class="metric-val warn" id="record-verdict">CAUTION</div>
+              <div class="metric-unit" id="record-verdict-unit">Proceed only with seller credit and title cure</div>
+            </div>
+            <div class="metric-sep">→</div>
+            <div class="metric-col">
+              <div class="metric-label">Outcome at 60 days · Client confirmed</div>
+              <div class="metric-val good" id="record-outcome">RENEGOTIATED</div>
+              <div class="metric-unit" id="record-outcome-unit">$92K reduction captured before settlement</div>
+              <div class="metric-src"><i></i><span>Client confirmed + public record cross-check</span></div>
+            </div>
+          </div>
+          <div class="proof-block">
+            <div class="proof-row"><strong>Memo delivered</strong><span id="proof-delivered">Jan 4, 2026 · 6:41 PM EST</span></div>
+            <div class="proof-row"><strong>Attributed to</strong><span>StoneBridge AI</span></div>
+            <div class="proof-row"><strong>SHA-256 hash</strong><span id="proof-hash">37c2d9d1f9c5...e2aa21b8</span></div>
+            <div class="proof-row"><strong>Payment status</strong><span id="proof-payment">Held → released automatically on confirmation</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="page-head">
+          <h2>Record context</h2>
+          <p>The proof block is the dispute layer. If the client contests the work, the timestamped memo is the evidence.</p>
+        </div>
+        <div class="record-card">
+          <div class="panel-head"><div class="panel-title">Decision narrative</div></div>
+          <div class="note-block">
+            <p id="record-summary">StoneBridge flagged tax sale exposure, unresolved utility boarding history, and a contractor adjacency issue tied to recent city work. The sponsor paused, forced estoppel and title review, then renegotiated pricing before settlement.</p>
+          </div>
+          <div class="proof-block">
+            <div class="proof-row"><strong>Client confirmation</strong><span id="proof-confirmation">Confirmed the memo changed the purchase decision</span></div>
+            <div class="proof-row"><strong>Source feeds used</strong><span id="proof-sources">Baltimore City, SDAT, eMMA, utility shutoff logs</span></div>
+            <div class="proof-row"><strong>Billing outcome</strong><span>$2,500 released</span></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+          <button class="pill pill-ghost" onclick="showView('browser')">Back to active diagnostics</button>
+          <button class="pill pill-amber" onclick="showView('track')">View public track record</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-track" class="view track-section">
+    <div class="sources">
+      <div class="page-head">
+        <h2>StoneBridge track record</h2>
+        <p>Public record of completed diagnostics. No references, no portfolio deck, just the permanent record of delivered memos and confirmed outcomes.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="label">Total memos delivered</div>
+          <div class="num">48</div>
+          <div class="sub">24-hour diagnostics delivered across Baltimore acquisitions, rehab scopes, and lender committee reviews.</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Call matched outcome</div>
+          <div class="num">41</div>
+          <div class="sub">Proceed, Caution, or Escalate verdict aligned with confirmed deal outcome in the public record or sponsor confirmation.</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Risk exposure diagnosed</div>
+          <div class="num">$112M</div>
+          <div class="sub">Aggregate acquisition and rehab exposure reviewed before capital was committed.</div>
+        </div>
+      </div>
+
+      <div class="track-list" id="track-list">
+        <div class="track-row head">
+          <div>Address</div>
+          <div>Verdict</div>
+          <div>Outcome</div>
+          <div>Timestamp</div>
+          <div>Payment</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-dashboard" class="view dashboard-section">
+    <div class="sources">
+      <div class="page-head">
+        <h2>Operator dashboard</h2>
+        <p>Private diagnostic pipeline. Access-gated internal view for StoneBridge operators only.</p>
+      </div>
+
+      <div id="dashboard-gate" class="gate">
+        <h3>Access code required</h3>
+        <p>Internal dashboard access is restricted. Enter the operator code to view fused signals, entity cross-references, risk exposure maps, and current memo queue.</p>
+        <input id="gate-input" class="fi" value="SB-334" aria-label="Access code">
+        <div class="gate-foot">
+          <button class="pill pill-amber" onclick="unlockDashboard()">Unlock dashboard</button>
+          <button class="pill pill-ghost" onclick="document.getElementById('gate-input').value='';">Clear</button>
+        </div>
+        <div class="fh">Demo access code for this prototype: <span style="font-family:var(--mono);color:var(--amber)">SB-334</span></div>
+      </div>
+
+      <div id="dashboard-content" style="display:none">
+        <div class="dashboard-grid">
+          <div class="dash-card"><div class="k">Public signals fused</div><div class="v">334</div><div class="t">Baltimore parcel, title, utility, code, tax, and procurement feeds normalized daily.</div></div>
+          <div class="dash-card"><div class="k">Entities cross-referenced</div><div class="v">236</div><div class="t">Ownership names, LLC chains, contractors, vendors, and procurement entities resolved.</div></div>
+          <div class="dash-card"><div class="k">Risk exposure mapped</div><div class="v">$540M</div><div class="t">Live capital exposure attached to active and recently completed deals.</div></div>
+          <div class="dash-card"><div class="k">Diagnosis confidence</div><div class="v">99%</div><div class="t">Current weighted confidence across all memo-ready diagnostics in pipeline.</div></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px">
+          <div>
+            <div class="panel-head" style="padding-left:0;padding-right:0;border-bottom:none">
+              <div class="panel-title">Signals fused this morning</div>
+            </div>
+            <div class="signal-table">
+              <div class="signal-row row-head"><div>Cluster</div><div>Parcel count</div><div>Primary exposure</div><div>Status</div></div>
+              <div class="signal-row"><div>West Baltimore vacancy cluster</div><div class="track-cell mono">43 parcels</div><div class="track-cell">$18.2M rehab exposure</div><div><span class="badge b-caution">Review</span></div></div>
+              <div class="signal-row"><div>East Monument utility anomaly stack</div><div class="track-cell mono">12 parcels</div><div class="track-cell">$6.4M acquisition risk</div><div><span class="badge b-escalate">Escalate</span></div></div>
+              <div class="signal-row"><div>Druid Hill procurement adjacency set</div><div class="track-cell mono">19 parcels</div><div class="track-cell">$9.7M holdback risk</div><div><span class="badge b-proceed">Stable</span></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="panel-head" style="padding-left:0;padding-right:0;border-bottom:none">
+              <div class="panel-title">Memo queue</div>
+            </div>
+            <div class="queue-table">
+              <div class="queue-row row-head"><div>Address</div><div>Analyst note</div><div>Delivery SLA</div><div>Verdict trend</div></div>
+              <div class="queue-row"><div>2317 E Fayette St</div><div class="track-cell">Lien stack resolved, title branch still open</div><div class="track-cell mono">6h left</div><div><span class="badge b-caution">Caution</span></div></div>
+              <div class="queue-row"><div>540 N Carey St</div><div class="track-cell">Utility shutoff history plus demolition adjacency</div><div class="track-cell mono">11h left</div><div><span class="badge b-escalate">Escalate</span></div></div>
+              <div class="queue-row"><div>1401 Hull St</div><div class="track-cell">Clear permits, owner continuity confirmed</div><div class="track-cell mono">18h left</div><div><span class="badge b-proceed">Proceed</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="modal-preview" class="mbg" onclick="if(event.target===this)closeModal('preview')">
+  <div class="modal">
+    <div class="mh">
+      <div class="mh-title">Free preview scan</div>
+      <button class="mx" onclick="closeModal('preview')">×</button>
+    </div>
+    <div class="mb">
+      <div class="warn-box">StoneBridge runs a lightweight preview to prove signal quality before you buy the 24-hour memo. The preview scans one address and shows a preliminary risk score with top public flags.</div>
+      <hr>
+      <div class="fg">
+        <label class="fl">Address</label>
+        <input id="preview-modal-address" class="fi" value="2317 E Fayette St, Baltimore, MD 21224">
+      </div>
+      <div class="fg">
+        <label class="fl">Capital decision</label>
+        <select class="fi" id="preview-modal-decision">
+          <option>Acquisition under contract</option>
+          <option>Rehab scope before close</option>
+          <option>Lender diligence before committee</option>
+        </select>
+      </div>
+      <div class="record-card">
+        <div class="panel-head"><div class="panel-title">Preview output</div></div>
+        <div class="proof-block">
+          <div class="proof-row"><strong>Preliminary score</strong><span>67 risk score · 10 flags</span></div>
+          <div class="proof-row"><strong>Top signals</strong><span>Permit lag, tax balance, utility anomaly, owner distress</span></div>
+          <div class="proof-row"><strong>Recommendation</strong><span>Purchase 24-hour memo for full Proceed / Caution / Escalate call</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="pill pill-ghost" onclick="closeModal('preview')">Close</button>
+      <button class="pill pill-amber" onclick="closeModal('preview');showView('intake');">Start full intake</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-purchase" class="mbg" onclick="if(event.target===this)closeModal('purchase')">
+  <div class="modal">
+    <div class="mh">
+      <div class="mh-title">Purchase 24-hour memo</div>
+      <button class="mx" onclick="closeModal('purchase')">×</button>
+    </div>
+    <div class="mb">
+      <div class="success-box">StoneBridge holds the $2,500 memo fee at intake. The memo is timestamped at delivery. Billing releases only when you confirm it was decision-grade.</div>
+      <hr>
+      <div class="fg">
+        <label class="fl">Deal address</label>
+        <input class="fi" value="415 N Milton Ave, Baltimore, MD 21224">
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <label class="fl">Delivery SLA</label>
+          <select class="fi">
+            <option selected>24 hours</option>
+            <option>12 hours rush</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">Outcome window</label>
+          <select class="fi">
+            <option>30 days</option>
+            <option selected>60 days</option>
+          </select>
+        </div>
+      </div>
+      <div class="record-card">
+        <div class="panel-head"><div class="panel-title">Payment logic</div></div>
+        <div class="proof-block">
+          <div class="proof-row"><strong>At intake</strong><span>$2,500 held</span></div>
+          <div class="proof-row"><strong>At delivery</strong><span>Memo timestamped and hashed</span></div>
+          <div class="proof-row"><strong>At confirmation</strong><span>Held → released automatically if decision-grade</span></div>
+          <div class="proof-row"><strong>If disputed</strong><span>Timestamped memo is the evidence</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="pill pill-ghost" onclick="closeModal('purchase')">Cancel</button>
+      <button class="pill pill-amber" onclick="confirmPurchase()">Hold $2,500 + launch memo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const demoDeals = [
+  {
+    address: "1728 W North Ave, Baltimore, MD 21217",
+    meta: "Vacant mixed-use shell · Penn North · Intake pulled Mar 18, 2026",
+    note: "Utility anomalies, permit lag, tax sale exposure, and owner distress stacked into a single memo before the sponsor wired earnest money.",
+    before: "71",
+    beforeUnit: "12 public flags locked at intake",
+    verdict: "CAUTION",
+    verdictUnit: "Renegotiate holdback before closing",
+    outcome: "RENEGOTIATED",
+    outcomeUnit: "$185K credit captured before rehab",
+    verdictClass: "v-caution",
+    verdictTone: "warn",
+    outcomeTone: "good",
+    verdictText: "CAUTION",
+    verdictSub: "Memo delivered Mar 19, 2026 at 7:42 AM EDT. Payment held at intake and released after the sponsor confirmed the memo changed the buy box.",
+    money: "$2,500 held → released"
+  },
+  {
+    address: "1401 Hull St, Baltimore, MD 21230",
+    meta: "Industrial flex conversion · Locust Point · Intake pulled Feb 9, 2026",
+    note: "StoneBridge cleared ownership continuity, permit clean-up, and procurement adjacency. The memo removed false positives before committee review.",
+    before: "38",
+    beforeUnit: "4 public flags locked at intake",
+    verdict: "PROCEED",
+    verdictUnit: "Proceed with standard reserves",
+    outcome: "PROCEEDED",
+    outcomeUnit: "Closed on original schedule",
+    verdictClass: "v-proceed",
+    verdictTone: "good",
+    outcomeTone: "good",
+    verdictText: "PROCEED",
+    verdictSub: "StoneBridge delivered a clean memo in 19 hours. Sponsor confirmed the memo supported the close without repricing.",
+    money: "$2,500 held → released"
+  },
+  {
+    address: "540 N Carey St, Baltimore, MD 21223",
+    meta: "Corner shell assemblage · Poppleton · Intake pulled Jan 28, 2026",
+    note: "A layered title defect, demolition adjacency, and utility board-up history moved the deal from 'looks cheap' to 'capital trap.'",
+    before: "89",
+    beforeUnit: "16 public flags locked at intake",
+    verdict: "ESCALATE",
+    verdictUnit: "Kill until title and utility risk clear",
+    outcome: "KILLED",
+    outcomeUnit: "Sponsor exited before earnest money hard date",
+    verdictClass: "v-escalate",
+    verdictTone: "risk",
+    outcomeTone: "risk",
+    verdictText: "ESCALATE",
+    verdictSub: "Timestamped memo established the defect trail before closing counsel engagement. Client confirmed the memo killed the transaction.",
+    money: "$2,500 held → released"
+  }
+];
+
+const deals = [
+  {
+    id: "d1",
+    stage: "open",
+    address: "2317 E Fayette St, Baltimore, MD 21224",
+    neighborhood: "McElderry Park",
+    summary: "Seller represented clear title, but StoneBridge intake already shows tax balance pressure and permit lag against planned rehab timing.",
+    before: "67",
+    beforeUnit: "10 public flags",
+    verdict: "PENDING",
+    verdictUnit: "Memo due within 24 hours",
+    outcome: "OPEN",
+    outcomeUnit: "Outcome window not started",
+    badge: "b-pending",
+    feeds: "Baltimore City, SDAT, utility logs",
+    foot: "$2,500 hold active",
+    toneVerdict: "dim",
+    toneOutcome: "dim",
+    meta: ["Open", "3h ago", "Deposit at risk"]
+  },
+  {
+    id: "d2",
+    stage: "open",
+    address: "820 Hollins St, Baltimore, MD 21201",
+    neighborhood: "Hollins Market",
+    summary: "Acquisition pricing looks attractive on paper, but code history and procurement adjacency indicate hidden close risk around a city-facing contractor network.",
+    before: "74",
+    beforeUnit: "13 public flags",
+    verdict: "PENDING",
+    verdictUnit: "StoneBridge memo in queue",
+    outcome: "OPEN",
+    outcomeUnit: "Hold locked at intake",
+    badge: "b-pending",
+    feeds: "Baltimore City, eMMA, county bid tabs",
+    foot: "$2,500 hold active",
+    toneVerdict: "dim",
+    toneOutcome: "dim",
+    meta: ["Open", "9h ago", "Lender committee"]
+  },
+  {
+    id: "d3",
+    stage: "progress",
+    address: "415 N Milton Ave, Baltimore, MD 21224",
+    neighborhood: "Patterson Park",
+    summary: "Memo delivered with a Caution call after permit history, seller disclosure mismatch, and utility anomalies surfaced at intake.",
+    before: "78",
+    beforeUnit: "11 public flags",
+    verdict: "CAUTION",
+    verdictUnit: "Price only with waterproofing reserve",
+    outcome: "PENDING",
+    outcomeUnit: "32 days left in outcome window",
+    badge: "b-caution",
+    feeds: "Baltimore City, utility shutoff logs, SDAT",
+    foot: "Memo delivered Mar 21, 2026 · payment held pending confirmation",
+    toneVerdict: "warn",
+    toneOutcome: "dim",
+    meta: ["Memo delivered", "Mar 21", "Outcome window open"]
+  },
+  {
+    id: "d4",
+    stage: "progress",
+    address: "1209 N Caroline St, Baltimore, MD 21213",
+    neighborhood: "Broadway East",
+    summary: "StoneBridge issued an Escalate memo after title fragmentation and adjacent procurement exposure suggested hidden carry cost the lender had not modeled.",
+    before: "85",
+    beforeUnit: "15 public flags",
+    verdict: "ESCALATE",
+    verdictUnit: "Do not close until title defect clears",
+    outcome: "PENDING",
+    outcomeUnit: "18 days left in outcome window",
+    badge: "b-escalate",
+    feeds: "Baltimore City, SAM.gov, Maryland DGS",
+    foot: "Memo delivered Mar 4, 2026 · payment held pending confirmation",
+    toneVerdict: "risk",
+    toneOutcome: "dim",
+    meta: ["Memo delivered", "Mar 4", "Outcome window open"]
+  },
+  {
+    id: "r1",
+    stage: "completed",
+    address: "1501 E Monument St, Baltimore, MD 21205",
+    neighborhood: "Oliver",
+    summary: "StoneBridge flagged tax sale exposure, unresolved utility boarding history, and a contractor adjacency issue tied to recent city work.",
+    before: "64",
+    beforeUnit: "9 public flags locked",
+    verdict: "CAUTION",
+    verdictUnit: "Proceed only with seller credit and title cure",
+    outcome: "RENEGOTIATED",
+    outcomeUnit: "$92K reduction captured before settlement",
+    badge: "b-caution",
+    feeds: "Baltimore City, SDAT, eMMA, utility shutoff logs",
+    foot: "Outcome confirmed Feb 27, 2026 · $2,500 released",
+    toneVerdict: "warn",
+    toneOutcome: "good",
+    delivered: "Jan 4, 2026 · 6:41 PM EST",
+    hash: "37c2d9d1f9c5c471a1f89077a7ad6c8ce9ec0cbf42d6fdb728a4e65ee2aa21b8",
+    payment: "Held → released automatically on confirmation",
+    confirmation: "Confirmed the memo changed the purchase decision",
+    recordSources: "Baltimore City, SDAT, eMMA, utility shutoff logs",
+    resultClass: "b-caution"
+  },
+  {
+    id: "r2",
+    stage: "completed",
+    address: "1401 Hull St, Baltimore, MD 21230",
+    neighborhood: "Locust Point",
+    summary: "Ownership continuity and permit housekeeping checked out. StoneBridge cleared the deal and the sponsor closed on original timing.",
+    before: "38",
+    beforeUnit: "4 public flags locked",
+    verdict: "PROCEED",
+    verdictUnit: "Proceed with standard reserves",
+    outcome: "PROCEEDED",
+    outcomeUnit: "Closed without repricing",
+    badge: "b-proceed",
+    feeds: "Baltimore City, SDAT, county bid tabs",
+    foot: "Outcome confirmed Mar 2, 2026 · $2,500 released",
+    toneVerdict: "good",
+    toneOutcome: "good",
+    delivered: "Feb 10, 2026 · 9:14 AM EST",
+    hash: "f11a4b90d64915a47d03a3de1fa7446f2f81f4ed1bf8c5ca5339f4b2cba6a173",
+    payment: "Held → released automatically on confirmation",
+    confirmation: "Confirmed the memo supported the purchase decision",
+    recordSources: "Baltimore City, SDAT, county bid tabs",
+    resultClass: "b-proceed"
+  },
+  {
+    id: "r3",
+    stage: "completed",
+    address: "540 N Carey St, Baltimore, MD 21223",
+    neighborhood: "Poppleton",
+    summary: "A layered title defect, demolition adjacency, and utility board-up history pushed the memo to Escalate and kept capital out of the deal.",
+    before: "89",
+    beforeUnit: "16 public flags locked",
+    verdict: "ESCALATE",
+    verdictUnit: "Kill until title and utility risk clear",
+    outcome: "KILLED",
+    outcomeUnit: "Exited before earnest money hard date",
+    badge: "b-escalate",
+    feeds: "Baltimore City, utility logs, demolition notices, Maryland DGS",
+    foot: "Outcome confirmed Feb 12, 2026 · $2,500 released",
+    toneVerdict: "risk",
+    toneOutcome: "risk",
+    delivered: "Jan 17, 2026 · 8:02 PM EST",
+    hash: "8b61ca5a7dcb18efbe2de417541d9dc587b8754384dbc4754821761a6bbd4a14",
+    payment: "Held → released automatically on confirmation",
+    confirmation: "Confirmed the memo killed the transaction",
+    recordSources: "Baltimore City, demolition notices, Maryland DGS, utility logs",
+    resultClass: "b-escalate"
+  },
+  {
+    id: "r4",
+    stage: "completed",
+    address: "3300 Clifton Ave, Baltimore, MD 21216",
+    neighborhood: "Parkview/Woodbrook",
+    summary: "StoneBridge identified manageable code pressure but no title or procurement blockers. Sponsor proceeded after minor reserve adjustments.",
+    before: "49",
+    beforeUnit: "6 public flags locked",
+    verdict: "PROCEED",
+    verdictUnit: "Proceed with code reserve",
+    outcome: "PROCEEDED",
+    outcomeUnit: "Closed with limited reserve add",
+    badge: "b-proceed",
+    feeds: "Baltimore City, permit database, county bid tabs",
+    foot: "Outcome confirmed Jan 29, 2026 · $2,500 released",
+    toneVerdict: "good",
+    toneOutcome: "good",
+    delivered: "Dec 11, 2025 · 2:26 PM EST",
+    hash: "2dcb0c76020f0a85aac16f6be254f7fbb390f2ed7ee03dff09f0aa7d73221cee",
+    payment: "Held → released automatically on confirmation",
+    confirmation: "Confirmed the memo supported the acquisition decision",
+    recordSources: "Baltimore City, permit database, county bid tabs",
+    resultClass: "b-proceed"
+  }
+];
+
+const trackEntries = [
+  {address:"1501 E Monument St, Baltimore, MD 21205", detail:"Oliver · Memo hash 37c2d9d1...", verdict:"CAUTION", outcome:"RENEGOTIATED", timestamp:"Jan 4, 2026", payment:"Confirmed"},
+  {address:"1401 Hull St, Baltimore, MD 21230", detail:"Locust Point · Memo hash f11a4b90...", verdict:"PROCEED", outcome:"PROCEEDED", timestamp:"Feb 10, 2026", payment:"Confirmed"},
+  {address:"540 N Carey St, Baltimore, MD 21223", detail:"Poppleton · Memo hash 8b61ca5a...", verdict:"ESCALATE", outcome:"KILLED", timestamp:"Jan 17, 2026", payment:"Confirmed"},
+  {address:"3300 Clifton Ave, Baltimore, MD 21216", detail:"Parkview/Woodbrook · Memo hash 2dcb0c76...", verdict:"PROCEED", outcome:"PROCEEDED", timestamp:"Dec 11, 2025", payment:"Confirmed"},
+  {address:"1728 W North Ave, Baltimore, MD 21217", detail:"Penn North · Memo hash 6ca17f8a...", verdict:"CAUTION", outcome:"RENEGOTIATED", timestamp:"Mar 19, 2026", payment:"Confirmed"},
+  {address:"2207 E Baltimore St, Baltimore, MD 21231", detail:"Butchers Hill · Memo hash 9841ce33...", verdict:"PROCEED", outcome:"PROCEEDED", timestamp:"Jan 30, 2026", payment:"Confirmed"}
+];
+
+let currentBrowserTab = "open";
+let currentRecord = deals.find(d => d.id === "r1");
+let currentStage = "Pre-acquisition";
+let currentContext = "Stripe hold + acquisition context";
+
+function showView(view, btn){
+  ["landing","intake","browser","record","track","dashboard"].forEach(id=>{
+    document.getElementById("view-" + id).classList.toggle("active", id === view);
+  });
+  document.querySelectorAll(".nvbtn").forEach(node=>{
+    node.classList.toggle("active", node.dataset.view === view);
+  });
+  if (btn) {
+    document.querySelectorAll(".nvbtn").forEach(node=>node.classList.remove("active"));
+    if (btn.dataset && btn.dataset.view) btn.classList.add("active");
+  }
+  if (view === "browser") renderDeals();
+  if (view === "track") renderTrack();
+  if (view === "record") renderRecord();
+  window.scrollTo(0,0);
+}
+
+function openModal(id){document.getElementById("modal-" + id).classList.add("open")}
+function closeModal(id){document.getElementById("modal-" + id).classList.remove("open")}
+
+function setDemo(index, btn){
+  const item = demoDeals[index];
+  document.querySelectorAll(".sc").forEach(node=>node.classList.remove("on"));
+  btn.classList.add("on");
+  document.getElementById("demo-address").textContent = item.address;
+  document.getElementById("demo-meta").textContent = item.meta;
+  document.getElementById("demo-note").textContent = item.note;
+  document.getElementById("demo-before").textContent = item.before;
+  document.getElementById("demo-before-unit").textContent = item.beforeUnit;
+  document.getElementById("demo-goal").textContent = item.verdict;
+  document.getElementById("demo-goal").className = "metric-val " + item.verdictTone;
+  document.getElementById("demo-goal-unit").textContent = item.verdictUnit;
+  document.getElementById("demo-after").textContent = item.outcome;
+  document.getElementById("demo-after").className = "metric-val " + item.outcomeTone;
+  document.getElementById("demo-after-unit").textContent = item.outcomeUnit;
+  document.getElementById("demo-verdict-text").textContent = item.verdictText;
+  document.getElementById("demo-verdict-sub").textContent = item.verdictSub;
+  document.getElementById("demo-money").textContent = item.money;
+  document.getElementById("demo-verdict-bar").className = "verdict-bar " + item.verdictClass;
+}
+
+function pickChoice(groupId, el, value){
+  document.querySelectorAll("#" + groupId + " .choice").forEach(node=>node.classList.remove("sel"));
+  el.classList.add("sel");
+  currentStage = value;
+  updateIntakePreview();
+}
+
+function pickSource(el, context, score, flags){
+  document.querySelectorAll(".source").forEach(node=>node.classList.remove("sel"));
+  el.classList.add("sel");
+  currentContext = context;
+  const box = document.getElementById("read-box");
+  box.style.display = "block";
+  document.getElementById("pulled-score").style.display = "none";
+  document.getElementById("pulled-note").style.display = "none";
+  setTimeout(()=>{
+    document.getElementById("pulled-score").textContent = String(score);
+    document.getElementById("pulled-score").style.display = "block";
+    document.getElementById("pulled-note").textContent = "Risk score at intake · StoneBridge diagnostic engine · " + flags + " public flags locked to record";
+    document.getElementById("pulled-note").style.display = "block";
+    document.getElementById("lock-score").textContent = String(score);
+    document.getElementById("lock-flags").textContent = flags + " risk flags";
+    updateIntakePreview();
+  }, 1100);
+}
+
+function updateIntakePreview(){
+  document.getElementById("preview-address").textContent = document.getElementById("intake-address").value;
+  document.getElementById("preview-description").textContent = document.getElementById("intake-portfolio").value;
+  document.getElementById("preview-stage").textContent = currentStage;
+  document.getElementById("preview-deadline").textContent = document.getElementById("timeline").value;
+  document.getElementById("preview-pressure").textContent = document.getElementById("pressure").value;
+  document.getElementById("preview-context").textContent = currentContext;
+}
+
+function setBrowserTab(tab, btn){
+  currentBrowserTab = tab;
+  document.querySelectorAll("#view-browser .tab").forEach(node=>node.classList.remove("on"));
+  btn.classList.add("on");
+  renderDeals();
+}
+
+function verdictBadgeClass(verdict){
+  if (verdict === "PROCEED") return "b-proceed";
+  if (verdict === "CAUTION") return "b-caution";
+  if (verdict === "ESCALATE") return "b-escalate";
+  return "b-pending";
+}
+
+function toneClass(tone){
+  if (tone === "good") return "good";
+  if (tone === "warn") return "warn";
+  if (tone === "risk") return "risk";
+  return "dim";
+}
+
+function renderDeals(){
+  const grid = document.getElementById("deal-grid");
+  const tabDeals = deals.filter(item=>item.stage === currentBrowserTab);
+  grid.innerHTML = "";
+  tabDeals.forEach(item=>{
+    const card = document.createElement("div");
+    card.className = "deal-card";
+    card.onclick = ()=>selectRecord(item.stage === "completed" ? item.id : "r1");
+    card.innerHTML = `
+      <div class="deal-top">
+        <div>
+          <div class="deal-title">${item.address}</div>
+          <div class="deal-sub">${item.neighborhood} · ${item.summary}</div>
+          <div class="deal-meta">
+            ${item.meta.map(meta=>`<span class="meta-chip">${meta}</span>`).join("")}
+            <span class="meta-chip src">${item.feeds}</span>
+          </div>
+        </div>
+        <span class="badge ${item.badge}">${item.verdict}</span>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-col">
+          <div class="metric-label">Risk score at intake · StoneBridge diagnostic engine</div>
+          <div class="metric-val">${item.before}</div>
+          <div class="metric-unit">${item.beforeUnit}</div>
+        </div>
+        <div class="metric-sep">→</div>
+        <div class="metric-col">
+          <div class="metric-label">Memo verdict</div>
+          <div class="metric-val ${toneClass(item.toneVerdict)}">${item.verdict}</div>
+          <div class="metric-unit">${item.verdictUnit}</div>
+        </div>
+        <div class="metric-sep">→</div>
+        <div class="metric-col">
+          <div class="metric-label">Outcome at 60 days · Client confirmed</div>
+          <div class="metric-val ${toneClass(item.toneOutcome)}">${item.outcome}</div>
+          <div class="metric-unit">${item.outcomeUnit}</div>
+        </div>
+      </div>
+      <div class="card-foot">
+        <div class="foot-note">${item.foot}</div>
+        <button class="pill pill-ghost" onclick="event.stopPropagation();selectRecord('${item.stage === "completed" ? item.id : "r1"}')">Open record</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+  document.getElementById("count-open").textContent = String(deals.filter(d=>d.stage==="open").length);
+  document.getElementById("count-progress").textContent = String(deals.filter(d=>d.stage==="progress").length);
+  document.getElementById("count-completed").textContent = String(deals.filter(d=>d.stage==="completed").length);
+}
+
+function selectRecord(id){
+  currentRecord = deals.find(item=>item.id === id) || deals.find(item=>item.id === "r1");
+  renderRecord();
+  showView("record");
+}
+
+function renderRecord(){
+  const item = currentRecord;
+  document.getElementById("record-address").textContent = item.address;
+  document.getElementById("record-meta").textContent = item.neighborhood + " · " + item.foot.replace("Outcome confirmed ","");
+  document.getElementById("record-badge").textContent = item.verdict;
+  document.getElementById("record-badge").className = "badge " + verdictBadgeClass(item.verdict);
+  document.getElementById("record-before").textContent = item.before;
+  document.getElementById("record-before-unit").textContent = item.beforeUnit;
+  document.getElementById("record-verdict").textContent = item.verdict;
+  document.getElementById("record-verdict").className = "metric-val " + toneClass(item.toneVerdict);
+  document.getElementById("record-verdict-unit").textContent = item.verdictUnit;
+  document.getElementById("record-outcome").textContent = item.outcome;
+  document.getElementById("record-outcome").className = "metric-val " + toneClass(item.toneOutcome);
+  document.getElementById("record-outcome-unit").textContent = item.outcomeUnit;
+  document.getElementById("proof-delivered").textContent = item.delivered || "Pending delivery";
+  document.getElementById("proof-hash").textContent = item.hash || "Not available";
+  document.getElementById("proof-payment").textContent = item.payment || "Hold active";
+  document.getElementById("record-summary").textContent = item.summary;
+  document.getElementById("proof-confirmation").textContent = item.confirmation || "Outcome not yet confirmed";
+  document.getElementById("proof-sources").textContent = item.recordSources || item.feeds;
+}
+
+function renderTrack(){
+  const root = document.getElementById("track-list");
+  root.innerHTML = `
+    <div class="track-row head">
+      <div>Address</div>
+      <div>Verdict</div>
+      <div>Outcome</div>
+      <div>Timestamp</div>
+      <div>Payment</div>
+    </div>
+  `;
+  trackEntries.forEach(entry=>{
+    const row = document.createElement("div");
+    row.className = "track-row";
+    row.innerHTML = `
+      <div class="track-main"><strong>${entry.address}</strong><span>${entry.detail}</span></div>
+      <div><span class="badge ${verdictBadgeClass(entry.verdict)}">${entry.verdict}</span></div>
+      <div class="track-cell mono">${entry.outcome}</div>
+      <div class="track-cell mono">${entry.timestamp}</div>
+      <div class="track-cell mono">${entry.payment}</div>
+    `;
+    root.appendChild(row);
+  });
+}
+
+function unlockDashboard(){
+  const code = document.getElementById("gate-input").value.trim();
+  if (code === "SB-334") {
+    document.getElementById("dashboard-gate").style.display = "none";
+    document.getElementById("dashboard-content").style.display = "block";
+  } else {
+    alert("Invalid access code. Use SB-334 for this prototype.");
+  }
+}
+
+function confirmPurchase(){
+  closeModal("purchase");
+  showView("browser");
+  currentBrowserTab = "progress";
+  document.querySelectorAll("#view-browser .tab").forEach(node=>node.classList.remove("on"));
+  document.querySelectorAll("#view-browser .tab")[1].classList.add("on");
+  renderDeals();
+}
+
+setDemo(0, document.querySelector(".sc"));
+renderDeals();
+renderRecord();
+renderTrack();
+updateIntakePreview();
+</script>
+</body>
+</html>
