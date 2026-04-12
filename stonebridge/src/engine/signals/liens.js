@@ -1,5 +1,5 @@
 /** Maryland SDAT / lien-style signals from HTML scrape or deterministic fallback. */
-const { buildSignal, fetchWithTimeout, generateMockSignals } = require("./common");
+const { buildSignal, fetchWithTimeout, generateMockSignals, isLikelyAddress, normalizeAddress } = require("./common");
 
 function parseLienSignals(html, url) {
   const signals = [];
@@ -92,8 +92,15 @@ function mockLienSignals(address) {
 }
 
 async function checkLiens(address) {
+  // Validate input address
+  const normalized = normalizeAddress(address);
+  if (!normalized || !isLikelyAddress(normalized)) {
+    console.warn("[signals:liens] invalid address format, returning empty signals");
+    return [];
+  }
+
   try {
-    const encoded = encodeURIComponent(address);
+    const encoded = encodeURIComponent(normalized);
     const url = `https://sdat.dat.maryland.gov/RealProperty/Pages/default.aspx?Search=${encoded}`;
     const response = await fetchWithTimeout(url, { signal: AbortSignal.timeout(4000) });
     if (!response.ok) throw new Error(`API error: ${response.status}`);
@@ -103,7 +110,7 @@ async function checkLiens(address) {
     return parseLienSignals(html, url);
   } catch (error) {
     console.warn("[signals:liens] live fetch failed, using estimated signals:", error.message);
-    return mockLienSignals(address);
+    return mockLienSignals(normalized);
   }
 }
 

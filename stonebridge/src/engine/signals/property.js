@@ -1,5 +1,5 @@
 /** Baltimore property parcel and code-enforcement signals (live Socrata or deterministic fallback). */
-const { addressSeed, baltimoreOpenDataHeaders, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
+const { addressSeed, baltimoreOpenDataHeaders, buildSignal, fetchWithTimeout, isLikelyAddress, normalizeAddress, seededRandom, severityFromValue } = require("./common");
 
 /** Maps Socrata rows to at most two normalized property signals. */
 function parsePropertySignals(rows, address, url) {
@@ -116,8 +116,15 @@ function mockPropertySignals(address) {
 }
 
 async function checkPropertyRecords(address) {
+  // Validate input address
+  const normalized = normalizeAddress(address);
+  if (!normalized || !isLikelyAddress(normalized)) {
+    console.warn("[signals:property] invalid address format, returning empty signals");
+    return [];
+  }
+
   try {
-    const encoded = encodeURIComponent(address);
+    const encoded = encodeURIComponent(normalized);
     const url = `https://data.baltimorecity.gov/resource/5qtz-d274.json?$limit=5&$q=${encoded}`;
     const response = await fetchWithTimeout(url, {
       signal: AbortSignal.timeout(4000),
@@ -127,10 +134,10 @@ async function checkPropertyRecords(address) {
     const rows = await response.json();
     if (!Array.isArray(rows) || rows.length === 0) throw new Error("No results");
     console.log(`[signals:property] live data - ${rows.length} records`);
-    return parsePropertySignals(rows, address, url);
+    return parsePropertySignals(rows, normalized, url);
   } catch (error) {
     console.warn("[signals:property] live fetch failed, using estimated signals:", error.message);
-    return mockPropertySignals(address);
+    return mockPropertySignals(normalized);
   }
 }
 

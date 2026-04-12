@@ -1,5 +1,5 @@
 /** Baltimore 311 utility-adjacent service signals (live API or deterministic fallback). */
-const { addressSeed, baltimoreOpenDataHeaders, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
+const { addressSeed, baltimoreOpenDataHeaders, buildSignal, fetchWithTimeout, isLikelyAddress, normalizeAddress, seededRandom, severityFromValue } = require("./common");
 
 function parseUtilitySignals(rows, url) {
   const complaintCount = rows.length;
@@ -104,8 +104,15 @@ function mockUtilitySignals(address) {
 }
 
 async function checkUtilityAnomalies(address) {
+  // Validate input address
+  const normalized = normalizeAddress(address);
+  if (!normalized || !isLikelyAddress(normalized)) {
+    console.warn("[signals:utility] invalid address format, returning empty signals");
+    return [];
+  }
+
   try {
-    const query = encodeURIComponent(address);
+    const query = encodeURIComponent(normalized);
     const url = `https://data.baltimorecity.gov/resource/9agw-sxsr.json?$limit=8&$q=${query}`;
     const response = await fetchWithTimeout(url, {
       signal: AbortSignal.timeout(4000),
@@ -118,7 +125,7 @@ async function checkUtilityAnomalies(address) {
     return parseUtilitySignals(rows, url);
   } catch (error) {
     console.warn("[signals:utility] live fetch failed, using estimated signals:", error.message);
-    return mockUtilitySignals(address);
+    return mockUtilitySignals(normalized);
   }
 }
 

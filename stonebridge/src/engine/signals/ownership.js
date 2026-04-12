@@ -1,5 +1,5 @@
 /** Ownership context signals from SDAT HTML or deterministic fallback. */
-const { addressSeed, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
+const { addressSeed, buildSignal, fetchWithTimeout, isLikelyAddress, normalizeAddress, seededRandom, severityFromValue } = require("./common");
 
 function parseOwnershipSignals(html, url) {
   const normalized = html.toLowerCase();
@@ -113,8 +113,15 @@ function mockOwnershipSignals(address) {
 }
 
 async function checkOwnershipContext(address) {
+  // Validate input address
+  const normalized = normalizeAddress(address);
+  if (!normalized || !isLikelyAddress(normalized)) {
+    console.warn("[signals:ownership] invalid address format, returning empty signals");
+    return [];
+  }
+
   try {
-    const encoded = encodeURIComponent(address);
+    const encoded = encodeURIComponent(normalized);
     const url = `https://sdat.dat.maryland.gov/RealProperty/Pages/default.aspx?Search=${encoded}`;
     const response = await fetchWithTimeout(url, { signal: AbortSignal.timeout(4000) });
     if (!response.ok) throw new Error(`API error: ${response.status}`);
@@ -124,7 +131,7 @@ async function checkOwnershipContext(address) {
     return parseOwnershipSignals(html, url);
   } catch (error) {
     console.warn("[signals:ownership] live fetch failed, using estimated signals:", error.message);
-    return mockOwnershipSignals(address);
+    return mockOwnershipSignals(normalized);
   }
 }
 

@@ -1,6 +1,6 @@
 /** Federal procurement adjacency signals (SAM.gov when keyed, else deterministic fallback). */
 const { config } = require("../../lib/config");
-const { addressSeed, buildSignal, fetchWithTimeout, seededRandom, severityFromValue, zipFromAddress } = require("./common");
+const { addressSeed, buildSignal, fetchWithTimeout, isLikelyAddress, normalizeAddress, seededRandom, severityFromValue, zipFromAddress } = require("./common");
 
 function parseProcurementSignals(data, zip, url) {
   const opportunities = data.opportunitiesData || data.opportunities || [];
@@ -76,12 +76,19 @@ function mockProcurementSignals(address) {
 }
 
 async function checkProcurementAdjacency(address) {
+  // Validate input address
+  const normalized = normalizeAddress(address);
+  if (!normalized || !isLikelyAddress(normalized)) {
+    console.warn("[signals:procurement] invalid address format, returning empty signals");
+    return [];
+  }
+
   if (!config.samGovApiKey) {
-    return mockProcurementSignals(address);
+    return mockProcurementSignals(normalized);
   }
 
   try {
-    const zip = zipFromAddress(address);
+    const zip = zipFromAddress(normalized);
     const url = `https://api.sam.gov/opportunities/v2/search?api_key=${encodeURIComponent(config.samGovApiKey)}&zip=${encodeURIComponent(zip)}&limit=10`;
     const response = await fetchWithTimeout(url, { signal: AbortSignal.timeout(4000) });
     if (!response.ok) throw new Error(`API error: ${response.status}`);
@@ -92,7 +99,7 @@ async function checkProcurementAdjacency(address) {
     return signals;
   } catch (error) {
     console.warn("[signals:procurement] live fetch failed, using estimated signals:", error.message);
-    return mockProcurementSignals(address);
+    return mockProcurementSignals(normalized);
   }
 }
 

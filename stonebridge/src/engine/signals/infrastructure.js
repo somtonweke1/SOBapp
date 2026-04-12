@@ -1,5 +1,5 @@
 /** City infrastructure exposure signals (Socrata or deterministic fallback). */
-const { addressSeed, baltimoreOpenDataHeaders, buildSignal, fetchWithTimeout, seededRandom, severityFromValue } = require("./common");
+const { addressSeed, baltimoreOpenDataHeaders, buildSignal, fetchWithTimeout, isLikelyAddress, normalizeAddress, seededRandom, severityFromValue } = require("./common");
 
 function parseInfrastructureSignals(rows, url) {
   const signals = [];
@@ -99,8 +99,15 @@ function mockInfrastructureSignals(address) {
 }
 
 async function checkInfrastructureRisk(address) {
+  // Validate input address
+  const normalized = normalizeAddress(address);
+  if (!normalized || !isLikelyAddress(normalized)) {
+    console.warn("[signals:infrastructure] invalid address format, returning empty signals");
+    return [];
+  }
+
   try {
-    const query = encodeURIComponent(address);
+    const query = encodeURIComponent(normalized);
     const url = `https://data.baltimorecity.gov/resource/r7wy-f7n5.json?$limit=8&$q=${query}`;
     const response = await fetchWithTimeout(url, {
       signal: AbortSignal.timeout(4000),
@@ -113,7 +120,7 @@ async function checkInfrastructureRisk(address) {
     return parseInfrastructureSignals(rows, url);
   } catch (error) {
     console.warn("[signals:infrastructure] live fetch failed, using estimated signals:", error.message);
-    return mockInfrastructureSignals(address);
+    return mockInfrastructureSignals(normalized);
   }
 }
 
