@@ -16,8 +16,11 @@ const { calculateComplaintDensity, calculateVacancyExposure, checkFloodZone } = 
 async function checkSpatialRisk(address, latitude, longitude) {
   const signals = [];
 
+  console.log(`[signals:spatial] Running GIS analysis for ${address} at (${latitude}, ${longitude})`);
+
   // Skip spatial analysis if no coordinates
   if (!latitude || !longitude) {
+    console.log("[signals:spatial] No coordinates - skipping analysis");
     return [{
       source: "StoneBridge GIS (no coordinates)",
       category: "INFRASTRUCTURE",
@@ -129,6 +132,7 @@ async function checkSpatialRisk(address, latitude, longitude) {
       url: null
     });
 
+    console.log(`[signals:spatial] Generated ${signals.length} spatial signals`);
     return signals;
 
   } catch (error) {
