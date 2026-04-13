@@ -4,7 +4,14 @@ const { PrismaClient } = require("@prisma/client");
 const { diagnose } = require("../engine/diagnose");
 const { geocodeAddress } = require("../services/geocode");
 const { authUser } = require("./auth");
-const { asyncHandler, sendError } = require("../lib/middleware");
+
+// Simple error handling helpers
+const asyncHandler = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+const sendError = (res, status, message) => {
+  res.status(status).json({ success: false, message });
+};
 
 const router = Router();
 const prisma = new PrismaClient();
