@@ -7,6 +7,7 @@ const { checkUtilityAnomalies } = require("./signals/utility");
 const { checkProcurementAdjacency } = require("./signals/procurement");
 const { checkOwnershipContext } = require("./signals/ownership");
 const { checkInfrastructureRisk } = require("./signals/infrastructure");
+const { checkSpatialRisk } = require("./signals/spatial");
 const { geocodeAddress } = require("../services/geocode");
 
 /** Severity ordering used when sorting signals for presentation. */
@@ -142,8 +143,24 @@ async function diagnose(address) {
     geocodeAddress(address)
   ]);
 
+  // Run spatial analysis if coordinates are available
+  let spatialSignals = [];
+  if (geocodeResult && geocodeResult.latitude && geocodeResult.longitude) {
+    try {
+      spatialSignals = await checkSpatialRisk(address, geocodeResult.latitude, geocodeResult.longitude);
+    } catch (error) {
+      console.error("[diagnose] Spatial risk check failed:", error.message);
+    }
+  }
+
+  // Combine traditional signals with spatial signals
   const results = signalResults;
   const successfulResults = results.filter((result) => result.status === "fulfilled");
+
+  // Add spatial signals as a fulfilled promise result
+  if (spatialSignals.length > 0) {
+    successfulResults.push({ status: "fulfilled", value: spatialSignals });
+  }
   const failedSources = results
     .filter((result) => result.status === "rejected")
     .map((result) => result.reason?.message || "Signal source failed");
