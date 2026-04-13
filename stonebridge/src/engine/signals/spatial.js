@@ -57,7 +57,7 @@ async function checkSpatialRisk(address, latitude, longitude) {
 
         signals.push({
           source: "StoneBridge GIS (PostGIS)",
-          category: "INFRASTRUCTURE",
+          category: "GIS_SPATIAL",
           label,
           value: `${count} service requests within ${radiusMeters}m (${density} per km²)`,
           severity,
@@ -66,7 +66,7 @@ async function checkSpatialRisk(address, latitude, longitude) {
       } else {
         signals.push({
           source: "StoneBridge GIS (PostGIS)",
-          category: "INFRASTRUCTURE",
+          category: "GIS_SPATIAL",
           label: "Clean area - no recent complaints",
           value: `0 service requests within ${radiusMeters}m radius`,
           severity: "LOW",
@@ -97,7 +97,7 @@ async function checkSpatialRisk(address, latitude, longitude) {
 
         signals.push({
           source: "StoneBridge GIS (PostGIS)",
-          category: "PROPERTY_DISTRESS",
+          category: "GIS_SPATIAL",
           label,
           value: `${count} vacant properties within ${radiusMeters}m. ${distanceText}`,
           severity,
@@ -113,7 +113,7 @@ async function checkSpatialRisk(address, latitude, longitude) {
       if (inFloodZone) {
         signals.push({
           source: "StoneBridge GIS (PostGIS)",
-          category: "INFRASTRUCTURE",
+          category: "GIS_SPATIAL",
           label: "Property located in flood zone",
           value: `Flood zone type: ${floodZoneType || "Unknown"}. May require flood insurance.`,
           severity: "MEDIUM",
@@ -125,7 +125,7 @@ async function checkSpatialRisk(address, latitude, longitude) {
     // Add GIS location confirmation signal
     signals.push({
       source: "StoneBridge GIS (PostGIS)",
-      category: "INFRASTRUCTURE",
+      category: "GIS_SPATIAL",
       label: "GIS coordinates verified",
       value: `Location: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
       severity: "LOW",

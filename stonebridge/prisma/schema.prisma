@@ -254,6 +254,7 @@ enum SignalCategory {
   OWNERSHIP
   PROPERTY_DISTRESS
   INFRASTRUCTURE
+  GIS_SPATIAL
 }
 
 enum Severity {
