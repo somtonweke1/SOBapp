@@ -84,7 +84,7 @@ async function calculateVacancyExposure(latitude, longitude, radiusMeters = 500)
 async function checkFloodZone(latitude, longitude) {
   try {
     const result = await prisma.$queryRaw`
-      SELECT zone_type
+      SELECT fld_zone
       FROM "FloodZone"
       WHERE ST_Intersects(
         geom,
@@ -96,7 +96,7 @@ async function checkFloodZone(latitude, longitude) {
     if (result && result.length > 0) {
       return {
         inFloodZone: true,
-        floodZoneType: result[0].zone_type
+        floodZoneType: result[0].fld_zone
       };
     }
 
