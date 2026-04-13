@@ -3,7 +3,7 @@ const { Router } = require("express");
 const { PrismaClient } = require("@prisma/client");
 const { diagnose } = require("../engine/diagnose");
 const { geocodeAddress } = require("../services/geocode");
-const { authUser } = require("./auth");
+const { requireAuth } = require("../middleware/auth");
 
 // Simple error handling helpers
 const asyncHandler = (fn) => (req, res, next) => {
@@ -25,7 +25,7 @@ const prisma = new PrismaClient();
  * 123 Main St,Baltimore,MD
  * 456 Oak Ave,Baltimore,MD
  */
-router.post("/", authUser, asyncHandler(async (req, res) => {
+router.post("/", requireAuth, asyncHandler(async (req, res) => {
   const { addresses } = req.body;
 
   // Validate input
@@ -117,7 +117,7 @@ router.post("/", authUser, asyncHandler(async (req, res) => {
  * GET /api/batch/export/:format
  * Export batch results to CSV or JSON
  */
-router.get("/export/:format", authUser, asyncHandler(async (req, res) => {
+router.get("/export/:format", requireAuth, asyncHandler(async (req, res) => {
   const { format } = req.params;
   const { dealIds } = req.query;
 
