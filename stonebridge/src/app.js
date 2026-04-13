@@ -14,6 +14,7 @@ const paymentRoutes = require("./routes/payments");
 const publicRoutes = require("./routes/public");
 const sponsorRoutes = require("./routes/sponsor");
 const batchRoutes = require("./routes/batch");
+const spatialRoutes = require("./routes/spatial");
 const { listActiveWorkspaces } = require("./lib/sponsor");
 const { SITE_DESCRIPTION, SITE_TITLE } = require("./lib/site");
 const { analyzeDistributionDiagnostic, normalizeList } = require("./lib/distribution-diagnostic");
@@ -826,6 +827,7 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/public", publicRoutes);
 app.use("/api/sponsor", sponsorRoutes);
 app.use("/api/batch", batchRoutes);
+app.use("/api/spatial", spatialRoutes);
 
 app.get("/health", async (_req, res) => {
   try {

@@ -419,3 +419,48 @@ button,input,select,textarea{font:inherit}
 .operator-hero-sub{font-size:16px;color:var(--ink-2);line-height:1.7;max-width:720px;font-weight:300}
 .operator-panel--intro{border-left:3px solid var(--gold)}
 .operator-shell .operator-layout{padding-top:28px}
+
+/* ========================================
+   Spatial GIS Map Visualization
+   ======================================== */
+
+.spatial-section{background:var(--bg);padding:64px 0;border-top:1px solid var(--border)}
+.spatial-section .section-title{margin-bottom:12px}
+.spatial-section .section-sub{margin-bottom:32px}
+
+.spatial-map-wrap{background:var(--white);border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:0 24px 80px rgba(26,25,22,.04)}
+
+#spatial-map{height:500px;width:100%;background:var(--bg)}
+
+.spatial-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-top:24px}
+.spatial-stat-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:20px}
+.spatial-stat-label{font-size:13px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em;font-weight:500;margin-bottom:8px}
+.spatial-stat-value{font-size:28px;font-weight:600;color:var(--ink);font-family:var(--f-mono)}
+
+.spatial-legend{margin-top:24px;padding:20px;background:var(--bg);border:1px solid var(--border);border-radius:6px;display:none}
+.spatial-legend-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:16px;letter-spacing:-.01em}
+.spatial-legend-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.spatial-legend-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2)}
+.spatial-legend-marker{width:16px;height:16px;border-radius:50%;flex-shrink:0}
+.spatial-legend-marker--property{background:#8b5cf6;border:3px solid #a78bfa}
+.spatial-legend-marker--complaint{background:#f59e0b;width:12px;height:12px}
+.spatial-legend-marker--vacancy{background:#ef4444;width:14px;height:14px}
+
+.spatial-no-data,.spatial-error{padding:80px 40px;text-align:center;color:var(--ink-3);font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:8px}
+
+/* Custom Leaflet marker styles */
+.marker-dot{border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.marker-dot--property{width:24px;height:24px;background:#8b5cf6;border:4px solid #a78bfa}
+.marker-dot--complaint{width:12px;height:12px;background:#f59e0b}
+.marker-dot--vacancy{width:14px;height:14px;background:#ef4444}
+
+.spatial-popup{min-width:220px}
+.spatial-popup-title{font-weight:600;color:var(--ink);margin-bottom:8px;font-size:14px}
+.spatial-popup-address{font-size:13px;color:var(--ink);margin-bottom:6px}
+.spatial-popup-detail{font-size:12px;color:var(--ink-2);margin-bottom:4px}
+.spatial-popup-distance{font-size:12px;color:var(--ink-3);margin-top:8px;font-family:var(--f-mono)}
+
+/* Leaflet popup customization */
+.leaflet-popup-content-wrapper{border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.leaflet-popup-content{margin:14px 16px;font-family:var(--f-body)}
+.leaflet-popup-tip{box-shadow:0 2px 8px rgba(0,0,0,.05)}

@@ -9,6 +9,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <link rel="stylesheet" href="/css/app.css?v={{assetVersion}}">
 </head>
 <body>
@@ -69,6 +70,57 @@
         <h2 class="section-title">Signal breakdown</h2>
         <p class="section-sub">{{signalSectionSub}}</p>
         {{{signalsHtml}}}
+      </div>
+    </div>
+
+    <div class="spatial-section">
+      <div class="container">
+        <div class="eyebrow">PostGIS Spatial Analysis</div>
+        <h2 class="section-title">Geospatial Risk Visualization</h2>
+        <p class="section-sub">Real-time spatial analysis showing 311 service requests and vacant properties within 500m radius</p>
+
+        <div class="spatial-map-wrap">
+          <div id="spatial-map-container">
+            <div id="spatial-map"></div>
+          </div>
+        </div>
+
+        <div class="spatial-stats">
+          <div class="spatial-stat-card">
+            <div class="spatial-stat-label">Service Requests</div>
+            <div class="spatial-stat-value" id="spatial-stat-complaints">—</div>
+          </div>
+          <div class="spatial-stat-card">
+            <div class="spatial-stat-label">Vacant Properties</div>
+            <div class="spatial-stat-value" id="spatial-stat-vacancies">—</div>
+          </div>
+          <div class="spatial-stat-card">
+            <div class="spatial-stat-label">Nearest Complaint</div>
+            <div class="spatial-stat-value" id="spatial-stat-nearest-complaint">—</div>
+          </div>
+          <div class="spatial-stat-card">
+            <div class="spatial-stat-label">Nearest Vacancy</div>
+            <div class="spatial-stat-value" id="spatial-stat-nearest-vacancy">—</div>
+          </div>
+        </div>
+
+        <div id="spatial-legend" class="spatial-legend">
+          <div class="spatial-legend-title">Map Legend</div>
+          <div class="spatial-legend-items">
+            <div class="spatial-legend-item">
+              <div class="spatial-legend-marker spatial-legend-marker--property"></div>
+              <span>Target Property</span>
+            </div>
+            <div class="spatial-legend-item">
+              <div class="spatial-legend-marker spatial-legend-marker--complaint"></div>
+              <span>311 Service Request</span>
+            </div>
+            <div class="spatial-legend-item">
+              <div class="spatial-legend-marker spatial-legend-marker--vacancy"></div>
+              <span>Vacant Property</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -854,6 +906,9 @@
       summaryLog.innerHTML = `<div class="log-line">${esc(error.message)}</div>`;
     });
   </script>
+  <script>window.DEAL_ID = '{{dealId}}';</script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="/js/spatial-map.js?v={{assetVersion}}"></script>
   <script src="/js/nav.js?v={{assetVersion}}"></script>
 </body>
 </html>
