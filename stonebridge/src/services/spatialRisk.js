@@ -698,7 +698,7 @@ async function checkFloodZone(latitude, longitude) {
 async function getZoningClassification(latitude, longitude) {
   try {
     const result = await prisma.$queryRaw`
-      SELECT zoning_code, zoning_description
+      SELECT zone_code, zone_class, label
       FROM "Zoning"
       WHERE ST_Intersects(
         geom,
@@ -708,11 +708,16 @@ async function getZoningClassification(latitude, longitude) {
     `;
 
     return result?.length
-      ? { zoningCode: result[0].zoning_code, zoningDescription: result[0].zoning_description, available: true }
-      : { zoningCode: null, zoningDescription: null, available: true };
+      ? {
+          zoningCode: result[0].zone_code,
+          zoningDescription: result[0].label || result[0].zone_class,
+          zoneClass: result[0].zone_class,
+          available: true
+        }
+      : { zoningCode: null, zoningDescription: null, zoneClass: null, available: true };
   } catch (error) {
     console.error('[SpatialRisk] Zoning query failed:', error.message);
-    return { zoningCode: null, zoningDescription: null, available: false, error: error.message };
+    return { zoningCode: null, zoningDescription: null, zoneClass: null, available: false, error: error.message };
   }
 }
 
