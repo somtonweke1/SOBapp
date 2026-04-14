@@ -316,15 +316,23 @@ async function diagnose(address) {
     geocodeAddress(address)
   ]);
 
-  // Run spatial analysis if coordinates are available
+  // Calculate document-only risk score first (before spatial analysis)
+  const documentResults = signalResults.filter((result) => result.status === "fulfilled");
+  const documentSignals = normalizeSignals(documentResults);
+  const documentRiskScore = computeRiskScore(documentSignals);
+
+  // Run spatial analysis with document risk score for divergence calculation
   let spatialSignals = [];
+  let spatialResult = null;
   if (geocodeResult && geocodeResult.latitude && geocodeResult.longitude) {
     try {
-      spatialSignals = await checkSpatialRisk(address, geocodeResult.latitude, geocodeResult.longitude, {
+      const spatialResponse = await checkSpatialRisk(address, geocodeResult.latitude, geocodeResult.longitude, {
         geocodeSource: geocodeResult.source,
         geocodeConfidence: geocodeResult.confidence,
-        documentRiskScore: null
+        documentRiskScore: documentRiskScore
       });
+      spatialSignals = spatialResponse.signals;
+      spatialResult = spatialResponse.spatialResult;
     } catch (error) {
       console.error("[diagnose] Spatial risk check failed:", error.message);
     }
@@ -356,7 +364,24 @@ async function diagnose(address) {
   }
 
   const flagCount = signals.filter((signal) => signal.severity !== "LOW").length;
-  const verdict = deriveVerdict(riskScore);
+  let verdict = deriveVerdict(riskScore);
+
+  // Integrate spatial verdict - spatial intelligence can escalate final verdict
+  // If spatial analysis says ESCALATE, final verdict should be at least CAUTION
+  // This ensures GIS findings are not purely decorative
+  if (spatialResult && spatialResult.spatialVerdict) {
+    const spatialVerdict = spatialResult.spatialVerdict;
+    if (spatialVerdict === 'ESCALATE' && verdict === 'PROCEED') {
+      console.log(`[diagnose] Spatial verdict (ESCALATE) escalating final verdict from PROCEED to CAUTION`);
+      verdict = 'CAUTION';
+    } else if (spatialVerdict === 'ESCALATE' && verdict === 'CAUTION') {
+      console.log(`[diagnose] Spatial verdict (ESCALATE) escalating final verdict from CAUTION to ESCALATE`);
+      verdict = 'ESCALATE';
+    } else if (spatialVerdict === 'CAUTION' && verdict === 'PROCEED') {
+      console.log(`[diagnose] Spatial verdict (CAUTION) escalating final verdict from PROCEED to CAUTION`);
+      verdict = 'CAUTION';
+    }
+  }
 
   // Detect cross-signal patterns
   const patterns = detectSignalPatterns(signals);
@@ -384,6 +409,7 @@ async function diagnose(address) {
     verdict,
     patterns, // New: cross-signal pattern detection
     executiveSummary, // New: investment thesis and actionable guidance
+    spatialAnalysis: spatialResult, // Full spatial risk analysis result
     coordinates: geocodeResult ? {
       latitude: geocodeResult.latitude,
       longitude: geocodeResult.longitude,
@@ -396,7 +422,8 @@ async function diagnose(address) {
       estimatedSignalCount,
       liveSignalCount,
       scoreCappedForEstimatedOnly,
-      geocoded: geocodeResult !== null
+      geocoded: geocodeResult !== null,
+      spatialAnalysisAvailable: spatialResult !== null
     },
     sourceStatus: {
       attempted: results.length,

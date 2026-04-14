@@ -11,7 +11,7 @@ const { computeSpatialRisk } = require("../../services/spatialRisk");
  * @param {string} address - Full address
  * @param {number} latitude - Property latitude
  * @param {number} longitude - Property longitude
- * @returns {Promise<Array>} Spatial risk signals
+ * @returns {Promise<{signals: Array, spatialResult: Object}>} Spatial signals and full spatial analysis result
  */
 async function checkSpatialRisk(address, latitude, longitude, options = {}) {
   const signals = [];
@@ -21,14 +21,17 @@ async function checkSpatialRisk(address, latitude, longitude, options = {}) {
   // Skip spatial analysis if no coordinates
   if (!latitude || !longitude) {
     console.log("[signals:spatial] No coordinates - skipping analysis");
-    return [{
-      source: "StoneBridge GIS (no coordinates)",
-      category: "INFRASTRUCTURE",
-      label: "Spatial analysis unavailable",
-      value: "Address could not be geocoded for spatial risk analysis",
-      severity: "LOW",
-      url: null
-    }];
+    return {
+      signals: [{
+        source: "StoneBridge GIS (no coordinates)",
+        category: "INFRASTRUCTURE",
+        label: "Spatial analysis unavailable",
+        value: "Address could not be geocoded for spatial risk analysis",
+        severity: "LOW",
+        url: null
+      }],
+      spatialResult: null
+    };
   }
 
   try {
@@ -100,13 +103,30 @@ async function checkSpatialRisk(address, latitude, longitude, options = {}) {
       });
     }
 
-    // Enhanced flood zone signal with insurance implications
-    if (floodZone.inFloodZone) {
+    // Enhanced flood zone signal with insurance cost estimates
+    if (floodZone.inFloodZone && floodZone.insuranceCost) {
+      const cost = floodZone.insuranceCost;
+      const costRange = cost.annualCostMin && cost.annualCostMax
+        ? `$${cost.annualCostMin.toLocaleString()}-$${cost.annualCostMax.toLocaleString()}/year`
+        : 'contact insurance agent for quote';
+
+      const severity = cost.riskLevel === 'critical' ? 'HIGH' : cost.riskLevel === 'high' ? 'MEDIUM' : 'LOW';
+
+      signals.push({
+        source: "StoneBridge GIS (PostGIS)",
+        category: "GIS_SPATIAL",
+        label: `Flood zone exposure: ${floodZone.floodZoneType}`,
+        value: `${cost.description} Estimated insurance cost: ${costRange}. Underwriting impact: Add insurance cost to operating expenses and verify lender requirements. High-risk zones may affect exit cap rates and limit buyer pool.`,
+        severity,
+        url: null
+      });
+    } else if (floodZone.inFloodZone) {
+      // Fallback if cost estimate unavailable
       signals.push({
         source: "StoneBridge GIS (PostGIS)",
         category: "GIS_SPATIAL",
         label: "Flood zone exposure present",
-        value: `Flood zone type: ${floodZone.floodZoneType || "Unknown"}. Spatial score includes flood exposure. Underwriting impact: Verify flood insurance requirements, elevation certificates, and historical flooding events. May impact lender requirements and exit cap rates.`,
+        value: `Flood zone type: ${floodZone.floodZoneType || "Unknown"}. Verify flood insurance requirements with agent. May impact lender requirements and exit cap rates.`,
         severity: "MEDIUM",
         url: null
       });
@@ -129,18 +149,24 @@ async function checkSpatialRisk(address, latitude, longitude, options = {}) {
     });
 
     console.log(`[signals:spatial] Generated ${signals.length} spatial signals with enhanced context`);
-    return signals;
+    return {
+      signals,
+      spatialResult: result
+    };
 
   } catch (error) {
     console.error("[signals:spatial] GIS analysis failed:", error.message);
-    return [{
-      source: "StoneBridge GIS (error)",
-      category: "INFRASTRUCTURE",
-      label: "Spatial analysis failed",
-      value: `GIS database error: ${error.message}`,
-      severity: "LOW",
-      url: null
-    }];
+    return {
+      signals: [{
+        source: "StoneBridge GIS (error)",
+        category: "INFRASTRUCTURE",
+        label: "Spatial analysis failed",
+        value: `GIS database error: ${error.message}`,
+        severity: "LOW",
+        url: null
+      }],
+      spatialResult: null
+    };
   }
 }
 
