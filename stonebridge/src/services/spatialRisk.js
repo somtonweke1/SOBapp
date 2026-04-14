@@ -36,7 +36,7 @@ function normalizeServiceText(...values) {
 }
 
 function getComplaintTypeWeight(record) {
-  const text = normalizeServiceText(record.requestType, record.serviceName, record.description);
+  const text = normalizeServiceText(record.serviceName, record.description);
   if (!text) return 0.9;
   if (/(water|sewer|storm|flood|drain|sinkhole|collapse|structural|vacant|abandon|board|fire|unsafe|housing)/.test(text)) return 1.4;
   if (/(street light|roadway|pothole|sidewalk|traffic|bridge|alley|trash|bulk|illegal dump|graffiti)/.test(text)) return 1.05;
@@ -210,8 +210,7 @@ async function fetchNearbyComplaints(latitude, longitude, radiusMeters = DEFAULT
     SELECT
       id,
       service_request_num as "requestNum",
-      COALESCE(service_name, request_type, description, '311 service request') as "serviceName",
-      request_type as "requestType",
+      COALESCE(service_name, description, '311 service request') as "serviceName",
       description,
       address,
       COALESCE(status_description, status, 'Open') as "status",
@@ -239,7 +238,6 @@ async function fetchNearbyComplaints(latitude, longitude, radiusMeters = DEFAULT
       id: row.id,
       requestNum: row.requestNum,
       serviceName: row.serviceName,
-      requestType: row.requestType,
       description: row.description,
       address: row.address,
       status: row.status,
@@ -473,7 +471,7 @@ async function getSpatialContext(latitude, longitude, radiusMeters = DEFAULT_RAD
           },
           properties: {
             type: 'complaint',
-            requestType: row.requestType,
+            requestType: row.serviceName,
             status: row.status,
             date: row.createdDate
           }
