@@ -79,7 +79,39 @@
         <h2 class="section-title">Geospatial Risk Intelligence</h2>
         <p class="section-sub">Real-time spatial database queries executing ST_DWithin and ST_Distance operations on Baltimore City datasets</p>
 
+        <div class="spatial-overview-card">
+          <div>
+            <div class="spatial-overview-kicker">Spatial readout</div>
+            <div class="spatial-overview-title" id="spatial-overview-title">Loading neighborhood context</div>
+            <div class="spatial-overview-copy" id="spatial-overview-copy">Pulling 500m radius context from Baltimore spatial datasets.</div>
+          </div>
+          <div class="spatial-overview-meta">
+            <div class="spatial-pill" id="spatial-status-pill">Analyzing</div>
+            <div class="spatial-meta-grid">
+              <div class="spatial-meta-item">
+                <span class="spatial-meta-label">Radius</span>
+                <span class="spatial-meta-value" id="spatial-meta-radius">500m</span>
+              </div>
+              <div class="spatial-meta-item">
+                <span class="spatial-meta-label">Center</span>
+                <span class="spatial-meta-value" id="spatial-meta-center">Pending geocode</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="spatial-map-wrap">
+          <div class="spatial-map-header">
+            <div>
+              <div class="spatial-map-title">Neighborhood map</div>
+              <div class="spatial-map-sub" id="spatial-map-sub">Target parcel and immediate radius</div>
+            </div>
+            <div class="spatial-map-badges">
+              <span class="spatial-badge">Leaflet</span>
+              <span class="spatial-badge">PostGIS</span>
+              <span class="spatial-badge">Live radius query</span>
+            </div>
+          </div>
           <div id="spatial-map-container">
             <div id="spatial-map"></div>
           </div>
@@ -126,7 +158,41 @@
           </div>
         </div>
 
-        <div class="spatial-tech-details">
+        <div class="spatial-activity-grid">
+          <div class="spatial-activity-card">
+            <div class="spatial-activity-head">
+              <div>
+                <div class="spatial-activity-kicker">Closest activity</div>
+                <h3 class="spatial-activity-title">What is actually near this address</h3>
+              </div>
+              <div class="spatial-activity-chip" id="spatial-activity-chip">Scanning</div>
+            </div>
+            <div class="spatial-activity-list" id="spatial-activity-list">
+              <div class="spatial-activity-empty">Building the nearby activity list.</div>
+            </div>
+          </div>
+
+          <div class="spatial-activity-card">
+            <div class="spatial-activity-head">
+              <div>
+                <div class="spatial-activity-kicker">Interpretation</div>
+                <h3 class="spatial-activity-title">How to read this radius</h3>
+              </div>
+            </div>
+            <div class="spatial-takeaways" id="spatial-takeaways">
+              <div class="spatial-takeaway">
+                <div class="spatial-takeaway-title">Awaiting spatial query</div>
+                <div class="spatial-takeaway-copy">This block will summarize whether the immediate radius looks clean, mixed, or distressed.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <details class="spatial-tech-details">
+          <summary class="spatial-tech-summary">
+            <span>Technical implementation</span>
+            <span class="spatial-tech-summary-note">Expand for architecture and query details</span>
+          </summary>
           <div class="eyebrow">Technical Implementation</div>
           <h3 class="spatial-tech-title">PostGIS Spatial Query Architecture</h3>
 
@@ -211,7 +277,7 @@ LIMIT 100;</code></pre>
               </div>
             </div>
           </div>
-        </div>
+        </details>
       </div>
     </div>
 
