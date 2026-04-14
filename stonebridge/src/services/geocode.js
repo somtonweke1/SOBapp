@@ -194,19 +194,78 @@ async function geocodeFromLocalDatasets(address) {
         };
       }
     } catch (error) {
-      console.warn(`[Geocoding] Local dataset lookup failed for "${candidate}": ${error.message}`);
+      // Log specific error types for debugging
+      if (error.code === 'P2024') {
+        console.error('[Geocoding] Database connection timeout - PostGIS may be unavailable');
+      } else if (error.message?.includes('relation') && error.message?.includes('does not exist')) {
+        console.error('[Geocoding] Missing database table - schema migration may be needed');
+      } else if (error.message?.includes('ST_')) {
+        console.error('[Geocoding] PostGIS function error - PostGIS extension may not be enabled');
+      } else {
+        console.warn(`[Geocoding] Local dataset lookup failed for "${candidate}": ${error.message}`);
+      }
+      // Continue to next candidate rather than failing completely
     }
   }
 
-  return null;
+  return null; // All local candidates exhausted, caller will fallback to remote geocoder
 }
 
 /**
- * Geocode a Baltimore address to coordinates
+ * Snaps coordinates to nearest parcel centroid if within tolerance distance.
+ * Improves accuracy by correcting geocoder drift to actual property boundaries.
+ * @param {number} latitude - Input latitude
+ * @param {number} longitude - Input longitude
+ * @param {number} toleranceMeters - Maximum distance to snap (default: 50m)
+ * @returns {Promise<{latitude: number, longitude: number, snapped: boolean, distance?: number} | null>}
+ */
+async function snapToNearestParcel(latitude, longitude, toleranceMeters = 50) {
+  try {
+    const result = await prisma.$queryRaw`
+      SELECT
+        address,
+        ST_Y(ST_Centroid(geom)) AS parcel_lat,
+        ST_X(ST_Centroid(geom)) AS parcel_lon,
+        ST_Distance(
+          geom,
+          ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326)::geography
+        ) AS distance_meters
+      FROM "Parcel"
+      WHERE ST_DWithin(
+        geom,
+        ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326)::geography,
+        ${toleranceMeters}
+      )
+      ORDER BY distance_meters
+      LIMIT 1
+    `;
+
+    if (result && result.length > 0) {
+      const parcel = result[0];
+      const distance = Math.round(Number(parcel.distance_meters));
+      console.log(`[Geocoding] Snapped to parcel "${parcel.address}" (${distance}m away)`);
+      return {
+        latitude: Number(parcel.parcel_lat),
+        longitude: Number(parcel.parcel_lon),
+        snapped: true,
+        distance,
+        parcelAddress: parcel.address
+      };
+    }
+
+    return { latitude, longitude, snapped: false };
+  } catch (error) {
+    console.warn('[Geocoding] Parcel snapping failed:', error.message);
+    return { latitude, longitude, snapped: false };
+  }
+}
+
+/**
+ * Geocode a Baltimore address to coordinates with validation and parcel snapping
  * @param {string} address - Street address
  * @param {string} city - City (default: Baltimore)
  * @param {string} state - State (default: MD)
- * @returns {Promise<{latitude: number, longitude: number} | null>}
+ * @returns {Promise<{latitude: number, longitude: number, formattedAddress: string, confidence: string, source: string} | null>}
  */
 async function geocodeAddress(address, city = 'Baltimore', state = 'MD') {
   try {
@@ -242,25 +301,30 @@ async function geocodeAddress(address, city = 'Baltimore', state = 'MD') {
       return null;
     }
 
-    // Validate coordinates are in Baltimore area
-    // Baltimore bounds: ~39.2-39.4°N, -76.7--76.5°W
+    // CRITICAL: Validate coordinates are in Baltimore City bounds
+    // Baltimore City bounds: ~39.197-39.372°N, -76.711--76.529°W
     const lat = result.latitude;
     const lon = result.longitude;
 
     if (lat < 39.15 || lat > 39.45 || lon < -76.75 || lon > -76.45) {
-      console.warn(`[Geocoding] Coordinates outside Baltimore: ${lat}, ${lon}`);
-      // Return anyway but log warning
+      console.error(`[Geocoding] REJECTED: Coordinates outside Baltimore bounds: ${lat}, ${lon} for address "${fullAddress}"`);
+      console.error('[Geocoding] This may be a different city with the same street name. Verify address includes "Baltimore, MD".');
+      return null; // REJECT rather than return wrong coordinates
     }
 
-    console.log(`[Geocoding] Success: ${lat}, ${lon}`);
+    console.log(`[Geocoding] Remote geocoder success: ${lat}, ${lon}`);
+
+    // Attempt to snap to nearest parcel for improved accuracy
+    const snapped = await snapToNearestParcel(lat, lon, 50);
 
     return {
-      latitude: lat,
-      longitude: lon,
-      formattedAddress: result.formattedAddress,
-      confidence: result.extra?.confidence || 'low',
-      source: 'remote:openstreetmap',
-      coverage: 'remote'
+      latitude: snapped.latitude,
+      longitude: snapped.longitude,
+      formattedAddress: snapped.snapped ? snapped.parcelAddress : result.formattedAddress,
+      confidence: snapped.snapped ? 'medium' : (result.extra?.confidence || 'low'),
+      source: snapped.snapped ? 'remote:openstreetmap+parcel-snapped' : 'remote:openstreetmap',
+      coverage: 'remote',
+      snappedDistance: snapped.snapped ? snapped.distance : null
     };
   } catch (error) {
     console.error(`[Geocoding] Error for ${address}:`, error.message);

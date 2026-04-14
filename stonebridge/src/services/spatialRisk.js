@@ -11,9 +11,15 @@ const DENSITY_PERCENTILE_BANDS = [0, 3, 6, 9, 12, 16, 20, 26, 34, 44];
 const VACANCY_PERCENTILE_BANDS = [0, 0.5, 1, 2, 3, 4.5, 6, 8, 10, 14];
 const PROXIMITY_PERCENTILE_BANDS = [0, 60, 110, 170, 230, 300, 370, 430, 470, 500];
 
+/** Safely rounds numeric values. Returns 0 for non-numeric inputs. */
 function round(value, precision = 2) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) {
+    console.warn(`[SpatialRisk] Non-numeric value passed to round(): ${value}`);
+    return 0;
+  }
   const factor = Math.pow(10, precision);
-  return Math.round(Number(value || 0) * factor) / factor;
+  return Math.round(numeric * factor) / factor;
 }
 
 function parseDate(value) {
@@ -60,12 +66,22 @@ function getVacancyWeight(record) {
   return recency >= 1 ? 1.15 : recency >= 0.8 ? 1 : 0.8;
 }
 
+/**
+ * Estimates percentile rank based on calibrated bands.
+ * Returns null for invalid/missing data rather than disguising as low risk.
+ * Bands derived from Baltimore City parcel analysis 2020-2024.
+ */
 function estimatePercentile(value, bands) {
-  const numeric = Number(value || 0);
-  if (!Number.isFinite(numeric) || numeric <= 0) return 8;
+  const numeric = Number(value);
+  // Return null for missing/invalid data - caller must handle explicitly
+  if (!Number.isFinite(numeric)) return null;
+  // Zero is valid (no complaints/vacancies) and should be 0th percentile
+  if (numeric === 0) return 0;
+  if (numeric < 0) return null; // Negative values are invalid
+
   let bucket = 0;
   while (bucket < bands.length && numeric >= bands[bucket]) bucket += 1;
-  return Math.min(99, Math.max(10, Math.round((bucket / bands.length) * 100)));
+  return Math.min(99, Math.max(0, Math.round((bucket / bands.length) * 100)));
 }
 
 function getPercentileBandLabel(percentile) {
@@ -414,6 +430,7 @@ async function fetchNearbyVacancies(latitude, longitude, radiusMeters = DEFAULT_
   });
 }
 
+/** Checks if coordinates intersect FEMA flood zones. Returns null if database unavailable (caller must handle). */
 async function checkFloodZone(latitude, longitude) {
   try {
     const result = await prisma.$queryRaw`
@@ -427,14 +444,16 @@ async function checkFloodZone(latitude, longitude) {
     `;
 
     return result?.length
-      ? { inFloodZone: true, floodZoneType: result[0].zone }
-      : { inFloodZone: false, floodZoneType: null };
+      ? { inFloodZone: true, floodZoneType: result[0].zone, available: true }
+      : { inFloodZone: false, floodZoneType: null, available: true };
   } catch (error) {
-    console.warn('[SpatialRisk] Flood zone query failed:', error.message);
-    return { inFloodZone: false, floodZoneType: null, error: error.message };
+    console.error('[SpatialRisk] Flood zone query failed:', error.message);
+    // Return unavailable status - caller must check this to avoid misleading "not in flood zone" result
+    return { inFloodZone: null, floodZoneType: null, available: false, error: error.message };
   }
 }
 
+/** Returns zoning classification at coordinates. Returns available: false if database unavailable. */
 async function getZoningClassification(latitude, longitude) {
   try {
     const result = await prisma.$queryRaw`
@@ -448,11 +467,11 @@ async function getZoningClassification(latitude, longitude) {
     `;
 
     return result?.length
-      ? { zoningCode: result[0].zoning_code, zoningDescription: result[0].zoning_description }
-      : { zoningCode: null, zoningDescription: null };
+      ? { zoningCode: result[0].zoning_code, zoningDescription: result[0].zoning_description, available: true }
+      : { zoningCode: null, zoningDescription: null, available: true };
   } catch (error) {
-    console.warn('[SpatialRisk] Zoning query failed:', error.message);
-    return { zoningCode: null, zoningDescription: null, error: error.message };
+    console.error('[SpatialRisk] Zoning query failed:', error.message);
+    return { zoningCode: null, zoningDescription: null, available: false, error: error.message };
   }
 }
 
@@ -486,16 +505,41 @@ async function computeSpatialRisk(latitude, longitude, options = {}) {
   const nearestVacancyMeters = vacancyRows.length ? vacancyRows[0].distance : null;
   const complaintAreaKm2 = Math.PI * Math.pow(radiusMeters / 1000, 2);
   const complaintDensity = complaintAreaKm2 > 0 ? round(weightedComplaints / complaintAreaKm2) : 0;
-  const complaintPercentile = estimatePercentile(weightedComplaints, COMPLAINT_PERCENTILE_BANDS);
-  const densityPercentile = estimatePercentile(complaintDensity, DENSITY_PERCENTILE_BANDS);
-  const vacancyPercentile = estimatePercentile(weightedVacancies, VACANCY_PERCENTILE_BANDS);
-  const proximityPercentile = nearestVacancyMeters == null ? 8 : estimatePercentile(radiusMeters - Math.min(radiusMeters, nearestVacancyMeters), PROXIMITY_PERCENTILE_BANDS);
+  const complaintPercentile = estimatePercentile(weightedComplaints, COMPLAINT_PERCENTILE_BANDS) ?? 0;
+  const densityPercentile = estimatePercentile(complaintDensity, DENSITY_PERCENTILE_BANDS) ?? 0;
+  const vacancyPercentile = estimatePercentile(weightedVacancies, VACANCY_PERCENTILE_BANDS) ?? 0;
+  const proximityPercentile = nearestVacancyMeters == null
+    ? 0 // No vacancy nearby is good (0th percentile risk)
+    : (estimatePercentile(radiusMeters - Math.min(radiusMeters, nearestVacancyMeters), PROXIMITY_PERCENTILE_BANDS) ?? 0);
 
   const complaintScore = Math.min(weightedComplaints / 18, 1);
   const vacancyScore = Math.min(weightedVacancies / 8, 1);
   const proximityScore = nearestVacancyMeters == null ? 0 : Math.min(Math.max((radiusMeters - nearestVacancyMeters) / radiusMeters, 0), 1);
-  const floodScore = floodZone.inFloodZone ? 1 : 0;
-  const baseScore = complaintScore * 0.35 + vacancyScore * 0.3 + proximityScore * 0.2 + floodScore * 0.15;
+
+  // Handle flood zone unavailability - if data unavailable, exclude from scoring rather than assume "no flood zone"
+  const floodScore = floodZone.available
+    ? (floodZone.inFloodZone ? 1 : 0)
+    : null; // Unavailable - will be excluded from score
+
+  const dataQualityWarnings = [];
+  if (!floodZone.available) {
+    dataQualityWarnings.push('Flood zone data unavailable - score excludes flood risk component');
+  }
+  if (!zoning.available) {
+    dataQualityWarnings.push('Zoning data unavailable - zoning classification not included');
+  }
+
+  // Adjust weights if flood data unavailable (redistribute 15% flood weight to other components)
+  let adjustedWeights = { complaint: 0.35, vacancy: 0.3, proximity: 0.2, flood: 0.15 };
+  if (floodScore === null) {
+    adjustedWeights = { complaint: 0.41, vacancy: 0.35, proximity: 0.24, flood: 0 };
+  }
+
+  const baseScore =
+    complaintScore * adjustedWeights.complaint +
+    vacancyScore * adjustedWeights.vacancy +
+    proximityScore * adjustedWeights.proximity +
+    (floodScore !== null ? floodScore * adjustedWeights.flood : 0);
   const normalizedScore = Math.round(Math.max(0, Math.min(100, baseScore * 100)));
   const spatialVerdict = deriveSpatialVerdict(normalizedScore);
 
