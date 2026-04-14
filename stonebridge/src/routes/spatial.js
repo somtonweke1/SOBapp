@@ -3,6 +3,7 @@ const express = require("express");
 const { prisma } = require("../lib/prisma");
 const { asyncHandler, sendError } = require("../lib/http");
 const { requireAuth } = require("../middleware/auth");
+const { geocodeAddress } = require("../services/geocode");
 
 const router = express.Router();
 
@@ -13,24 +14,43 @@ const router = express.Router();
 router.get("/:dealId", requireAuth, asyncHandler(async (req, res) => {
   const { dealId } = req.params;
 
-  // Get the deal with coordinates
-  const deal = await prisma.deal.findUnique({
-    where: { id: dealId, clientId: req.user.id }
+  const where = req.user.role === "OPERATOR"
+    ? { id: dealId }
+    : { id: dealId, clientId: req.user.id };
+
+  const deal = await prisma.deal.findFirst({
+    where
   });
 
   if (!deal) {
     return sendError(res, 404, "Deal not found");
   }
 
-  if (!deal.latitude || !deal.longitude) {
+  let lat = deal.latitude;
+  let lon = deal.longitude;
+
+  if (!lat || !lon) {
+    const geocoded = await geocodeAddress(deal.address, deal.city, deal.state);
+    if (geocoded?.latitude && geocoded?.longitude) {
+      lat = geocoded.latitude;
+      lon = geocoded.longitude;
+
+      await prisma.deal.update({
+        where: { id: deal.id },
+        data: {
+          latitude: lat,
+          longitude: lon
+        }
+      });
+    }
+  }
+
+  if (!lat || !lon) {
     return res.json({
       hasCoordinates: false,
       message: "Address could not be geocoded"
     });
   }
-
-  const lat = deal.latitude;
-  const lon = deal.longitude;
   const radiusMeters = 500;
 
   // Query service requests within radius

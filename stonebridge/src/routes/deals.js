@@ -138,6 +138,12 @@ router.post("/diagnose", asyncHandler(async (req, res) => {
           verdict: result.verdict,
           riskScoreBefore: result.riskScore,
           flagCountBefore: result.flagCount,
+          ...(result.coordinates
+            ? {
+                latitude: result.coordinates.latitude,
+                longitude: result.coordinates.longitude
+              }
+            : {}),
           signalSources: [...new Set(result.signals.map((signal) => signal.source))],
           paymentStatus: "UNPAID",
           timeline: {
