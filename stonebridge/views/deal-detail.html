@@ -75,9 +75,9 @@
 
     <div class="spatial-section">
       <div class="container">
-        <div class="eyebrow">PostGIS Spatial Analysis</div>
-        <h2 class="section-title">Geospatial Risk Visualization</h2>
-        <p class="section-sub">Real-time spatial analysis showing 311 service requests and vacant properties within 500m radius</p>
+        <div class="eyebrow">PostGIS Spatial Analysis Engine</div>
+        <h2 class="section-title">Geospatial Risk Intelligence</h2>
+        <p class="section-sub">Real-time spatial database queries executing ST_DWithin and ST_Distance operations on Baltimore City datasets</p>
 
         <div class="spatial-map-wrap">
           <div id="spatial-map-container">
@@ -87,37 +87,128 @@
 
         <div class="spatial-stats">
           <div class="spatial-stat-card">
-            <div class="spatial-stat-label">Service Requests</div>
+            <div class="spatial-stat-label">311 Service Requests</div>
             <div class="spatial-stat-value" id="spatial-stat-complaints">—</div>
+            <div class="spatial-stat-note">Within 500m radius</div>
           </div>
           <div class="spatial-stat-card">
             <div class="spatial-stat-label">Vacant Properties</div>
             <div class="spatial-stat-value" id="spatial-stat-vacancies">—</div>
+            <div class="spatial-stat-note">Within 500m radius</div>
           </div>
           <div class="spatial-stat-card">
             <div class="spatial-stat-label">Nearest Complaint</div>
             <div class="spatial-stat-value" id="spatial-stat-nearest-complaint">—</div>
+            <div class="spatial-stat-note">Distance (meters)</div>
           </div>
           <div class="spatial-stat-card">
             <div class="spatial-stat-label">Nearest Vacancy</div>
             <div class="spatial-stat-value" id="spatial-stat-nearest-vacancy">—</div>
+            <div class="spatial-stat-note">Distance (meters)</div>
           </div>
         </div>
 
         <div id="spatial-legend" class="spatial-legend">
-          <div class="spatial-legend-title">Map Legend</div>
+          <div class="spatial-legend-title">Interactive Map Legend</div>
           <div class="spatial-legend-items">
             <div class="spatial-legend-item">
               <div class="spatial-legend-marker spatial-legend-marker--property"></div>
-              <span>Target Property</span>
+              <span>Target Property (Geocoded)</span>
             </div>
             <div class="spatial-legend-item">
               <div class="spatial-legend-marker spatial-legend-marker--complaint"></div>
-              <span>311 Service Request</span>
+              <span>311 Service Request (PostGIS)</span>
             </div>
             <div class="spatial-legend-item">
               <div class="spatial-legend-marker spatial-legend-marker--vacancy"></div>
-              <span>Vacant Property</span>
+              <span>Vacant Property (PostGIS)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="spatial-tech-details">
+          <div class="eyebrow">Technical Implementation</div>
+          <h3 class="spatial-tech-title">PostGIS Spatial Query Architecture</h3>
+
+          <div class="spatial-tech-grid">
+            <div class="spatial-tech-card">
+              <div class="spatial-tech-label">Database System</div>
+              <div class="spatial-tech-value">PostgreSQL 16 + PostGIS 3.5</div>
+              <div class="spatial-tech-desc">Cloud-hosted on Neon with geometry column indexing</div>
+            </div>
+
+            <div class="spatial-tech-card">
+              <div class="spatial-tech-label">Spatial Functions</div>
+              <div class="spatial-tech-value">ST_DWithin, ST_Distance, ST_MakePoint</div>
+              <div class="spatial-tech-desc">Optimized radius queries with geography type casting</div>
+            </div>
+
+            <div class="spatial-tech-card">
+              <div class="spatial-tech-label">Coordinate System</div>
+              <div class="spatial-tech-value">SRID 4326 (WGS 84)</div>
+              <div class="spatial-tech-desc">Standard lat/lon reference system for global positioning</div>
+            </div>
+
+            <div class="spatial-tech-card">
+              <div class="spatial-tech-label">Data Sources</div>
+              <div class="spatial-tech-value">Baltimore City Open Data</div>
+              <div class="spatial-tech-desc">274 service requests + 50 vacant properties seeded</div>
+            </div>
+          </div>
+
+          <div class="spatial-query-panel">
+            <div class="spatial-query-header">
+              <span class="spatial-query-title">Sample PostGIS Query</span>
+              <span class="spatial-query-tag">Production</span>
+            </div>
+            <pre class="spatial-query-code"><code>SELECT
+  service_name,
+  address,
+  ST_Distance(
+    geom,
+    ST_SetSRID(ST_MakePoint($lon, $lat), 4326)::geography
+  ) as distance_meters
+FROM "ServiceRequest"
+WHERE ST_DWithin(
+  geom,
+  ST_SetSRID(ST_MakePoint($lon, $lat), 4326)::geography,
+  500  -- radius in meters
+)
+ORDER BY distance_meters
+LIMIT 100;</code></pre>
+          </div>
+
+          <div class="spatial-methodology">
+            <h4 class="spatial-methodology-title">Spatial Analysis Methodology</h4>
+            <div class="spatial-methodology-grid">
+              <div class="spatial-methodology-step">
+                <div class="spatial-step-num">1</div>
+                <div class="spatial-step-content">
+                  <div class="spatial-step-title">Geocoding</div>
+                  <div class="spatial-step-desc">Address converted to WGS 84 coordinates using OpenStreetMap Nominatim API</div>
+                </div>
+              </div>
+              <div class="spatial-methodology-step">
+                <div class="spatial-step-num">2</div>
+                <div class="spatial-step-content">
+                  <div class="spatial-step-title">Radius Query</div>
+                  <div class="spatial-step-desc">PostGIS ST_DWithin executes 500m buffer analysis on indexed geometry columns</div>
+                </div>
+              </div>
+              <div class="spatial-methodology-step">
+                <div class="spatial-step-num">3</div>
+                <div class="spatial-step-content">
+                  <div class="spatial-step-title">Distance Calculation</div>
+                  <div class="spatial-step-desc">ST_Distance computes precise geodesic distances for proximity ranking</div>
+                </div>
+              </div>
+              <div class="spatial-methodology-step">
+                <div class="spatial-step-num">4</div>
+                <div class="spatial-step-content">
+                  <div class="spatial-step-title">Risk Aggregation</div>
+                  <div class="spatial-step-desc">Complaint density and vacancy exposure integrated into severity scoring engine</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -133,7 +224,7 @@
       </div>
     </div>
 
-    <div class="result-sources">
+    <div class="result-sources" style="display: none;">
       <div class="container">
         <div class="section-head">
           <div class="eyebrow">Collaborative Deal Workspace</div>
