@@ -10,7 +10,7 @@ const { outcomeToAfterFlags, outcomeToAfterScore, normalizeOutcome } = require("
 const { serializeDeal, runDiagnosticForDeal } = require("../lib/deals");
 const { setAuthCookie, signToken } = require("../lib/auth");
 const { loadSessionUser, hideDemoPublicUser } = require("../lib/request-user");
-const { isLikelyAddress, normalizeAddress } = require("../engine/signals/common");
+const { isLikelyAddress, normalizeAddress, validateBaltimoreCityAddress } = require("../engine/signals/common");
 const {
   clampAddress,
   clampNote,
@@ -106,7 +106,13 @@ router.post("/diagnose", asyncHandler(async (req, res) => {
   }
   const address = clampAddress(normalized);
   if (!isLikelyAddress(address)) {
-    return res.redirect("/submit?error=Please enter a valid address");
+    return res.redirect("/submit?error=Please enter a complete street address (e.g., 123 Main St, Baltimore MD)");
+  }
+
+  // Check if address is in Baltimore City (not Baltimore County)
+  const cityValidationError = validateBaltimoreCityAddress(address);
+  if (cityValidationError) {
+    return res.redirect(`/submit?error=${encodeURIComponent(cityValidationError)}`);
   }
 
   try {
@@ -236,7 +242,11 @@ router.post("/", asyncHandler(async (req, res) => {
   const address = clampAddress(normalized);
   const timelineStage = normalizeString(req.body.timelineStage);
   const pressurePoint = normalizeString(req.body.pressurePoint);
-  if (!isLikelyAddress(address)) return sendError(res, 400, "A full street address is required");
+  if (!isLikelyAddress(address)) return sendError(res, 400, "A complete street address is required (e.g., 123 Main St, Baltimore MD)");
+
+  // Check if address is in Baltimore City (not Baltimore County)
+  const cityValidationError = validateBaltimoreCityAddress(address);
+  if (cityValidationError) return sendError(res, 400, cityValidationError);
 
   const deal = await prisma.deal.create({
     data: {

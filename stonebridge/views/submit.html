@@ -30,9 +30,10 @@
   <div class="page-wrap submit-page">
     <div class="submit-hero">
       <div class="container-sm">
-        <p class="eyebrow">Baltimore · live public records</p>
+        <p class="eyebrow">Baltimore City · live public records</p>
         <h1 class="submit-title">Run the address.<br><em>Get the verdict before you wire capital.</em></h1>
-        <p class="submit-sub">One full street address pulls the signal stack—liens, ownership friction, procurement, infrastructure—into a single risk score and a Proceed / Caution / Escalate call. If the screen is boring, you walk away. If it isn’t, you already know the memo is justified.</p>
+        <p class="submit-sub">One full street address pulls the signal stack—liens, ownership friction, procurement, infrastructure—into a single risk score and a Proceed / Caution / Escalate call. If the screen is boring, you walk away. If it isn't, you already know the memo is justified.</p>
+        <p class="submit-sub" style="font-size: 0.9em; color: #666; margin-top: 0.5rem;">Currently supporting Baltimore City addresses only. Baltimore County (Towson, Dundalk, etc.) coming soon.</p>
       </div>
     </div>
 
@@ -54,15 +55,15 @@
 
         <div id="submit-error"></div>
 
-        <form action="/api/deals/diagnose" method="POST" id="diagnose-form" aria-label="Run Baltimore address diagnostic">
-          <label class="visually-hidden" for="address-input">Street address in Baltimore, Maryland</label>
+        <form action="/api/deals/diagnose" method="POST" id="diagnose-form" aria-label="Run Baltimore City address diagnostic">
+          <label class="visually-hidden" for="address-input">Street address in Baltimore City, Maryland</label>
           <div class="address-field-wrap" style="position: relative;">
             <input
               type="text"
               name="address"
               id="address-input"
               class="address-input"
-              placeholder="Start typing address... (autocomplete enabled)"
+              placeholder="Enter Baltimore City address... (e.g., 100 N Charles St)"
               autocomplete="off"
               autofocus
               required
@@ -177,14 +178,32 @@
 
         timeout = setTimeout(function() {
           // Nominatim search API - free, no key required
-          fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query + ' Baltimore Maryland') + '&countrycodes=us&addressdetails=1&limit=5', {
+          fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query + ' Baltimore City Maryland') + '&countrycodes=us&addressdetails=1&limit=10', {
             headers: { 'User-Agent': 'StoneBridge-AI/1.0' }
           })
           .then(function(res) { return res.json(); })
           .then(function(results) {
+            // Baltimore County areas to EXCLUDE (not Baltimore City)
+            var baltimoreCountyAreas = ['towson', 'dundalk', 'essex', 'catonsville', 'owings mills', 'parkville',
+              'rosedale', 'middle river', 'perry hall', 'woodlawn', 'pikesville', 'randallstown',
+              'cockeysville', 'timonium', 'lutherville', 'hunt valley', 'white marsh', 'overlea',
+              'arbutus', 'halethorpe', 'lansdowne'];
+
             currentSuggestions = results.filter(function(r) {
-              // Only show results in Baltimore
-              return r.address && (r.address.city === 'Baltimore' || r.address.county === 'Baltimore' || (r.display_name && r.display_name.includes('Baltimore')));
+              if (!r.address) return false;
+
+              // Explicitly exclude Baltimore County areas
+              var displayLower = r.display_name.toLowerCase();
+              for (var i = 0; i < baltimoreCountyAreas.length; i++) {
+                if (displayLower.includes(baltimoreCountyAreas[i])) {
+                  return false; // Reject Baltimore County
+                }
+              }
+
+              // Only show results explicitly in Baltimore City
+              return r.address.city === 'Baltimore' ||
+                     (r.display_name.includes('Baltimore City')) ||
+                     (r.display_name.includes('Baltimore,') && !r.display_name.includes('County'));
             });
 
             if (currentSuggestions.length === 0) {

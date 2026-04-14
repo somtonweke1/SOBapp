@@ -75,6 +75,46 @@ function isLikelyAddress(address) {
   return hasDigit && (hasStreetMarker || hasBaltimoreMarker);
 }
 
+/** Checks if address is in Baltimore CITY (not Baltimore County). Returns error message if not Baltimore City, null if valid. */
+function validateBaltimoreCityAddress(address) {
+  const normalized = normalizeAddress(address).toLowerCase();
+
+  // Baltimore County areas (NOT Baltimore City) - explicitly reject these
+  const baltimoreCountyAreas = [
+    'towson', 'dundalk', 'essex', 'catonsville', 'owings mills', 'parkville',
+    'rosedale', 'middle river', 'perry hall', 'woodlawn', 'pikesville',
+    'randallstown', 'cockeysville', 'timonium', 'lutherville', 'hunt valley',
+    'white marsh', 'overlea', 'arbutus', 'halethorpe', 'lansdowne'
+  ];
+
+  for (const area of baltimoreCountyAreas) {
+    if (normalized.includes(area)) {
+      return `This address appears to be in ${area.charAt(0).toUpperCase() + area.slice(1)}, which is Baltimore County. StoneBridge currently supports Baltimore City addresses only.`;
+    }
+  }
+
+  // Check for explicit Baltimore City markers (good)
+  const hasCityMarker = /\b(baltimore city|baltimore,?\s*md|21\d{3})\b/i.test(normalized);
+
+  // If it has "Baltimore" in it, assume it's Baltimore City (user's intent)
+  if (/\bbaltimore\b/i.test(normalized)) {
+    return null; // Valid
+  }
+
+  // Baltimore City ZIP codes (21201-21231, 21239, 21251, 21264, 21270, 21273, 21275, 21278, 21279, 21280, 21281, 21282, 21283, 21284, 21285, 21286, 21287, 21289, 21290, 21297, 21298)
+  const baltimoreCityZips = /\b(2120[1-9]|212[12]\d|21230|21231|21239|21251|21264|21270|21273|21275|21278|21279|21280|21281|21282|21283|21284|21285|21286|21287|21289|21290|21297|21298)\b/;
+  if (baltimoreCityZips.test(normalized)) {
+    return null; // Valid Baltimore City ZIP
+  }
+
+  // If has MD or Maryland but no Baltimore indicator, prompt user
+  if (/\b(md|maryland)\b/i.test(normalized) && !/\bbaltimore\b/i.test(normalized)) {
+    return 'Please include "Baltimore" in the address. StoneBridge analyzes Baltimore City addresses only.';
+  }
+
+  return null; // Default to allowing (benefit of the doubt)
+}
+
 /** Creates a normalized diagnostic signal object. */
 function buildSignal({ source, category, label, value, severity, url }) {
   return { source, category, label, value, severity, url };
@@ -126,6 +166,7 @@ module.exports = {
   pickOne,
   normalizeAddress,
   isLikelyAddress,
+  validateBaltimoreCityAddress,
   buildSignal,
   zipFromAddress,
   generateMockSignals
