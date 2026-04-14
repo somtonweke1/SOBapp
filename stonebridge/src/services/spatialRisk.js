@@ -716,12 +716,51 @@ async function getZoningClassification(latitude, longitude) {
   }
 }
 
-function calculateComplaintDensity(latitude, longitude, radiusMeters = DEFAULT_RADIUS_METERS) {
-  return computeSpatialRisk(latitude, longitude, { radiusMeters }).then((result) => result.indicators.complaints);
+/**
+ * Calculates complaint density metrics WITHOUT running full spatial analysis.
+ * More efficient than calling computeSpatialRisk() when only complaint data is needed.
+ */
+async function calculateComplaintDensity(latitude, longitude, radiusMeters = DEFAULT_RADIUS_METERS) {
+  const complaintRows = await fetchNearbyComplaints(latitude, longitude, radiusMeters);
+  const weightedComplaints = round(complaintRows.reduce((sum, row) => sum + row.severityWeight, 0));
+  const complaintAreaKm2 = Math.PI * Math.pow(radiusMeters / 1000, 2);
+  const complaintDensity = complaintAreaKm2 > 0 ? round(weightedComplaints / complaintAreaKm2) : 0;
+  const complaintPercentile = estimatePercentile(weightedComplaints, COMPLAINT_PERCENTILE_BANDS) ?? 0;
+  const densityPercentile = estimatePercentile(complaintDensity, DENSITY_PERCENTILE_BANDS) ?? 0;
+
+  return {
+    count: complaintRows.length,
+    weightedCount: weightedComplaints,
+    density: complaintDensity,
+    percentile: complaintPercentile,
+    densityPercentile,
+    bandLabel: getPercentileBandLabel(complaintPercentile),
+    radiusMeters
+  };
 }
 
-function calculateVacancyExposure(latitude, longitude, radiusMeters = DEFAULT_RADIUS_METERS) {
-  return computeSpatialRisk(latitude, longitude, { radiusMeters }).then((result) => result.indicators.vacancy);
+/**
+ * Calculates vacancy exposure metrics WITHOUT running full spatial analysis.
+ * More efficient than calling computeSpatialRisk() when only vacancy data is needed.
+ */
+async function calculateVacancyExposure(latitude, longitude, radiusMeters = DEFAULT_RADIUS_METERS) {
+  const vacancyRows = await fetchNearbyVacancies(latitude, longitude, radiusMeters);
+  const weightedVacancies = round(vacancyRows.reduce((sum, row) => sum + row.recencyWeight, 0));
+  const nearestVacancyMeters = vacancyRows.length ? vacancyRows[0].distance : null;
+  const vacancyPercentile = estimatePercentile(weightedVacancies, VACANCY_PERCENTILE_BANDS) ?? 0;
+  const proximityPercentile = nearestVacancyMeters == null
+    ? 0
+    : (estimatePercentile(radiusMeters - Math.min(radiusMeters, nearestVacancyMeters), PROXIMITY_PERCENTILE_BANDS) ?? 0);
+
+  return {
+    count: vacancyRows.length,
+    weightedCount: weightedVacancies,
+    percentile: vacancyPercentile,
+    proximityPercentile,
+    nearestDistanceMeters: nearestVacancyMeters,
+    bandLabel: getPercentileBandLabel(vacancyPercentile),
+    radiusMeters
+  };
 }
 
 async function computeSpatialRisk(latitude, longitude, options = {}) {
