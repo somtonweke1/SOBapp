@@ -60,9 +60,19 @@ function normalizeAddress(address) {
 /** Checks whether an address is detailed enough to run public-record diagnostics. */
 function isLikelyAddress(address) {
   const normalized = normalizeAddress(address);
+  if (normalized.length < 5) return false;
+
   const hasDigit = /\d/.test(normalized);
-  const hasStreetMarker = /\b(st|street|ave|avenue|rd|road|dr|drive|ln|lane|blvd|boulevard|ct|court|pl|place|way)\b/i.test(normalized);
-  return normalized.length >= 10 && hasDigit && hasStreetMarker;
+
+  // More flexible street marker matching - includes common abbreviations and variations
+  const hasStreetMarker = /\b(st|street|ave|avenue|av|rd|road|dr|drive|ln|lane|blvd|boulevard|ct|court|pl|place|way|pkwy|parkway|cir|circle|ter|terrace|sq|square|aly|alley)\b/i.test(normalized);
+
+  // Accept if it has Baltimore/MD markers even without typical street markers
+  const hasBaltimoreMarker = /\b(baltimore|balt|md|maryland|21\d{3})\b/i.test(normalized);
+
+  // Valid if: has digit AND (street marker OR Baltimore marker)
+  // OR: looks like a specific Baltimore format (digit + Baltimore/MD)
+  return hasDigit && (hasStreetMarker || hasBaltimoreMarker);
 }
 
 /** Creates a normalized diagnostic signal object. */
