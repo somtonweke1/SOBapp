@@ -2,6 +2,7 @@ const path = require("path");
 const { prisma } = require("./prisma");
 const { diagnose } = require("../engine/diagnose");
 const { generateMemo } = require("../engine/memo");
+const { computeSpatialRisk } = require("../services/spatialRisk");
 
 /** Serializes a deal while hiding raw memo filesystem paths. */
 function serializeDeal(deal) {
@@ -70,7 +71,18 @@ async function deliverMemoForDeal(dealId) {
   if (!deal) throw Object.assign(new Error("Deal not found"), { statusCode: 404 });
   if (!deal.verdict) throw Object.assign(new Error("Set a verdict before delivery"), { statusCode: 400 });
 
-  const memo = await generateMemo(deal, deal.signals);
+  // Compute spatial risk analysis for enhanced memo
+  let spatialRisk = null;
+  if (deal.latitude && deal.longitude) {
+    try {
+      spatialRisk = await computeSpatialRisk(deal.latitude, deal.longitude);
+    } catch (error) {
+      console.error('[Deals] Failed to compute spatial risk for memo:', error.message);
+      // Continue without spatial data rather than blocking memo delivery
+    }
+  }
+
+  const memo = await generateMemo(deal, deal.signals, spatialRisk);
 
   await prisma.deal.update({
     where: { id: dealId },
