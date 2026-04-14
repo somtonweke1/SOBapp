@@ -4,6 +4,7 @@ const { prisma } = require("../lib/prisma");
 const { asyncHandler, sendError } = require("../lib/http");
 const { requireAuth } = require("../middleware/auth");
 const { geocodeAddress } = require("../services/geocode");
+const { computeSpatialRisk, fetchNearbyComplaints, fetchNearbyVacancies } = require("../services/spatialRisk");
 
 const router = express.Router();
 
@@ -39,9 +40,14 @@ router.get("/:dealId", requireAuth, asyncHandler(async (req, res) => {
         where: { id: deal.id },
         data: {
           latitude: lat,
-          longitude: lon
+          longitude: lon,
+          geocodeSource: geocoded.source || null,
+          geocodeConfidence: geocoded.confidence || null
         }
       });
+
+      deal.geocodeSource = geocoded.source || null;
+      deal.geocodeConfidence = geocoded.confidence || null;
     }
   }
 
@@ -53,55 +59,16 @@ router.get("/:dealId", requireAuth, asyncHandler(async (req, res) => {
   }
   const radiusMeters = 500;
 
-  // Query service requests within radius
-  const complaints = await prisma.$queryRaw`
-    SELECT
-      id,
-      service_request_num as "requestNum",
-      service_name as "serviceName",
-      description,
-      address,
-      status_description as "status",
-      latitude,
-      longitude,
-      created_date as "createdDate",
-      ST_Distance(
-        geom,
-        ST_SetSRID(ST_MakePoint(${lon}, ${lat}), 4326)::geography
-      ) as "distanceMeters"
-    FROM "ServiceRequest"
-    WHERE ST_DWithin(
-      geom,
-      ST_SetSRID(ST_MakePoint(${lon}, ${lat}), 4326)::geography,
-      ${radiusMeters}
-    )
-    ORDER BY "distanceMeters"
-    LIMIT 100
-  `;
-
-  // Query vacant properties within radius
-  const vacancies = await prisma.$queryRaw`
-    SELECT
-      id,
-      reference,
-      address,
-      neighborhood,
-      latitude,
-      longitude,
-      notice_date as "noticeDate",
-      ST_Distance(
-        geom,
-        ST_SetSRID(ST_MakePoint(${lon}, ${lat}), 4326)::geography
-      ) as "distanceMeters"
-    FROM "VacantProperty"
-    WHERE ST_DWithin(
-      geom,
-      ST_SetSRID(ST_MakePoint(${lon}, ${lat}), 4326)::geography,
-      ${radiusMeters}
-    )
-    ORDER BY "distanceMeters"
-    LIMIT 50
-  `;
+  const [complaints, vacancies, spatial] = await Promise.all([
+    fetchNearbyComplaints(lat, lon, radiusMeters),
+    fetchNearbyVacancies(lat, lon, radiusMeters),
+    computeSpatialRisk(lat, lon, {
+      radiusMeters,
+      documentRiskScore: deal.riskScoreBefore,
+      geocodeSource: deal.geocodeSource,
+      geocodeConfidence: deal.geocodeConfidence
+    })
+  ]);
 
   // Format data for frontend
   res.json({
@@ -112,33 +79,30 @@ router.get("/:dealId", requireAuth, asyncHandler(async (req, res) => {
       address: `${deal.address}, ${deal.city}, ${deal.state}`
     },
     radius: radiusMeters,
-    complaints: complaints.map(c => ({
-      id: c.id,
-      requestNum: c.requestNum,
-      serviceName: c.serviceName,
-      description: c.description,
-      address: c.address,
-      status: c.status,
-      lat: Number(c.latitude),
-      lon: Number(c.longitude),
-      distance: Math.round(Number(c.distanceMeters)),
-      createdDate: c.createdDate
-    })),
-    vacancies: vacancies.map(v => ({
-      id: v.id,
-      reference: v.reference,
-      address: v.address,
-      neighborhood: v.neighborhood,
-      lat: Number(v.latitude),
-      lon: Number(v.longitude),
-      distance: Math.round(Number(v.distanceMeters)),
-      noticeDate: v.noticeDate
-    })),
+    complaints,
+    vacancies,
     summary: {
       complaintCount: complaints.length,
       vacancyCount: vacancies.length,
-      nearestComplaint: complaints.length > 0 ? Math.round(Number(complaints[0].distanceMeters)) : null,
-      nearestVacancy: vacancies.length > 0 ? Math.round(Number(vacancies[0].distanceMeters)) : null
+      nearestComplaint: complaints.length > 0 ? complaints[0].distance : null,
+      nearestVacancy: vacancies.length > 0 ? vacancies[0].distance : null
+    },
+    decision: {
+      documentRisk: Math.round(deal.riskScoreBefore || 0),
+      documentVerdict: deal.verdict || "PENDING",
+      spatialRisk: spatial.spatialRiskScore,
+      spatialVerdict: spatial.spatialVerdict,
+      divergence: spatial.divergence,
+      confidence: spatial.confidence,
+      pattern: spatial.neighborhoodPattern,
+      summarySentence: spatial.summarySentence,
+      action: spatial.action,
+      baselines: spatial.baselines,
+      indicators: spatial.indicators,
+      geocode: {
+        source: deal.geocodeSource || 'unknown',
+        confidence: deal.geocodeConfidence || 'unknown'
+      }
     }
   });
 }));

@@ -148,7 +148,11 @@ async function diagnose(address) {
   let spatialSignals = [];
   if (geocodeResult && geocodeResult.latitude && geocodeResult.longitude) {
     try {
-      spatialSignals = await checkSpatialRisk(address, geocodeResult.latitude, geocodeResult.longitude);
+      spatialSignals = await checkSpatialRisk(address, geocodeResult.latitude, geocodeResult.longitude, {
+        geocodeSource: geocodeResult.source,
+        geocodeConfidence: geocodeResult.confidence,
+        documentRiskScore: null
+      });
     } catch (error) {
       console.error("[diagnose] Spatial risk check failed:", error.message);
     }
@@ -190,7 +194,10 @@ async function diagnose(address) {
     coordinates: geocodeResult ? {
       latitude: geocodeResult.latitude,
       longitude: geocodeResult.longitude,
-      formattedAddress: geocodeResult.formattedAddress
+      formattedAddress: geocodeResult.formattedAddress,
+      source: geocodeResult.source || null,
+      confidence: geocodeResult.confidence || null,
+      coverage: geocodeResult.coverage || null
     } : null,
     dataQuality: {
       estimatedSignalCount,

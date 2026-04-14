@@ -1,6 +1,6 @@
 /**
  * StoneBridge GIS Spatial Visualization
- * Interactive Leaflet map showing PostGIS spatial analysis results
+ * Turns neighborhood context into a decision module and uses the map as evidence.
  */
 
 (function() {
@@ -17,7 +17,21 @@
     legend: document.getElementById('spatial-legend'),
     activityChip: document.getElementById('spatial-activity-chip'),
     activityList: document.getElementById('spatial-activity-list'),
-    takeaways: document.getElementById('spatial-takeaways')
+    takeaways: document.getElementById('spatial-takeaways'),
+    verdictWord: document.getElementById('spatial-verdict-word'),
+    scoreChip: document.getElementById('spatial-score-chip'),
+    confidenceChip: document.getElementById('spatial-confidence-chip'),
+    decisionCopy: document.getElementById('spatial-decision-copy'),
+    documentRisk: document.getElementById('spatial-document-risk'),
+    neighborhoodRisk: document.getElementById('spatial-neighborhood-risk'),
+    gap: document.getElementById('spatial-gap'),
+    divergenceTitle: document.getElementById('spatial-divergence-title'),
+    divergenceCopy: document.getElementById('spatial-divergence-copy'),
+    patternTitle: document.getElementById('spatial-pattern-title'),
+    patternCopy: document.getElementById('spatial-pattern-copy'),
+    patternFacts: document.getElementById('spatial-pattern-facts'),
+    actionTitle: document.getElementById('spatial-action-title'),
+    actionCopy: document.getElementById('spatial-action-copy')
   };
 
   const dealId = window.DEAL_ID;
@@ -26,86 +40,114 @@
     return;
   }
 
-  // Fetch spatial data from API
   fetch(`/api/spatial/${dealId}`)
-    .then(res => {
+    .then((res) => {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
     })
-    .then(data => {
+    .then((data) => {
       if (!data.hasCoordinates) {
-        setSpatialState({
-          tone: 'warning',
-          title: 'Spatial context unavailable',
-          copy: 'The address could not be geocoded into a reliable parcel center, so the map and radius analysis were skipped for this run.'
-        });
-        spatialDom.mapSub.textContent = 'Geocode unavailable';
-        spatialDom.metaCenter.textContent = 'No coordinates';
-        spatialDom.activityChip.textContent = 'Unavailable';
-        spatialDom.mapContainer.innerHTML =
-          '<div class="spatial-no-data"><div class="spatial-empty-title">Spatial context unavailable</div><div class="spatial-empty-copy">This run could not place the address precisely enough to render a neighborhood radius.</div></div>';
-        spatialDom.activityList.innerHTML =
-          '<div class="spatial-activity-empty">No nearby activity can be shown until the address is geocoded.</div>';
-        spatialDom.takeaways.innerHTML = [
-          createTakeaway('No coordinate lock', 'The property-level diagnostic still ran, but neighborhood context could not be mapped.'),
-          createTakeaway('Next step', 'Try a more exact street address or rerun the diagnostic after confirming the parcel format.')
-        ].join('');
+        renderUnavailableState();
         return;
       }
-
-      renderSpatialMap(data);
+      renderSpatialModule(data);
     })
-    .catch(err => {
-      console.error('[spatial-map] Failed to load:', err);
-      setSpatialState({
-        tone: 'danger',
-        title: 'Spatial map failed to load',
-        copy: 'The deal page loaded, but the live neighborhood layer did not respond cleanly.'
-      });
-      spatialDom.activityChip.textContent = 'Error';
-      spatialDom.mapSub.textContent = 'Map request failed';
-      spatialDom.mapContainer.innerHTML =
-        '<div class="spatial-error"><div class="spatial-empty-title">Spatial map failed to load</div><div class="spatial-empty-copy">Reload the page to retry the radius query.</div></div>';
+    .catch((error) => {
+      console.error('[spatial-map] Failed to load:', error);
+      renderErrorState();
     });
 
-  function renderSpatialMap(data) {
-    const { center, radius, complaints, vacancies, summary } = data;
-    const profile = computeSpatialProfile(summary);
+  function renderSpatialModule(data) {
+    const { center, radius, complaints, vacancies, summary, decision } = data;
+    const profile = computeSpatialProfile(decision, summary);
 
-    setSpatialState({
-      tone: profile.tone,
-      title: profile.title,
-      copy: profile.copy
-    });
+    setSpatialState(profile.tone, profile.title, profile.copy);
+    setDecisionModule(decision);
     spatialDom.metaRadius.textContent = `${radius}m`;
     spatialDom.metaCenter.textContent = center.address;
-    spatialDom.mapSub.textContent = `${summary.complaintCount} complaints and ${summary.vacancyCount} vacant properties within ${radius}m`;
+    spatialDom.mapSub.textContent = `${summary.complaintCount} complaints and ${summary.vacancyCount} vacant properties within ${radius}m. Map is evidence, not the headline.`;
     spatialDom.activityChip.textContent = profile.chip;
 
-    // Initialize map centered on property
+    renderMap(center, radius, complaints, vacancies);
+    renderStats(summary);
+    renderActivityList(complaints, vacancies);
+    renderTakeaways(summary, radius, decision);
+    spatialDom.legend.style.display = 'block';
+  }
+
+  function renderUnavailableState() {
+    setSpatialState(
+      'warning',
+      'Spatial context unavailable',
+      'The address could not be geocoded into a reliable parcel center, so the map and radius analysis were skipped for this run.'
+    );
+    setDecisionModule({
+      spatialVerdict: 'Unavailable',
+      spatialRisk: '—',
+      confidence: { level: 'Low' },
+      summarySentence: 'Neighborhood context could not be computed for this run.',
+      divergence: {
+        documentRisk: Number(document.querySelector('#score-target')?.dataset.score || 0),
+        spatialRisk: '—',
+        gap: null,
+        title: 'No divergence read',
+        interpretation: 'Without a coordinate lock, the platform cannot compare neighborhood context against the document screen.'
+      },
+      pattern: {
+        label: 'Pattern unavailable',
+        description: 'The radius could not be anchored to a reliable Baltimore parcel center.'
+      },
+      action: 'Retry with a more exact street address or use a locally matched parcel format.',
+      indicators: {
+        complaints: { count: 0 },
+        vacancy: { count: 0, nearestDistanceMeters: null },
+        floodZone: { inFloodZone: false },
+        zoning: { zoningCode: null }
+      },
+      geocode: { source: 'unresolved' }
+    });
+    spatialDom.mapSub.textContent = 'Geocode unavailable';
+    spatialDom.metaCenter.textContent = 'No coordinates';
+    spatialDom.activityChip.textContent = 'Unavailable';
+    spatialDom.mapContainer.innerHTML = '<div class="spatial-no-data"><div class="spatial-empty-title">Spatial context unavailable</div><div class="spatial-empty-copy">This run could not place the address precisely enough to render a neighborhood radius.</div></div>';
+    spatialDom.activityList.innerHTML = '<div class="spatial-activity-empty">No nearby activity can be shown until the address is geocoded.</div>';
+    spatialDom.takeaways.innerHTML = [
+      createTakeaway('No coordinate lock', 'The parcel screen still ran, but neighborhood context could not be mapped.'),
+      createTakeaway('Next step', 'Use a full street address with exact Baltimore formatting or rerun after parcel normalization.')
+    ].join('');
+  }
+
+  function renderErrorState() {
+    setSpatialState(
+      'danger',
+      'Spatial map failed to load',
+      'The deal page loaded, but the neighborhood context service did not respond cleanly.'
+    );
+    spatialDom.activityChip.textContent = 'Error';
+    spatialDom.mapSub.textContent = 'Map request failed';
+    spatialDom.mapContainer.innerHTML = '<div class="spatial-error"><div class="spatial-empty-title">Spatial map failed to load</div><div class="spatial-empty-copy">Reload the page to retry the radius query.</div></div>';
+  }
+
+  function renderMap(center, radius, complaints, vacancies) {
     const map = L.map('spatial-map').setView([center.lat, center.lon], 15);
 
-    // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
       maxZoom: 19
     }).addTo(map);
 
-    // Define custom icons
     const propertyIcon = L.divIcon({
       className: 'spatial-marker-property',
       html: '<div class="marker-dot marker-dot--property"></div>',
       iconSize: [24, 24],
       iconAnchor: [12, 12]
     });
-
     const complaintIcon = L.divIcon({
       className: 'spatial-marker-complaint',
       html: '<div class="marker-dot marker-dot--complaint"></div>',
       iconSize: [12, 12],
       iconAnchor: [6, 6]
     });
-
     const vacancyIcon = L.divIcon({
       className: 'spatial-marker-vacancy',
       html: '<div class="marker-dot marker-dot--vacancy"></div>',
@@ -113,116 +155,136 @@
       iconAnchor: [7, 7]
     });
 
-    // Add 500m radius circle
     L.circle([center.lat, center.lon], {
-      radius: radius,
+      radius,
       color: '#8b5cf6',
       fillColor: '#8b5cf6',
-      fillOpacity: 0.1,
+      fillOpacity: 0.08,
       weight: 2,
       dashArray: '5, 5'
     }).addTo(map);
 
-    // Add property marker
     L.marker([center.lat, center.lon], { icon: propertyIcon })
       .addTo(map)
       .bindPopup(`
         <div class="spatial-popup">
-          <div class="spatial-popup-title">Target Property</div>
-          <div class="spatial-popup-address">${center.address}</div>
+          <div class="spatial-popup-title">Target property</div>
+          <div class="spatial-popup-address">${escapeHtml(center.address)}</div>
         </div>
       `);
 
-    // Add complaint markers
-    complaints.forEach(complaint => {
+    complaints.forEach((complaint) => {
       L.marker([complaint.lat, complaint.lon], { icon: complaintIcon })
         .addTo(map)
         .bindPopup(`
           <div class="spatial-popup">
-            <div class="spatial-popup-title">311 Service Request</div>
-            <div class="spatial-popup-detail"><strong>${complaint.serviceName}</strong></div>
-            <div class="spatial-popup-detail">${complaint.address}</div>
-            <div class="spatial-popup-detail">Status: ${complaint.status}</div>
+            <div class="spatial-popup-title">311 service request</div>
+            <div class="spatial-popup-detail"><strong>${escapeHtml(complaint.serviceName)}</strong></div>
+            <div class="spatial-popup-detail">${escapeHtml(complaint.address)}</div>
+            <div class="spatial-popup-detail">Status: ${escapeHtml(complaint.status)}</div>
             <div class="spatial-popup-distance">${complaint.distance}m away</div>
           </div>
         `);
     });
 
-    // Add vacancy markers
-    vacancies.forEach(vacancy => {
+    vacancies.forEach((vacancy) => {
       L.marker([vacancy.lat, vacancy.lon], { icon: vacancyIcon })
         .addTo(map)
         .bindPopup(`
           <div class="spatial-popup">
-            <div class="spatial-popup-title">Vacant Property</div>
-            <div class="spatial-popup-detail">${vacancy.address}</div>
-            <div class="spatial-popup-detail">${vacancy.neighborhood}</div>
+            <div class="spatial-popup-title">Vacant property</div>
+            <div class="spatial-popup-detail">${escapeHtml(vacancy.address)}</div>
+            <div class="spatial-popup-detail">${escapeHtml(vacancy.neighborhood || 'Baltimore City')}</div>
             <div class="spatial-popup-distance">${vacancy.distance}m away</div>
           </div>
         `);
     });
-
-    // Update summary stats
-    document.getElementById('spatial-stat-complaints').textContent = summary.complaintCount;
-    document.getElementById('spatial-stat-vacancies').textContent = summary.vacancyCount;
-    document.getElementById('spatial-stat-nearest-complaint').textContent =
-      summary.nearestComplaint ? `${summary.nearestComplaint}m` : 'N/A';
-    document.getElementById('spatial-stat-nearest-vacancy').textContent =
-      summary.nearestVacancy ? `${summary.nearestVacancy}m` : 'N/A';
-
-    // Show legend
-    spatialDom.legend.style.display = 'block';
-
-    renderActivityList(complaints, vacancies);
-    renderTakeaways(summary, radius);
   }
 
-  function setSpatialState({ tone, title, copy }) {
+  function renderStats(summary) {
+    document.getElementById('spatial-stat-complaints').textContent = summary.complaintCount;
+    document.getElementById('spatial-stat-vacancies').textContent = summary.vacancyCount;
+    document.getElementById('spatial-stat-nearest-complaint').textContent = summary.nearestComplaint ? `${summary.nearestComplaint}m` : 'N/A';
+    document.getElementById('spatial-stat-nearest-vacancy').textContent = summary.nearestVacancy ? `${summary.nearestVacancy}m` : 'N/A';
+  }
+
+  function setSpatialState(tone, title, copy) {
     spatialDom.statusPill.textContent = title;
     spatialDom.statusPill.className = `spatial-pill spatial-pill--${tone}`;
     spatialDom.overviewTitle.textContent = title;
     spatialDom.overviewCopy.textContent = copy;
   }
 
-  function computeSpatialProfile(summary) {
-    const complaintCount = Number(summary?.complaintCount || 0);
-    const vacancyCount = Number(summary?.vacancyCount || 0);
-    const nearestComplaint = Number(summary?.nearestComplaint || 0);
-    const nearestVacancy = Number(summary?.nearestVacancy || 0);
+  function setDecisionModule(decision) {
+    spatialDom.verdictWord.textContent = String(decision?.spatialVerdict || 'Unknown').replace(/_/g, ' ');
+    spatialDom.scoreChip.textContent = `Spatial score ${decision?.spatialRisk ?? '—'}`;
+    spatialDom.confidenceChip.textContent = `${decision?.confidence?.level || 'Unknown'} confidence`;
+    spatialDom.decisionCopy.textContent = decision?.summarySentence || 'Neighborhood context loaded.';
+    spatialDom.documentRisk.textContent = String(decision?.divergence?.documentRisk ?? decision?.documentRisk ?? '—');
+    spatialDom.neighborhoodRisk.textContent = String(decision?.spatialRisk ?? '—');
+    spatialDom.gap.textContent = formatGap(decision?.divergence?.gap);
+    spatialDom.divergenceTitle.textContent = decision?.divergence?.title || 'No divergence read';
+    spatialDom.divergenceCopy.textContent = decision?.divergence?.interpretation || '';
+    spatialDom.patternTitle.textContent = decision?.pattern?.label || 'Neighborhood pattern pending';
+    spatialDom.patternCopy.textContent = decision?.pattern?.description || '';
+    spatialDom.patternFacts.innerHTML = buildPatternFacts(decision);
+    spatialDom.actionTitle.textContent = `Action: ${String(decision?.spatialVerdict || 'Review').replace(/_/g, ' ')}`;
+    spatialDom.actionCopy.textContent = decision?.action || '';
+  }
 
-    if (complaintCount === 0 && vacancyCount === 0) {
+  function computeSpatialProfile(decision, summary) {
+    if (decision?.divergence?.mode === 'HIDDEN_NEIGHBORHOOD_RISK') {
+      return {
+        tone: 'danger',
+        chip: 'Hidden neighborhood risk',
+        title: 'The neighborhood context is harsher than the document screen',
+        copy: decision.summarySentence
+      };
+    }
+    if (decision?.divergence?.mode === 'PROPERTY_SPECIFIC_RISK') {
+      return {
+        tone: 'calm',
+        chip: 'Property-specific caution',
+        title: 'Neighborhood context offsets part of the parcel risk',
+        copy: decision.summarySentence
+      };
+    }
+    if (decision?.spatialVerdict === 'ESCALATE') {
+      return {
+        tone: 'danger',
+        chip: 'Concentrated distress',
+        title: 'Neighborhood context escalates the deal',
+        copy: decision.summarySentence
+      };
+    }
+    if ((summary?.complaintCount || 0) === 0 && (summary?.vacancyCount || 0) === 0) {
       return {
         tone: 'calm',
         chip: 'Clean radius',
         title: 'Immediate radius looks clean',
-        copy: 'No nearby 311 complaints or vacant-property hits were found inside the 500m query window.'
+        copy: decision?.summarySentence || 'No nearby distress indicators were found inside the walk-shed.'
       };
     }
-
-    if (vacancyCount >= 3 || complaintCount >= 8 || (nearestVacancy && nearestVacancy < 150)) {
-      return {
-        tone: 'danger',
-        chip: 'Elevated friction',
-        title: 'Radius shows visible neighborhood stress',
-        copy: 'The immediate area contains enough complaints or vacancy pressure to warrant closer underwriting review.'
-      };
-    }
-
-    if (complaintCount > 0 || vacancyCount > 0 || (nearestComplaint && nearestComplaint < 200)) {
-      return {
-        tone: 'warning',
-        chip: 'Mixed context',
-        title: 'Radius is readable but not friction-free',
-        copy: 'Some neighborhood activity appears inside the query radius. The address is mapped, but the context is not completely quiet.'
-      };
-    }
-
     return {
-      tone: 'neutral',
-      chip: 'Mapped',
-      title: 'Neighborhood context mapped',
-      copy: 'The radius query completed and the property can be reviewed against nearby 311 and vacancy activity.'
+      tone: decision?.spatialVerdict === 'CAUTION' ? 'warning' : 'neutral',
+      chip: decision?.pattern?.label || 'Mapped',
+      title: decision?.pattern?.label || 'Neighborhood context mapped',
+      copy: decision?.summarySentence || 'The radius query completed and can now be compared against the document screen.'
     };
+  }
+
+  function buildPatternFacts(decision) {
+    if (!decision) return '<div class="spatial-pattern-fact">Pattern facts unavailable.</div>';
+    const facts = [
+      `${decision.indicators?.complaints?.count ?? 0} complaint hit${decision.indicators?.complaints?.count === 1 ? '' : 's'} in 500m`,
+      `${decision.indicators?.vacancy?.count ?? 0} vacanc${decision.indicators?.vacancy?.count === 1 ? 'y' : 'ies'} in 500m`,
+      `Nearest vacancy ${decision.indicators?.vacancy?.nearestDistanceMeters ?? 'N/A'}m`,
+      `Complaint baseline ${decision.indicators?.complaints?.bandLabel || 'unavailable'}`,
+      `Geocode ${decision.geocode?.source || 'unknown'} / ${decision.confidence?.level || 'Unknown'} confidence`
+    ];
+    if (decision.indicators?.floodZone?.inFloodZone) facts.push(`Flood zone ${decision.indicators.floodZone.floodZoneType || 'present'}`);
+    if (decision.indicators?.zoning?.zoningCode) facts.push(`Zoning ${decision.indicators.zoning.zoningCode}`);
+    return facts.map((item) => `<div class="spatial-pattern-fact">${escapeHtml(item)}</div>`).join('');
   }
 
   function renderActivityList(complaints, vacancies) {
@@ -241,13 +303,10 @@
         distance: item.distance,
         detail: 'Vacant property in radius'
       }))
-    ]
-      .sort((left, right) => (left.distance || 999999) - (right.distance || 999999))
-      .slice(0, 5);
+    ].sort((a, b) => (a.distance || 999999) - (b.distance || 999999)).slice(0, 5);
 
     if (!rows.length) {
-      spatialDom.activityList.innerHTML =
-        '<div class="spatial-activity-empty">No complaint or vacancy records were found inside this immediate radius. That is a favorable neighborhood signal, not a loading problem.</div>';
+      spatialDom.activityList.innerHTML = '<div class="spatial-activity-empty">No complaint or vacancy records were found inside this radius. That is a clean neighborhood signal, not a loading problem.</div>';
       return;
     }
 
@@ -264,25 +323,23 @@
     `).join('');
   }
 
-  function renderTakeaways(summary, radius) {
-    const takeaways = [];
+  function renderTakeaways(summary, radius, decision) {
     const complaintCount = Number(summary?.complaintCount || 0);
     const vacancyCount = Number(summary?.vacancyCount || 0);
+    const takeaways = [];
 
-    if (complaintCount === 0) {
-      takeaways.push(createTakeaway('Complaint pressure', `No 311 complaint hits were found within ${radius}m of the target property.`));
-    } else {
-      takeaways.push(createTakeaway('Complaint pressure', `${complaintCount} complaint record${complaintCount === 1 ? '' : 's'} sit within ${radius}m, with the closest ${summary.nearestComplaint ? `at ${summary.nearestComplaint}m` : 'inside the radius'}.`));
-    }
+    if (complaintCount === 0) takeaways.push(createTakeaway('Complaint pressure', `No 311 complaint hits were found within ${radius}m of the target property.`));
+    else takeaways.push(createTakeaway('Complaint pressure', `${complaintCount} complaint record${complaintCount === 1 ? '' : 's'} sit within ${radius}m, with the closest ${summary.nearestComplaint ? `at ${summary.nearestComplaint}m` : 'inside the radius'}.`));
 
-    if (vacancyCount === 0) {
-      takeaways.push(createTakeaway('Vacancy exposure', `No vacant-property records appear inside the ${radius}m walk-shed around this address.`));
-    } else {
-      takeaways.push(createTakeaway('Vacancy exposure', `${vacancyCount} vacant propert${vacancyCount === 1 ? 'y appears' : 'ies appear'} in the radius, nearest ${summary.nearestVacancy ? `${summary.nearestVacancy}m away` : 'inside the zone'}.`));
-    }
+    if (vacancyCount === 0) takeaways.push(createTakeaway('Vacancy exposure', `No vacant-property records appear inside the ${radius}m walk-shed around this address.`));
+    else takeaways.push(createTakeaway('Vacancy exposure', `${vacancyCount} vacant propert${vacancyCount === 1 ? 'y appears' : 'ies appear'} in the radius, nearest ${summary.nearestVacancy ? `${summary.nearestVacancy}m away` : 'inside the zone'}.`));
 
-    if (complaintCount === 0 && vacancyCount === 0) {
-      takeaways.push(createTakeaway('Decision read', 'The map supports a cleaner immediate-block story. If deal risk remains high, it is likely coming from property-specific or sponsor-specific signals rather than neighborhood distress.'));
+    if (decision?.divergence?.mode === 'PROPERTY_SPECIFIC_RISK') {
+      takeaways.push(createTakeaway('Decision read', 'Neighborhood conditions are cleaner than the document screen. Focus diligence on the parcel, sponsor, or execution mechanics first.'));
+    } else if (decision?.divergence?.mode === 'HIDDEN_NEIGHBORHOOD_RISK') {
+      takeaways.push(createTakeaway('Decision read', 'The map is surfacing hidden neighborhood risk. Do not let a low document score erase visible block-level pressure.'));
+    } else if (decision?.divergence?.mode === 'CONVERGENT_RISK') {
+      takeaways.push(createTakeaway('Decision read', 'The map and the parcel screen are reinforcing each other. Treat the risk as structural rather than incidental.'));
     } else {
       takeaways.push(createTakeaway('Decision read', 'Use this radius as a neighborhood cross-check. If the document score and the map diverge, treat that mismatch as a diligence prompt rather than ignoring one side.'));
     }
@@ -297,6 +354,12 @@
         <div class="spatial-takeaway-copy">${escapeHtml(copy)}</div>
       </div>
     `;
+  }
+
+  function formatGap(value) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return '—';
+    return numeric > 0 ? `+${numeric}` : String(numeric);
   }
 
   function escapeHtml(value) {

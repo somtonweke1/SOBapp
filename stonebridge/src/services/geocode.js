@@ -14,27 +14,104 @@ const geocoder = NodeGeocoder({
   timeout: 5000,
 });
 
-function normalizeStreetAddress(value) {
+const STREET_SUFFIX_MAP = new Map([
+  ['street', 'st'],
+  ['st', 'st'],
+  ['avenue', 'ave'],
+  ['ave', 'ave'],
+  ['road', 'rd'],
+  ['rd', 'rd'],
+  ['boulevard', 'blvd'],
+  ['blvd', 'blvd'],
+  ['place', 'pl'],
+  ['pl', 'pl'],
+  ['drive', 'dr'],
+  ['dr', 'dr'],
+  ['court', 'ct'],
+  ['ct', 'ct'],
+  ['lane', 'ln'],
+  ['ln', 'ln'],
+  ['terrace', 'ter'],
+  ['ter', 'ter'],
+  ['parkway', 'pkwy'],
+  ['pkwy', 'pkwy'],
+  ['highway', 'hwy'],
+  ['hwy', 'hwy']
+]);
+
+const DIRECTION_MAP = new Map([
+  ['north', 'n'],
+  ['south', 's'],
+  ['east', 'e'],
+  ['west', 'w'],
+  ['northeast', 'ne'],
+  ['northwest', 'nw'],
+  ['southeast', 'se'],
+  ['southwest', 'sw'],
+  ['n', 'n'],
+  ['s', 's'],
+  ['e', 'e'],
+  ['w', 'w'],
+  ['ne', 'ne'],
+  ['nw', 'nw'],
+  ['se', 'se'],
+  ['sw', 'sw']
+]);
+
+function normalizeToken(token) {
+  const cleaned = String(token || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!cleaned) return '';
+  if (DIRECTION_MAP.has(cleaned)) return DIRECTION_MAP.get(cleaned);
+  if (STREET_SUFFIX_MAP.has(cleaned)) return STREET_SUFFIX_MAP.get(cleaned);
+  return cleaned;
+}
+
+function stripSecondaryUnit(value) {
   return String(value || '')
+    .replace(/\b(?:apt|apartment|unit|ste|suite|fl|floor|rm|room)\b[\s#-]*[a-z0-9-]+/gi, '')
+    .replace(/\s+#\s*[a-z0-9-]+/gi, '')
+    .trim();
+}
+
+function normalizeStreetAddress(value) {
+  const withoutUnits = stripSecondaryUnit(value);
+  return withoutUnits
     .replace(/\s+/g, ' ')
     .replace(/\./g, '')
+    .replace(/,/g, ' ')
+    .replace(/\b212\d{2}(?:-\d{4})?\b/g, '')
+    .replace(/\b(baltimore|maryland|md|usa)\b/gi, '')
     .replace(/\s*,\s*/g, ', ')
     .trim();
 }
 
+function toCanonicalStreet(value) {
+  const tokens = normalizeStreetAddress(value)
+    .split(/\s+/)
+    .map(normalizeToken)
+    .filter(Boolean);
+  return tokens.join(' ');
+}
+
 function buildStreetCandidates(address) {
   const normalized = normalizeStreetAddress(address);
-  const firstSegment = normalized.split(',')[0].trim();
-  const withoutBaltimore = firstSegment
-    .replace(/\bBaltimore\b/i, '')
-    .replace(/\bMaryland\b/i, '')
-    .replace(/\bMD\b/i, '')
-    .replace(/\bUSA\b/i, '')
-    .replace(/\b\d{5}(?:-\d{4})?\b/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const firstSegment = normalized.split(',')[0].trim() || normalized;
+  const canonical = toCanonicalStreet(firstSegment);
+  const tokens = canonical.split(' ').filter(Boolean);
+  const withoutDirectional = tokens.length > 2 && DIRECTION_MAP.has(tokens[1])
+    ? [tokens[0], ...tokens.slice(2)].join(' ')
+    : '';
+  const withoutSuffix = tokens.length > 2 && STREET_SUFFIX_MAP.has(tokens[tokens.length - 1])
+    ? tokens.slice(0, -1).join(' ')
+    : '';
 
-  return [...new Set([normalized, firstSegment, withoutBaltimore].filter(Boolean))];
+  return [...new Set([
+    normalized,
+    firstSegment,
+    canonical,
+    withoutDirectional,
+    withoutSuffix
+  ].filter(Boolean))];
 }
 
 async function geocodeFromLocalDatasets(address) {
@@ -51,7 +128,7 @@ async function geocodeFromLocalDatasets(address) {
             ST_X(ST_Centroid(geom)) AS longitude,
             1 AS priority
           FROM "Parcel"
-          WHERE UPPER(TRIM(address)) = UPPER(TRIM(${candidate}))
+          WHERE regexp_replace(lower(address), '[^a-z0-9]+', ' ', 'g') = regexp_replace(lower(${candidate}), '[^a-z0-9]+', ' ', 'g')
           UNION ALL
           SELECT
             'ServiceRequest' AS source,
@@ -60,7 +137,7 @@ async function geocodeFromLocalDatasets(address) {
             ST_X(geom) AS longitude,
             2 AS priority
           FROM "ServiceRequest"
-          WHERE UPPER(TRIM(address)) = UPPER(TRIM(${candidate}))
+          WHERE regexp_replace(lower(address), '[^a-z0-9]+', ' ', 'g') = regexp_replace(lower(${candidate}), '[^a-z0-9]+', ' ', 'g')
           UNION ALL
           SELECT
             'VacantProperty' AS source,
@@ -69,7 +146,7 @@ async function geocodeFromLocalDatasets(address) {
             ST_X(geom) AS longitude,
             3 AS priority
           FROM "VacantProperty"
-          WHERE UPPER(TRIM(address)) = UPPER(TRIM(${candidate}))
+          WHERE regexp_replace(lower(address), '[^a-z0-9]+', ' ', 'g') = regexp_replace(lower(${candidate}), '[^a-z0-9]+', ' ', 'g')
           UNION ALL
           SELECT
             'Parcel' AS source,
@@ -78,7 +155,7 @@ async function geocodeFromLocalDatasets(address) {
             ST_X(ST_Centroid(geom)) AS longitude,
             4 AS priority
           FROM "Parcel"
-          WHERE UPPER(address) LIKE UPPER(${candidate + '%'})
+          WHERE regexp_replace(lower(address), '[^a-z0-9]+', ' ', 'g') LIKE regexp_replace(lower(${candidate + '%'}), '[^a-z0-9]+', ' ', 'g')
           UNION ALL
           SELECT
             'ServiceRequest' AS source,
@@ -87,7 +164,7 @@ async function geocodeFromLocalDatasets(address) {
             ST_X(geom) AS longitude,
             5 AS priority
           FROM "ServiceRequest"
-          WHERE UPPER(address) LIKE UPPER(${candidate + '%'})
+          WHERE regexp_replace(lower(address), '[^a-z0-9]+', ' ', 'g') LIKE regexp_replace(lower(${candidate + '%'}), '[^a-z0-9]+', ' ', 'g')
           UNION ALL
           SELECT
             'VacantProperty' AS source,
@@ -96,7 +173,7 @@ async function geocodeFromLocalDatasets(address) {
             ST_X(geom) AS longitude,
             6 AS priority
           FROM "VacantProperty"
-          WHERE UPPER(address) LIKE UPPER(${candidate + '%'})
+          WHERE regexp_replace(lower(address), '[^a-z0-9]+', ' ', 'g') LIKE regexp_replace(lower(${candidate + '%'}), '[^a-z0-9]+', ' ', 'g')
         )
         SELECT source, address, latitude, longitude, priority
         FROM address_candidates
@@ -112,7 +189,8 @@ async function geocodeFromLocalDatasets(address) {
           longitude: Number(match.longitude),
           formattedAddress: match.address,
           confidence: match.priority <= 3 ? 'high' : 'medium',
-          source: `local:${match.source}`
+          source: `local:${match.source}`,
+          coverage: match.priority <= 3 ? 'exact' : 'prefix'
         };
       }
     } catch (error) {
@@ -180,8 +258,9 @@ async function geocodeAddress(address, city = 'Baltimore', state = 'MD') {
       latitude: lat,
       longitude: lon,
       formattedAddress: result.formattedAddress,
-      confidence: result.extra?.confidence || 'unknown',
-      source: 'remote:openstreetmap'
+      confidence: result.extra?.confidence || 'low',
+      source: 'remote:openstreetmap',
+      coverage: 'remote'
     };
   } catch (error) {
     console.error(`[Geocoding] Error for ${address}:`, error.message);
@@ -235,4 +314,5 @@ async function geocodeBatch(addresses) {
 module.exports = {
   geocodeAddress,
   geocodeBatch,
+  normalizeStreetAddress,
 };

@@ -100,10 +100,61 @@
           </div>
         </div>
 
+        <div class="spatial-decision-grid">
+          <div class="spatial-decision-card spatial-decision-card--verdict">
+            <div class="spatial-decision-kicker">Neighborhood context</div>
+            <div class="spatial-decision-main">
+              <div class="spatial-verdict-word" id="spatial-verdict-word">Analyzing</div>
+              <div class="spatial-verdict-meta">
+                <span class="spatial-score-chip" id="spatial-score-chip">Spatial score —</span>
+                <span class="spatial-confidence-chip" id="spatial-confidence-chip">Confidence pending</span>
+              </div>
+            </div>
+            <div class="spatial-decision-copy" id="spatial-decision-copy">Neighborhood risk will summarize the immediate 500m context once the radius query returns.</div>
+          </div>
+
+          <div class="spatial-decision-card spatial-decision-card--divergence">
+            <div class="spatial-decision-kicker">Divergence</div>
+            <div class="spatial-diff-grid">
+              <div class="spatial-diff-item">
+                <span class="spatial-diff-label">Document risk</span>
+                <span class="spatial-diff-value" id="spatial-document-risk">—</span>
+              </div>
+              <div class="spatial-diff-item">
+                <span class="spatial-diff-label">Neighborhood risk</span>
+                <span class="spatial-diff-value" id="spatial-neighborhood-risk">—</span>
+              </div>
+              <div class="spatial-diff-item">
+                <span class="spatial-diff-label">Gap</span>
+                <span class="spatial-diff-value" id="spatial-gap">—</span>
+              </div>
+            </div>
+            <div class="spatial-divergence-title" id="spatial-divergence-title">Awaiting divergence read</div>
+            <div class="spatial-divergence-copy" id="spatial-divergence-copy">This will explain whether the neighborhood context confirms or offsets the document screen.</div>
+          </div>
+        </div>
+
+        <div class="spatial-pattern-grid">
+          <div class="spatial-pattern-card">
+            <div class="spatial-decision-kicker">Pattern summary</div>
+            <div class="spatial-pattern-title" id="spatial-pattern-title">Neighborhood pattern pending</div>
+            <div class="spatial-pattern-copy" id="spatial-pattern-copy">The radius will be classified as clean, mixed, or concentrated distress.</div>
+            <div class="spatial-pattern-facts" id="spatial-pattern-facts">
+              <div class="spatial-pattern-fact">Complaint count and vacancy exposure will populate here.</div>
+            </div>
+          </div>
+
+          <div class="spatial-pattern-card">
+            <div class="spatial-decision-kicker">Action</div>
+            <div class="spatial-pattern-title" id="spatial-action-title">Underwriting action pending</div>
+            <div class="spatial-pattern-copy" id="spatial-action-copy">This will translate the neighborhood read into the next diligence move.</div>
+          </div>
+        </div>
+
         <div class="spatial-map-wrap">
           <div class="spatial-map-header">
             <div>
-              <div class="spatial-map-title">Neighborhood map</div>
+              <div class="spatial-map-title">Map evidence</div>
               <div class="spatial-map-sub" id="spatial-map-sub">Target parcel and immediate radius</div>
             </div>
             <div class="spatial-map-badges">

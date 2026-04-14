@@ -141,7 +141,9 @@ router.post("/diagnose", asyncHandler(async (req, res) => {
           ...(result.coordinates
             ? {
                 latitude: result.coordinates.latitude,
-                longitude: result.coordinates.longitude
+                longitude: result.coordinates.longitude,
+                geocodeSource: result.coordinates.source,
+                geocodeConfidence: result.coordinates.confidence
               }
             : {}),
           signalSources: [...new Set(result.signals.map((signal) => signal.source))],

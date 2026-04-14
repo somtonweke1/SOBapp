@@ -15,6 +15,8 @@ model Deal {
   state              String         @default("MD")
   latitude           Float?
   longitude          Float?
+  geocodeSource      String?
+  geocodeConfidence  String?
   clientId           String
   client             User           @relation(fields: [clientId], references: [id])
   status             DealStatus     @default(PENDING)

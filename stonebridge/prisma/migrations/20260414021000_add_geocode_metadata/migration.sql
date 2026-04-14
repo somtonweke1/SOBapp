@@ -1,0 +1,3 @@
+ALTER TABLE "Deal"
+ADD COLUMN IF NOT EXISTS "geocodeSource" TEXT,
+ADD COLUMN IF NOT EXISTS "geocodeConfidence" TEXT;

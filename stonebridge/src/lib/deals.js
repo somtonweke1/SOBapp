@@ -36,6 +36,8 @@ async function runDiagnosticForDeal(dealId) {
   if (result.coordinates) {
     dealUpdateData.latitude = result.coordinates.latitude;
     dealUpdateData.longitude = result.coordinates.longitude;
+    dealUpdateData.geocodeSource = result.coordinates.source;
+    dealUpdateData.geocodeConfidence = result.coordinates.confidence;
   }
 
   await prisma.$transaction([
