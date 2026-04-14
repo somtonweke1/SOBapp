@@ -213,7 +213,7 @@ async function fetchNearbyComplaints(latitude, longitude, radiusMeters = DEFAULT
       COALESCE(service_name, description, '311 service request') as "serviceName",
       description,
       address,
-      COALESCE(status_description, status, 'Open') as "status",
+      COALESCE(status_description, 'Open') as "status",
       latitude,
       longitude,
       created_date as "createdDate",
