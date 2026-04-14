@@ -12,23 +12,40 @@ function parsePropertySignals(rows, address, url) {
   const assessedValue = row.assessmentamount || row.taxbase || row.improvementvalue;
 
   if (vacant) {
+    const severityLevel = violationCount >= 5 ? "CRITICAL" : "HIGH";
+    const compoundIssue = violationCount >= 5 ? ` Compounded by ${violationCount} violations—suggests prolonged neglect.` : '';
+    const investmentImplication = severityLevel === "CRITICAL"
+      ? ' Investment impact: Major rehabilitation required. Budget for full systems replacement, asbestos/lead abatement, and extended permit timelines. Likely need specialist contractor.'
+      : ' Investment impact: Moderate rehabilitation scope. Verify building is secure, utilities disconnected properly, and structural integrity maintained.';
+
     signals.push(buildSignal({
       source: "Baltimore City Open Data",
       category: "PROPERTY_DISTRESS",
       label: "Vacancy notice on file",
-      value: "Vacant building notice present",
-      severity: violationCount >= 5 ? "CRITICAL" : "HIGH",
+      value: `Vacant building notice present.${compoundIssue}${investmentImplication}`,
+      severity: severityLevel,
       url
     }));
   }
 
   if (violationCount > 0) {
+    const severityLevel = violationCount >= 8 ? "CRITICAL" : violationCount >= 4 ? "HIGH" : "MEDIUM";
+    let insight = '';
+
+    if (severityLevel === "CRITICAL") {
+      insight = ' Pattern suggests chronic compliance issues. Underwriting impact: Budget for full code compliance review, likely Stop Work Order risk, and extended stabilization timeline. Consider specialist legal counsel.';
+    } else if (severityLevel === "HIGH") {
+      insight = ' Elevated violation count indicates deferred maintenance or non-compliant prior work. Underwriting impact: Engage code consultant early, budget 15-25% construction contingency, expect permit delays.';
+    } else {
+      insight = ' Moderate violation history—common for Baltimore properties. Underwriting impact: Standard due diligence applies. Review violation types to assess scope.';
+    }
+
     signals.push(buildSignal({
       source: "Baltimore City Open Data",
       category: "PROPERTY_DISTRESS",
       label: "Repeated code violations",
-      value: `${violationCount} code issues tied to parcel`,
-      severity: violationCount >= 8 ? "CRITICAL" : violationCount >= 4 ? "HIGH" : "MEDIUM",
+      value: `${violationCount} code issues tied to parcel.${insight}`,
+      severity: severityLevel,
       url
     }));
   }

@@ -115,22 +115,92 @@ function deriveSpatialVerdict(score) {
   return 'PROCEED';
 }
 
-function deriveNeighborhoodPattern(metrics) {
-  if (metrics.weightedVacancy >= 6 || metrics.weightedComplaints >= 18 || metrics.nearestVacancyMeters && metrics.nearestVacancyMeters < 120) {
-    return {
-      label: 'Concentrated distress',
-      description: 'Complaint and vacancy pressure are clustering close enough to affect the underwriting story.'
-    };
+function analyzeTrend(rows, dateField) {
+  if (!rows || rows.length < 2) return { direction: 'insufficient_data', confidence: 'low' };
+
+  const withDates = rows
+    .map(row => ({ row, date: parseDate(row[dateField]) }))
+    .filter(item => item.date !== null)
+    .sort((a, b) => a.date - b.date);
+
+  if (withDates.length < 2) return { direction: 'insufficient_data', confidence: 'low' };
+
+  const now = new Date();
+  const recent90 = withDates.filter(item => daysBetween(item.date, now) <= 90).length;
+  const days90to365 = withDates.filter(item => {
+    const days = daysBetween(item.date, now);
+    return days > 90 && days <= 365;
+  }).length;
+  const olderThan365 = withDates.filter(item => daysBetween(item.date, now) > 365).length;
+
+  const recentRate = recent90 / Math.max(1, recent90 + days90to365 + olderThan365);
+  const middleRate = days90to365 / Math.max(1, recent90 + days90to365 + olderThan365);
+
+  let direction = 'stable';
+  let confidence = 'medium';
+  let description = '';
+
+  if (recentRate > 0.5) {
+    direction = 'accelerating';
+    confidence = recent90 >= 5 ? 'high' : 'medium';
+    description = `Activity is accelerating—${recent90} of ${withDates.length} events occurred in the last 90 days. This suggests worsening neighborhood pressure.`;
+  } else if (recentRate < 0.15 && olderThan365 > recent90 + days90to365) {
+    direction = 'improving';
+    confidence = olderThan365 >= 5 ? 'high' : 'medium';
+    description = `Activity is declining—most events are older than 1 year. This suggests neighborhood conditions may be stabilizing.`;
+  } else {
+    direction = 'stable';
+    description = `Activity is relatively steady over time. No clear acceleration or decline pattern detected.`;
   }
-  if (metrics.weightedComplaints >= 7 || metrics.weightedVacancy >= 2 || metrics.nearestVacancyMeters && metrics.nearestVacancyMeters < 220) {
-    return {
-      label: 'Mixed / transitional block',
-      description: 'The radius is investable in places, but nearby friction is visible and should be priced explicitly.'
-    };
+
+  return { direction, confidence, description, recent90, days90to365, olderThan365 };
+}
+
+function deriveNeighborhoodPattern(metrics, complaintTrend, vacancyTrend) {
+  const baseDistress = metrics.weightedVacancy >= 6 || metrics.weightedComplaints >= 18 ||
+    (metrics.nearestVacancyMeters && metrics.nearestVacancyMeters < 120);
+  const baseTransitional = metrics.weightedComplaints >= 7 || metrics.weightedVacancy >= 2 ||
+    (metrics.nearestVacancyMeters && metrics.nearestVacancyMeters < 220);
+
+  let label = 'Clean radius';
+  let description = 'Immediate block conditions look materially cleaner than a distressed Baltimore radius.';
+  let trendModifier = '';
+
+  if (baseDistress) {
+    label = 'Concentrated distress';
+    description = 'Complaint and vacancy pressure are clustering close enough to affect the underwriting story.';
+
+    if (complaintTrend?.direction === 'accelerating' || vacancyTrend?.direction === 'accelerating') {
+      trendModifier = ' Pattern is accelerating—recent activity suggests conditions are deteriorating.';
+      label = 'Concentrated distress (worsening)';
+    } else if (complaintTrend?.direction === 'improving' && vacancyTrend?.direction !== 'accelerating') {
+      trendModifier = ' Some signs of stabilization—recent activity is lighter than historical baseline.';
+    }
+  } else if (baseTransitional) {
+    label = 'Mixed / transitional block';
+    description = 'The radius is investable in places, but nearby friction is visible and should be priced explicitly.';
+
+    if (complaintTrend?.direction === 'improving' && vacancyTrend?.direction === 'improving') {
+      trendModifier = ' Improving trajectory—recent activity suggests the block may be turning.';
+      label = 'Mixed / transitional block (improving)';
+    } else if (complaintTrend?.direction === 'accelerating' || vacancyTrend?.direction === 'accelerating') {
+      trendModifier = ' Deteriorating trajectory—watch for cascading distress.';
+      label = 'Mixed / transitional block (declining)';
+    }
+  } else {
+    if (complaintTrend?.direction === 'accelerating' && complaintTrend.recent90 >= 3) {
+      trendModifier = ' Watch for emerging pressure—complaint activity has picked up recently.';
+      label = 'Clean radius (monitor)';
+    }
   }
+
   return {
-    label: 'Clean radius',
-    description: 'Immediate block conditions look materially cleaner than a distressed Baltimore radius.'
+    label,
+    description: description + trendModifier,
+    trend: {
+      complaint: complaintTrend,
+      vacancy: vacancyTrend
+    }
   };
 }
 
@@ -160,19 +230,53 @@ function deriveDivergence(documentRiskScore, spatialRiskScore) {
 }
 
 function deriveAction(divergence, spatialVerdict, neighborhoodPattern) {
+  const actions = [];
+  const isWorsening = neighborhoodPattern.label?.includes('worsening') || neighborhoodPattern.label?.includes('declining');
+  const isImproving = neighborhoodPattern.label?.includes('improving');
+  const complaintAccelerating = neighborhoodPattern.trend?.complaint?.direction === 'accelerating';
+  const vacancyAccelerating = neighborhoodPattern.trend?.vacancy?.direction === 'accelerating';
+
+  // Primary action based on divergence
   if (divergence.mode === 'HIDDEN_NEIGHBORHOOD_RISK') {
-    return 'Underwriting next step: inspect block trajectory, nearby vacancy reuse, and submarket rent durability before relying on the low document score.';
+    actions.push('⚠️ Priority: Inspect block trajectory and nearby vacancy reuse before relying on the low document score.');
+    if (isWorsening) {
+      actions.push('📉 Trend Alert: Recent activity shows deterioration—verify if this is temporary construction noise or structural decline.');
+    }
+    actions.push('💰 Pricing: Require submarket rent durability analysis and larger contingency reserves.');
+  } else if (divergence.mode === 'PROPERTY_SPECIFIC_RISK') {
+    actions.push('🎯 Focus diligence on the parcel itself—neighborhood context is cleaner than property signals suggest.');
+    actions.push('🔍 Deep dive: Property-specific issues (title, violations, liens) need resolution. Block is investable.');
+  } else if (spatialVerdict === 'ESCALATE') {
+    actions.push('🚨 High Risk: Require larger basis discount, tighter contingency plan, or redevelopment thesis that explicitly absorbs neighborhood distress.');
+    if (isWorsening) {
+      actions.push('📊 Deteriorating conditions detected—consider shorter hold period or exit strategy that accounts for continued decline.');
+    } else if (isImproving) {
+      actions.push('📈 Some stabilization detected—verify if improvement is durable and captured in comps before underwriting recovery.');
+    }
+  } else if (neighborhoodPattern.label?.includes('Mixed / transitional')) {
+    actions.push('⚖️ Transitional Block: Price hold risk and inspect whether nearby friction is improving or compounding.');
+    if (isImproving) {
+      actions.push('✅ Improving trend—this could be an opportunity if basis is right and you can wait for the turn.');
+    } else if (isWorsening) {
+      actions.push('⚠️ Deteriorating trend—tighten underwriting assumptions and stress-test downside scenarios.');
+    }
+  } else {
+    actions.push('✓ Spatial context supports the deal. Use map as confirming evidence.');
+    if (complaintAccelerating) {
+      actions.push('👀 Monitor: Complaint activity picking up—track this in ongoing asset management.');
+    }
   }
-  if (divergence.mode === 'PROPERTY_SPECIFIC_RISK') {
-    return 'Underwriting next step: focus diligence on the parcel itself. Neighborhood context is not the main problem here.';
+
+  // Secondary tactical actions
+  if (vacancyAccelerating && neighborhoodPattern.trend.vacancy.recent90 >= 3) {
+    actions.push('🏚️ Vacancy Alert: 3+ new vacancies in 90 days—confirm this isn\'t spillover from adjacent distressed corridors.');
   }
-  if (spatialVerdict === 'ESCALATE') {
-    return 'Underwriting next step: require a larger basis discount, tighter contingency plan, or a redevelopment thesis that explicitly absorbs neighborhood distress.';
+
+  if (divergence.spatialRisk >= 50 || spatialVerdict === 'ESCALATE') {
+    actions.push('📋 Due Diligence: Site visit required. Walk the block, photograph nearest vacancies, talk to neighbors.');
   }
-  if (neighborhoodPattern.label === 'Mixed / transitional block') {
-    return 'Underwriting next step: treat the radius as transitional. Price hold risk and inspect whether nearby friction is improving or compounding.';
-  }
-  return 'Underwriting next step: use the map as confirming evidence and keep diligence focused on deal-specific execution risks.';
+
+  return actions.join(' ');
 }
 
 function buildSummarySentence(metrics, divergence, neighborhoodPattern) {
@@ -181,19 +285,37 @@ function buildSummarySentence(metrics, divergence, neighborhoodPattern) {
     : 'no nearby vacancy hits';
   const complaintText = `${metrics.rawComplaints} complaints`;
 
+  // Add trend context
+  let trendContext = '';
+  const complaintTrend = neighborhoodPattern.trend?.complaint;
+  const vacancyTrend = neighborhoodPattern.trend?.vacancy;
+
+  if (complaintTrend?.direction === 'accelerating') {
+    trendContext = ` Recent complaint activity is accelerating (${complaintTrend.recent90} in last 90 days).`;
+  } else if (complaintTrend?.direction === 'improving') {
+    trendContext = ` Complaint activity is declining—most events are historical.`;
+  }
+
+  if (vacancyTrend?.direction === 'accelerating' && vacancyTrend.recent90 >= 2) {
+    trendContext += ` Vacancy notices accelerating (${vacancyTrend.recent90} recent).`;
+  } else if (vacancyTrend?.direction === 'improving') {
+    trendContext += ` Vacancy trend improving—most notices are old.`;
+  }
+
+  let baseSentence = '';
   if (divergence.mode === 'PROPERTY_SPECIFIC_RISK') {
-    return `Spatial context is cleaner than the document screen. Nearby distress is limited: ${complaintText}, ${vacancyText}.`;
+    baseSentence = `Spatial context is cleaner than the document screen. Nearby distress is limited: ${complaintText}, ${vacancyText}.`;
+  } else if (divergence.mode === 'HIDDEN_NEIGHBORHOOD_RISK') {
+    baseSentence = `Spatial context is materially worse than the document screen. The radius shows ${complaintText} and ${vacancyText}.`;
+  } else if (neighborhoodPattern.label?.includes('Concentrated distress')) {
+    baseSentence = `The radius is carrying visible pressure: ${complaintText}, ${vacancyText}, and clustering close enough to matter operationally.`;
+  } else if (neighborhoodPattern.label?.includes('Mixed / transitional')) {
+    baseSentence = `This address sits in a transitional radius. Activity is present but not uniformly distressed: ${complaintText}, ${vacancyText}.`;
+  } else {
+    baseSentence = `The immediate radius reads clean for Baltimore. The map shows ${complaintText} and ${vacancyText}.`;
   }
-  if (divergence.mode === 'HIDDEN_NEIGHBORHOOD_RISK') {
-    return `Spatial context is materially worse than the document screen. The radius shows ${complaintText} and ${vacancyText}.`;
-  }
-  if (neighborhoodPattern.label === 'Concentrated distress') {
-    return `The radius is carrying visible pressure: ${complaintText}, ${vacancyText}, and clustering close enough to matter operationally.`;
-  }
-  if (neighborhoodPattern.label === 'Mixed / transitional block') {
-    return `This address sits in a transitional radius. Activity is present but not uniformly distressed: ${complaintText}, ${vacancyText}.`;
-  }
-  return `The immediate radius reads clean for Baltimore. The map shows ${complaintText} and ${vacancyText}.`;
+
+  return baseSentence + trendContext;
 }
 
 function summarizeActivityRows(rows, type) {
@@ -376,11 +498,16 @@ async function computeSpatialRisk(latitude, longitude, options = {}) {
   const baseScore = complaintScore * 0.35 + vacancyScore * 0.3 + proximityScore * 0.2 + floodScore * 0.15;
   const normalizedScore = Math.round(Math.max(0, Math.min(100, baseScore * 100)));
   const spatialVerdict = deriveSpatialVerdict(normalizedScore);
+
+  // Analyze temporal trends
+  const complaintTrend = analyzeTrend(complaintRows, 'createdDate');
+  const vacancyTrend = analyzeTrend(vacancyRows, 'noticeDate');
+
   const neighborhoodPattern = deriveNeighborhoodPattern({
     weightedComplaints,
     weightedVacancy: weightedVacancies,
     nearestVacancyMeters
-  });
+  }, complaintTrend, vacancyTrend);
   const divergence = deriveDivergence(options.documentRiskScore, normalizedScore);
   const confidence = buildConfidence({
     geocodeSource: options.geocodeSource,
